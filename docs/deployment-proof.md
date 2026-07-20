@@ -1,179 +1,101 @@
-# Deployment and Qwen evidence checklist
+# Deployment and Qwen evidence
 
-This is an **evidence workbench**, not a completion claim. Replace every PENDING field with a real public link or artifact from the final submitted ReleaseProof commit. Do not paste this file into Devpost while placeholders remain.
+This page records the evidence available for the ReleaseProof submission and the limits of that evidence. Links were checked from outside the host on July 21, 2026.
 
-Current status at authoring time:
+## Verified release status
 
-- Expected public repository: [https://github.com/xiaodouzi666/releaseproof](https://github.com/xiaodouzi666/releaseproof) — **PENDING public reachability verification**.
-- Validated candidate revision: [`f46d4eb61cebe4d2830aae162225b645c84eb734`](https://github.com/xiaodouzi666/releaseproof/commit/f46d4eb61cebe4d2830aae162225b645c84eb734) — source-pinned locally; **PENDING public reachability verification**.
+- Public repository: [github.com/xiaodouzi666/releaseproof](https://github.com/xiaodouzi666/releaseproof)
+- Immutable application candidate: [`458d7ba55417fac18051156059b4802edeb9f199`](https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199)
+- Alibaba Cloud application: [http://8.219.184.228](http://8.219.184.228)
+- Public health endpoint: [http://8.219.184.228/api/health](http://8.219.184.228/api/health)
+- Public demo video: [youtu.be/s64eo9D5PYc](https://youtu.be/s64eo9D5PYc)
+- Candidate validation: **66/66 automated tests** and **16/16 deterministic policy cases**, with typecheck, production build, and production dependency audit passing
 
-- Alibaba Cloud runtime: **PENDING — not verified here**
-- Public live URL: **PENDING — not verified here**
-- Successful live Qwen workflow: **PENDING — not verified here**
-- Alibaba Cloud screenshots: **PENDING — not captured here**
-- Public repository and immutable commit: **PENDING — not published here**
-- Updated ReleaseProof thumbnail/architecture capture: **local assets rendered and visually checked; public commit permalinks PENDING**
-- Final post-pivot test/evaluation run: **local working tree passed (62/62 tests, 16/16 deterministic cases); immutable final-commit run PENDING**
+The application and health endpoint are currently served over HTTP; TLS is not claimed. The runtime is an Alibaba Cloud Simple Application Server deployment and truthfully reports `deploymentTarget: alibaba-sas`.
 
-Historical pre-pivot test totals or screenshots are not ReleaseProof evidence and must not be reused.
+## Qwen evidence boundary
+
+The public runtime has a server-side Qwen Cloud client configured as `live-qwen` with `qwen3.7-plus`. The source implements structured extraction and read-only function planning against the Qwen OpenAI-compatible endpoint.
+
+Successful model inference has **not** been established. Calls from the deployment currently fail closed because the Alibaba account returns HTTP 403 for incomplete KYC. The health response proves that the client, provider mode, model, service, store, and deployment target are configured; it does not prove that a model response completed. No screenshot, workflow receipt, evaluation number, or submission text should be described as successful live-Qwen evidence.
+
+The deterministic recorded-demo path remains the reproducible end-to-end demonstration of policy, owner approval, synthetic share creation, exact-state verification, recall, metrics, and audit. Its output is not represented as Qwen output.
 
 ## Judge evidence index
 
-Fill this table last and open every URL in a signed-out/incognito browser.
-
 | Requirement | Evidence | Status |
 | --- | --- | --- |
-| Public source code | [Expected repository URL](https://github.com/xiaodouzi666/releaseproof) | PENDING — public reachability not verified |
-| OSI license | [LICENSE](../LICENSE) plus public link | Local file present; public detection pending |
-| Immutable submitted revision | [Candidate revision](https://github.com/xiaodouzi666/releaseproof/commit/f46d4eb61cebe4d2830aae162225b645c84eb734) | Candidate pinned; publication PENDING |
-| Qwen client/base URL | [Candidate-pinned `server/qwen.ts`](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/qwen.ts) | Source identified; live call PENDING |
-| Structured extraction request/schema | [PENDING: model, response format, validation lines] | PENDING |
-| Read-only function-planning request | [PENDING: recipient/dataset/current-share/agreement definitions] | PENDING |
-| Tool validation and dispatch | [PENDING: allow-list, rebinding, mandatory completion, dispatch] | PENDING |
-| Deterministic release policy | [Candidate-pinned `server/policy.ts`](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/policy.ts) | Source identified; 16/16 local cases |
-| Exact manifest owner checkpoint | [Candidate-pinned workflow orchestrator (`server/workflow-service.ts`)](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/workflow-service.ts) | Source identified; locally tested |
-| Idempotent share and verification | [Candidate-pinned `server/tools.ts`](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/tools.ts) | Source identified; locally tested |
-| Recall and read-after-recall | [Candidate-pinned workflow orchestrator](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/workflow-service.ts) | Source identified; locally tested |
-| Alibaba Cloud live backend | [PENDING: public HTTPS URL] | PENDING |
-| Health endpoint | [PENDING: public /api/health URL] | PENDING |
-| Required Devpost Alibaba Cloud screenshot | [PENDING: PNG/JPG/JPEG upload under form limit] | PENDING |
-| Cloud resource/runtime capture | [PENDING: repository-hosted artifact] | PENDING |
-| Live ReleaseProof workflow capture | [PENDING] | PENDING |
-| Live-Qwen receipt | [PENDING: provider badge and non-zero completed calls] | PENDING |
-| Final evaluation/test output | [Candidate-pinned evaluation source](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/evaluation.ts) and [local verification record](evaluation.md#validated-releaseproof-candidate-snapshot) | 62/62 tests, 16/16 cases, typecheck/build/audit passed locally; CI PENDING |
-| Public demo video | [PENDING: URL, strictly under 3:00] | PENDING |
-| Updated architecture/thumbnail | [Candidate-pinned architecture PNG](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/public/architecture.png) and [3:2 thumbnail](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/public/devpost-thumbnail-3x2.png) | Local assets ready; public reachability PENDING |
+| Public source code | [Repository](https://github.com/xiaodouzi666/releaseproof) | Verified public |
+| OSI license | [Candidate-pinned MIT license](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/LICENSE) | Verified |
+| Immutable application revision | [Candidate commit](https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199) | Verified public |
+| Qwen client and base URL | [Candidate-pinned `server/qwen.ts`](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts) | Implementation verified; successful call not claimed |
+| Structured extraction schema/request | [`server/qwen.ts` schema](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts#L12-L23) and [request](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts#L287-L330) | Source verified |
+| Read-only planning and sanitization | [Planning request](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts#L345-L417), [validation/rebinding](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts#L420-L457), and [dispatch](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/workflow-service.ts#L482-L528) | Source verified |
+| Deterministic release policy | [Candidate-pinned `server/policy.ts`](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/policy.ts) | 16/16 local cases |
+| Exact manifest owner checkpoint | [Candidate-pinned workflow service](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/workflow-service.ts) | Source and tests verified |
+| Idempotent share, verification, and recall | [Candidate-pinned tools](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/tools.ts) and [workflow service](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/workflow-service.ts) | Source and tests verified |
+| Alibaba Cloud resource | [Resource capture](assets/deployment/alibaba-cloud-resource.jpg) | Captured |
+| Running candidate container | [Runtime capture](assets/deployment/alibaba-cloud-runtime.jpg) | Captured; SHA and healthy service visible |
+| Public application | [Live app](http://8.219.184.228) and [public-app capture](assets/deployment/public-app.jpg) | Verified over HTTP |
+| Public health | [Health endpoint](http://8.219.184.228/api/health) | Verified HTTP 200 |
+| Successful live-Qwen receipt | None | Not achieved; Alibaba account KYC HTTP 403 |
+| Test/evaluation output | [Validation record](evaluation.md#validated-releaseproof-candidate-snapshot) and [candidate evaluation source](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/evaluation.ts) | 66/66 tests; 16/16 cases |
+| Demo video | [Public YouTube video](https://youtu.be/s64eo9D5PYc) | Public link verified |
+| Architecture and thumbnail | [Candidate architecture](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/public/architecture.png) and [candidate 3:2 thumbnail](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/public/devpost-thumbnail-3x2.png) | Candidate-pinned assets |
 
-## What proves Qwen Cloud use
+## What the implementation does with Qwen Cloud
 
-ReleaseProof targets Qwen Cloud's OpenAI-compatible Chat Completions API. A normal live workflow is designed to make two logical requests to the same endpoint. The request shapes below document the intended integration; they are not proof that a live call succeeded.
+ReleaseProof targets the Qwen Cloud OpenAI-compatible Chat Completions endpoint:
 
-### Request A — structured release-intent extraction
-
-~~~http
+~~~text
 POST https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
-Authorization: Bearer <REDACTED>
-Content-Type: application/json
-
-{
-  "model": "qwen3.7-plus",
-  "messages": ["synthetic release request and optional image"],
-  "temperature": 0,
-  "enable_thinking": false,
-  "response_format": { "type": "json_object" }
-}
+model: qwen3.7-plus
 ~~~
 
-The validated intent represents:
+The designed live path makes two logical requests:
 
-- external recipient/vendor;
-- dataset;
-- release tier;
-- requested field-actions;
-- purpose;
-- finite TTL;
-- optional agreement reference;
-- confidence; and
-- text/vision source mode.
+1. **Structured extraction:** request prose and optional imagery become a validated recipient, dataset, purpose, field/action set, TTL, release tier, optional agreement reference, confidence, and source mode.
+2. **Read-only evidence planning:** Qwen may select recipient, dataset, current-share, and optional agreement lookups.
 
-### Request B — read-only evidence plan
+The plan is untrusted. The server allow-lists names, parses strict arguments, rebinds identifiers to validated extraction values, adds mandatory reads, and dispatches the sanitized plan before deterministic policy. Qwen is never offered a share-create, recall, approval, credential, or policy-override function.
 
-~~~http
-POST https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions
-Authorization: Bearer <REDACTED>
-Content-Type: application/json
+Candidate-pinned source:
 
-{
-  "model": "qwen3.7-plus",
-  "messages": ["validated extracted release intent"],
-  "temperature": 0,
-  "enable_thinking": false,
-  "tools": [
-    "recipient_lookup",
-    "dataset_lookup",
-    "share_current",
-    "agreement_lookup"
-  ],
-  "tool_choice": "required",
-  "parallel_tool_calls": true
-}
-~~~
-
-The server must:
-
-1. allow-list the function names;
-2. parse strict arguments;
-3. rebind recipient/dataset/agreement identifiers to the validated extraction;
-4. append any mandatory recipient, dataset, or current-share read Qwen omitted;
-5. accept agreement lookup only for a validated agreement reference; and
-6. dispatch the reads before deterministic policy.
-
-Qwen is never offered a share-create, recall, approval, DLP override, raw credential, or policy-override function.
-
-The base URL can also be a compatible workspace-specific Singapore address. The key and domain must belong to compatible regions/workspaces.
+- [Client, endpoint, model, and provider disclosure](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts#L252-L284)
+- [Structured extraction](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts#L287-L330)
+- [Read-plan request](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts#L345-L417)
+- [Plan validation, argument rebinding, and mandatory reads](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts#L420-L457)
+- [Tool dispatch](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/workflow-service.ts#L482-L528)
+- [Deterministic policy](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/policy.ts)
+- [Share, verification, and recall adapter](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/tools.ts)
 
 Official references:
 
-- [Qwen Cloud API key preparation](https://docs.qwencloud.com/api-reference/preparation/api-key)
 - [Qwen Cloud first API call](https://docs.qwencloud.com/developer-guides/getting-started/first-api-call)
-- [Model Studio base URL overview](https://www.alibabacloud.com/help/en/model-studio/base-url)
 - [Qwen structured output](https://www.alibabacloud.com/help/en/model-studio/qwen-structured-output)
 - [Qwen function calling](https://www.alibabacloud.com/help/en/model-studio/qwen-function-calling)
 - [Qwen visual understanding](https://www.alibabacloud.com/help/en/model-studio/vision-model)
 
-### Required source permalinks
+## Public health evidence
 
-Candidate-pinned source locations (publication and public reachability remain PENDING):
-
-~~~text
-Client and base URL:       https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/qwen.ts
-Structured extraction:     https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/qwen.ts#L295-L330
-Extraction schema:         https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/qwen.ts#L12-L23
-Read-plan request:         https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/qwen.ts#L345-L417
-Plan validation/rebinding: https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/qwen.ts#L420-L449
-Mandatory-read completion: https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/qwen.ts#L452-L457
-Actual tool dispatch:      https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/workflow-service.ts#L482-L528
-Provider disclosure:       https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/qwen.ts#L269-L284
-Release policy:            https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/policy.ts
-Share/verify/recall:       https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/tools.ts
-Workflow orchestration:    https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/workflow-service.ts
-Architecture artifact:     https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/public/architecture.png
-~~~
-
-Together they should visibly establish that Qwen performs structured extraction and tool planning, while the server owns catalog reads, deterministic policy, exact-manifest approval, share creation, verification, and recall.
-
-### Required live workflow evidence
-
-Create one fresh synthetic workflow while a valid Qwen Cloud key is configured:
-
-- health reports the live provider mode, model, deployment target, and service version without credentials;
-- the workflow metadata reports Qwen Cloud/live mode, model, logical call count, latency, and token fields;
-- the UI visibly labels the run as live Qwen Cloud;
-- the workflow reaches a terminal outcome using actual completed model calls;
-- the audit timeline contains Qwen-authored extraction/planning receipts; and
-- no capture contains the API key, authorization header, cookie, local environment file, or private account credential.
-
-Suggested non-secret health capture:
+The public check is:
 
 ~~~bash
-curl --fail --silent https://YOUR_DOMAIN/api/health
+curl --fail --silent http://8.219.184.228/api/health
 ~~~
 
-Illustrative response shape, not evidence:
+The verified response reports these stable fields:
 
 ~~~json
 {
   "status": "ok",
   "service": "releaseproof-api",
-  "version": "...",
+  "version": "0.1.0",
   "deploymentTarget": "alibaba-sas",
-  "timestamp": "...",
-  "uptimeSeconds": 123,
   "model": {
     "mode": "live-qwen",
     "provider": "Qwen Cloud",
-    "model": "qwen3.7-plus",
-    "disclosure": "..."
+    "model": "qwen3.7-plus"
   },
   "store": {
     "mode": "file",
@@ -182,151 +104,53 @@ Illustrative response shape, not evidence:
 }
 ~~~
 
-Health proves configuration and runtime identity, not a successful inference. The completed workflow receipt supplies live-call evidence.
+Again, this response establishes configuration and service identity only. The missing successful workflow receipt, combined with the observed KYC 403, means no successful inference claim is made.
 
-## What proves Alibaba Cloud deployment
+## Captured Alibaba Cloud evidence
 
-The preferred target is an Alibaba Cloud ECS or Simple Application Server instance running the submitted container. The official competition evidence requires a repository code link that shows Qwen Cloud use/base URL and an Alibaba Cloud runtime screenshot uploaded through the Devpost form.
+### Resource console
 
-### Screenshot A — Alibaba Cloud resource
+[![Alibaba Cloud Simple Application Server resource](assets/deployment/alibaba-cloud-resource.jpg)](assets/deployment/alibaba-cloud-resource.jpg)
 
-Capture the console with:
+The capture shows the Alibaba Cloud Simple Application Server product, Singapore region, running status, and public IP. Account and billing secrets are not shown.
 
-- Alibaba Cloud console/product chrome visible;
-- ECS or Simple Application Server product identity;
-- resource name such as **releaseproof-demo**;
-- region;
-- running/healthy status;
-- public IP or bound domain if safe; and
-- capture time where available.
+### Candidate runtime
 
-Redact account email, billing/payment details, RAM keys, unrelated resources, and unnecessary private-network details. Do not crop away the Alibaba Cloud product identity.
+[![ReleaseProof candidate running on Alibaba Cloud](assets/deployment/alibaba-cloud-runtime.jpg)](assets/deployment/alibaba-cloud-runtime.jpg)
 
-Save as:
+The capture binds commit `458d7ba55417fac18051156059b4802edeb9f199` to the healthy container and public URL. It also shows the non-secret health result, including `alibaba-sas`, `live-qwen`, Qwen Cloud, and `qwen3.7-plus`.
 
-~~~text
-docs/assets/deployment/alibaba-cloud-resource.png  [PENDING]
-~~~
+### Public application
 
-### Screenshot B — runtime on the instance
+[![ReleaseProof public application](assets/deployment/public-app.jpg)](assets/deployment/public-app.jpg)
 
-Capture commands that bind the submitted source to the running service:
+The capture shows ReleaseProof served from the public IP. Its provider badge says Qwen is configured and is awaiting a successful release run; it is not a completed live workflow capture.
+
+No successful Qwen monitoring capture or completed live-Qwen workflow receipt is included because the KYC 403 prevents one. No verified-recall cloud screenshot is claimed. The public video and local deterministic path demonstrate the product flow without relabeling fixtures as live model output.
+
+## Reproduce candidate validation
 
 ~~~bash
-cd /opt/releaseproof
-git rev-parse HEAD
-docker compose -f deploy/ecs/docker-compose.prod.yml ps
-curl --fail --silent http://127.0.0.1:8787/api/health
-~~~
-
-The frame should show commit SHA, healthy **releaseproof** container, truthful deployment target, provider mode, model, and service version. It must not show the environment file or inspected environment variables.
-
-Save as:
-
-~~~text
-docs/assets/deployment/alibaba-cloud-runtime.png  [PENDING]
-~~~
-
-### Screenshot C — public live workflow
-
-Capture the browser address bar with HTTPS and a synthetic ReleaseProof workflow that shows:
-
-- ReleaseProof brand and provider badge;
-- normalized recipient/dataset/purpose/TTL;
-- evidence tool receipts;
-- requested-versus-effective manifest;
-- owner checkpoint or completed observed state; and
-- no real vendor/customer information.
-
-Save as:
-
-~~~text
-docs/assets/deployment/live-release-workflow.png  [PENDING]
-~~~
-
-### Screenshot D — verified recall
-
-Capture the same workflow after recall with inactive/recalled state and verification evidence.
-
-~~~text
-docs/assets/deployment/verified-recall.png  [PENDING]
-~~~
-
-### Optional Screenshot E — Qwen monitoring
-
-Capture successful model invocation monitoring in the same time window. Redact account/quota/billing data. This corroborates but does not replace source and workflow evidence.
-
-~~~text
-docs/assets/deployment/qwen-invocation.png  [PENDING]
-~~~
-
-## Candidate verification runbook
-
-Run against the exact public candidate:
-
-~~~bash
-# Immutable host revision
-git rev-parse HEAD
-
-# Container status and local service
-docker compose -f deploy/ecs/docker-compose.prod.yml ps
-curl --fail --silent http://127.0.0.1:8787/api/health
-
-# Public TLS, health, and frontend
-curl --fail --silent --show-error https://YOUR_DOMAIN/api/health
-curl --fail --silent --show-error https://YOUR_DOMAIN/ | head
-
-# Final software evidence
+git checkout 458d7ba55417fac18051156059b4802edeb9f199
+pnpm install --frozen-lockfile
 pnpm typecheck
 pnpm test
 pnpm eval
+pnpm audit --prod
 pnpm build
+curl --fail --silent http://8.219.184.228/api/health
 ~~~
 
-Then manually exercise:
+The July 20, 2026 candidate run passed typecheck, 8/8 test files and 66/66 tests, 16/16 deterministic evaluation cases, production dependency audit with no known vulnerabilities, and production build. See [evaluation.md](evaluation.md) for scope and limitations.
 
-1. **Minimized release:** verified recipient request -> grounded evidence -> constrained manifest -> owner approval -> idempotent share -> exact read-back.
-2. **Hard denial:** unverified recipient or dangerous raw/consent-override request -> deterministic denial -> no approval/write path.
-3. **Verified recall:** completed synthetic share -> recall -> observed inactive/absent state.
-4. **Replay check:** repeat the execution request and confirm no duplicate active share.
+## Publication QA
 
-Reload pages to test persistence and deep-link/static fallback behavior.
-
-## Screenshot/video sanitization
-
-Inspect every frame for:
-
-- [ ] Qwen/RAM keys or partial keys
-- [ ] Authorization headers, cookies, session tokens, QR codes, password-manager overlays
-- [ ] local environment-file contents
-- [ ] Alibaba Cloud UID/account data where unnecessary
-- [ ] billing amount, payment method, invoices
-- [ ] SSH keys, host history, unrelated commands
-- [ ] real vendor, agreement, dataset, employee, or customer data
-- [ ] unrelated tabs, bookmarks, notifications, or account menus
-
-If a secret appears in any uploaded original, rotate it before publication. Blurring a later edit does not undo exposure of an earlier public upload.
-
-## Public-link QA
-
-- [ ] Every URL opens signed out/incognito.
-- [ ] Repository is public with source, assets, run instructions, tests, and detectable MIT license.
-- [ ] Source links are pinned to the submitted commit.
-- [ ] Live app is free, public, and independent of the local network.
-- [ ] Health exposes no secret or filesystem path.
-- [ ] Demo data is visibly synthetic.
-- [ ] Video is public, strictly under 3:00, and plays signed out.
-- [ ] Narration and visible badge agree on live-Qwen versus recorded-demo mode.
-- [ ] Updated thumbnail and architecture contain ReleaseProof branding.
-- [ ] Required Alibaba screenshot is in the accepted format/size and preserves product identity.
-- [ ] Recall is described as revoking the synthetic share, not erasing copied data.
-- [ ] Repository, video, deployed revision, and evidence links will remain unchanged after the deadline.
-- [ ] Submitted/public copy contains no unintended PENDING or YOUR_DOMAIN placeholders.
-
-Useful final search:
-
-~~~bash
-rg -n "PENDING|YOUR_DOMAIN|<owner>|<repo>|<workspace-id>|sk-[A-Za-z0-9]" README.md docs deploy
-~~~
-
-PENDING is intentionally allowed in this evidence workbench until the real deployment phase. It must not survive in submitted public copy.
+- Repository, candidate commit, application, health endpoint, and video links were reachable when checked.
+- Source links are pinned to the candidate SHA.
+- The public URL is HTTP, not HTTPS.
+- Health exposes no credential or environment-file content.
+- All product data shown is synthetic.
+- The Alibaba Cloud resource, runtime, and public application captures are present.
+- Qwen configuration is distinguished from successful inference.
+- Recall means revoking the synthetic share; it does not guarantee downstream deletion.
+- Devpost still requires the entrant to upload the accepted-format Alibaba Cloud screenshot and personally complete legal/profile fields.

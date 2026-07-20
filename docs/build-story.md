@@ -2,7 +2,7 @@
 
 *How we built ReleaseProof, a proof-carrying data release autopilot with Qwen Cloud.*
 
-> Publication note: this is a public build-story draft. Replace every PENDING evidence field, add final ReleaseProof screenshots, and verify every claim against the submitted commit before publishing.
+> Publication note: this is a public build-story draft with verified release links. The entrant should perform a final editorial and signed-out link check before publishing it as an optional blog post.
 
 ## The request that starts too simply
 
@@ -60,9 +60,9 @@ The returned plan is not trusted execution. The server rejects unknown/malformed
 
 Qwen never receives a share-create, recall, approval, or policy-override tool. A model answer can suggest what evidence to retrieve; it cannot establish that a vendor is verified or that a release is allowed.
 
-Source evidence: [PENDING: commit-pinned Qwen adapter]
+Source evidence: [candidate-pinned Qwen adapter](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts)
 
-Live workflow evidence: [PENDING: public evidence link]
+Deployment and Qwen evidence: [verified evidence record](deployment-proof.md). The Alibaba Cloud runtime is configured as `live-qwen` with `qwen3.7-plus`, but Alibaba account KYC currently rejects inference requests with HTTP 403. Configuration is verified; a successful live-Qwen workflow is not claimed.
 
 ## A release is a manifest, not a paragraph
 
@@ -81,7 +81,9 @@ The deterministic engine evaluates recipient status, dataset classification and 
 
 The data owner approves that manifest, not the original prose and not a model-generated recommendation.
 
-[PENDING SCREENSHOT: requested-versus-effective release manifest and owner checkpoint]
+![Requested-versus-effective release manifest and owner checkpoint](../public/screenshots/owner-approval-full.jpg)
+
+Focused captures: [pre-approval Recall Contract](../public/screenshots/recall-contract.jpg) and [counterfactual minimization receipt](../public/screenshots/minimization-receipt.jpg).
 
 ## The proof packet
 
@@ -164,7 +166,7 @@ The deterministic evaluator and automated tests target release-policy and workfl
 - recall verification; and
 - provider/audit disclosure.
 
-Final submitted result: [PENDING: paste exact commit and current command output]
+Final submitted result: candidate [`458d7ba55417fac18051156059b4802edeb9f199`](https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199) passed **66/66 automated tests**, **16/16 deterministic policy cases**, typecheck, production build, and the production dependency audit.
 
 Historical results from the previous product framing are not evidence for this pivot and must not be reused.
 
@@ -175,18 +177,18 @@ React/Vite and Express build into one Node.js container. Express serves both fro
 The preferred topology is:
 
 ~~~text
-Judge browser -> HTTPS Nginx -> ReleaseProof container -> Qwen Cloud
-                                      |
-                                      -> single-instance workflow/audit volume
+Judge browser -> HTTP public endpoint -> ReleaseProof container -> Qwen Cloud
+                                            |
+                                            -> single-instance workflow/audit volume
 ~~~
 
-The live submission target is Alibaba Cloud ECS or Simple Application Server. The image runs as a non-root user, the application port is published only to loopback, and Nginx handles public TLS.
+The submitted target is Alibaba Cloud Simple Application Server. The image runs as a non-root user and uses a persistent single-instance volume. The current judge endpoint is HTTP; TLS is not claimed.
 
 The repository also keeps a Function Compute custom-container manifest as an explicitly non-submission experiment. The current background workflow, process timers, and single-instance state need durable jobs and transactional storage before they are safe on a freeze/scale-to-zero runtime.
 
-Live application: [PENDING]
+Live application: [http://8.219.184.228](http://8.219.184.228)
 
-Alibaba Cloud evidence: [PENDING]
+Alibaba Cloud evidence: [resource, runtime, public-app, and Qwen status](deployment-proof.md)
 
 ## What is real, and what is not
 
@@ -194,7 +196,7 @@ Implemented application paths include structured extraction/planning, schema/too
 
 The vendor, dataset, agreement, and share providers are fixtures. No real customer data is moved. Destination region, residency enforcement, and semantic agreement-purpose matching are not implemented. Owner labels are not authenticated identities. File storage is single-instance. Expiry needs durable scheduling. The hash chain is tamper-evident but not externally anchored.
 
-Those limits are not footnotes. They define the line between a useful architecture demonstration and an unsafe data product.
+The public Alibaba Cloud deployment is real. Its Qwen client is configured, but successful model inference is not established because the account's KYC state returns HTTP 403. Those limits are not footnotes. They define the line between a useful architecture demonstration and an unsafe data product.
 
 ## What we would build next
 
@@ -220,7 +222,7 @@ Every dataset release needs a recall path.
 
 **ReleaseProof** was built for Qwen Cloud Hackathon, Track 4 — Autopilot Agent.
 
-- Try it: [PENDING]
-- Source: [PENDING]
-- Demo: [PENDING]
-- Architecture and evidence: [PENDING]
+- Try it: [http://8.219.184.228](http://8.219.184.228)
+- Source: [public repository](https://github.com/xiaodouzi666/releaseproof) and [immutable candidate](https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199)
+- Demo: [public YouTube video](https://youtu.be/s64eo9D5PYc)
+- Architecture and evidence: [candidate architecture](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/public/architecture.png) and [deployment record](deployment-proof.md)

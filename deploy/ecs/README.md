@@ -6,6 +6,15 @@ This is the preferred ReleaseProof deployment because it provides a stable proce
 
 The public build must use only synthetic recipients, datasets, agreements, and shares. Do not connect it to a real warehouse, DLP, clean room, or customer dataset.
 
+## Submitted deployment status
+
+- Candidate revision: [`458d7ba55417fac18051156059b4802edeb9f199`](https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199)
+- Public application: [http://8.219.184.228](http://8.219.184.228)
+- Public health check: [http://8.219.184.228/api/health](http://8.219.184.228/api/health)
+- Runtime evidence: [Alibaba Cloud resource](../../docs/assets/deployment/alibaba-cloud-resource.jpg) and [container/runtime](../../docs/assets/deployment/alibaba-cloud-runtime.jpg)
+
+The submitted endpoint currently uses HTTP; TLS is not claimed. The runtime reports `deploymentTarget: alibaba-sas` and a configured `live-qwen` Qwen Cloud client using `qwen3.7-plus`. Successful inference is not claimed: Alibaba account KYC currently rejects model requests with HTTP 403, so health proves configuration only.
+
 ## 1. Provision safely
 
 Use an Alibaba Cloud ECS or Simple Application Server Linux instance with enough memory to build a Node.js container. Start with at least 2 vCPU and 2 GiB RAM unless a smaller size has been tested successfully.
@@ -47,11 +56,11 @@ sudo mkdir -p /opt/releaseproof
 sudo chown "$USER":"$USER" /opt/releaseproof
 git clone https://github.com/xiaodouzi666/releaseproof.git /opt/releaseproof
 cd /opt/releaseproof
-git checkout PENDING_SUBMITTED_COMMIT_SHA
+git checkout 458d7ba55417fac18051156059b4802edeb9f199
 git rev-parse HEAD
 ~~~
 
-Replace both pending values. A pinned submitted commit makes the runtime reproducible and produces useful judge evidence.
+The immutable submitted commit keeps the runtime reproducible and binds the deployment evidence to the reviewed source.
 
 ## 4. Configure server-only environment
 
@@ -106,7 +115,14 @@ sudo nginx -t
 sudo systemctl reload nginx
 ~~~
 
-Validate from a separate network or signed-out browser:
+The submitted public HTTP endpoint can be validated from a separate network or signed-out browser:
+
+~~~bash
+curl --fail --silent http://8.219.184.228/api/health
+curl --fail --silent http://8.219.184.228/ | head
+~~~
+
+After a domain and certificate are configured, validate the optional TLS endpoint:
 
 ~~~bash
 curl --fail --silent https://YOUR_DOMAIN/api/health
@@ -134,10 +150,10 @@ Run against the submitted commit:
 
 ~~~bash
 curl --fail --silent http://127.0.0.1:8787/api/health
-curl --fail --silent https://YOUR_DOMAIN/api/health
+curl --fail --silent http://8.219.184.228/api/health
 ~~~
 
-Then exercise only synthetic built-in scenarios:
+The current public deployment can verify service health and the configured provider identity. It cannot complete new Qwen-dependent workflows while Alibaba account KYC returns HTTP 403. Use the clearly labeled deterministic recorded-demo mode locally for the reproducible end-to-end checks below, and do not describe those fixtures as successful live-Qwen calls:
 
 - a verified recipient request reaches owner review with a minimized field/action set and finite expiry;
 - approval creates one synthetic share and completion appears only after exact read-back;

@@ -1,28 +1,29 @@
 # Devpost submission copy
 
-This is the final English submission working copy. The narrative sections are ready to paste. Replace every bracketed **PENDING** value with verified public evidence or an explicit legal answer before final submission. Do not publish placeholders or claims that are not visible in the final build.
+This is the final English submission working copy. Public evidence fields are filled with the verified candidate, deployment, and video links. Four entrant-specific answers remain explicitly marked for personal completion; do not infer them or publish claims that are not visible in the final build.
 
 ## Required Devpost fields
 
 | Devpost field | Value to enter |
 | --- | --- |
-| Submitter type | **[PENDING: Individual, Team, or Organization]** |
+| Submitter type | **ENTRANT INPUT REQUIRED — Individual, Team, or Organization** |
 | Organization name | Leave blank unless submitter type is Organization |
-| Country of residence | **[PENDING: exact country of residence]** |
+| Country of residence | **ENTRANT INPUT REQUIRED — exact country of residence** |
 | New or existing project | **New** |
 | Project start date (MM-DD-YY) | **07-20-26** |
 | If the project existed before May 26, explain what changed | **Not applicable — ReleaseProof development began on July 20, 2026, during the submission period.** |
 | Track | **Track 4 — Autopilot Agent** |
 | Public source repository | **https://github.com/xiaodouzi666/releaseproof** |
-| Code file showing Qwen Cloud use/base URL | **https://github.com/xiaodouzi666/releaseproof/blob/main/server/qwen.ts** |
+| Alibaba Cloud deployment proof code file (field 27543) | **https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts** — shows the official Qwen Cloud base URL and real API calls, as required by the organizer's Proof of Deployment 101 announcement |
+| Alibaba Cloud deployment infrastructure | **https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/deploy/ecs/docker-compose.prod.yml#L1-L25** |
 | Architecture diagram upload | **public/architecture.png** |
-| Alibaba Cloud deployment screenshot upload | **[PENDING: final PNG/JPG/JPEG captured from the deployed Alibaba Cloud resource]** |
+| Alibaba Cloud deployment screenshot upload | **docs/assets/deployment/alibaba-cloud-runtime.jpg**; use **docs/assets/deployment/alibaba-cloud-resource.jpg** as supporting evidence |
 | Blog post | Leave blank unless a public build story is published |
-| AI tools used | **Qwen Cloud for the application's live structured extraction and read-only function planning; OpenAI Codex for development assistance.** |
-| Learning level | **[PENDING: select the entrant's actual level]** |
+| AI tools used | **Qwen Cloud integration for structured extraction and read-only planning (configured on the deployment; successful calls currently blocked by Alibaba account KYC HTTP 403); OpenAI Codex for development assistance.** |
+| Learning level | **ENTRANT INPUT REQUIRED — select the entrant's actual level** |
 | Age confirmation | **Check — entrant has confirmed being of legal age in their place of residence.** |
 | Eligible-country confirmation | **Check — entrant has confirmed eligibility; verify that the country selected above is allowed before submitting.** |
-| Sponsor/affiliate/government-employee confirmation | **[PENDING: entrant must personally confirm the statement before checking]** |
+| Sponsor/affiliate/government-employee confirmation | **ENTRANT INPUT REQUIRED — entrant must personally confirm the statement before checking** |
 | Testing instructions (optional) | Use the ready-to-paste text under **Testing instructions** below |
 
 Do not infer the remaining entrant answers. The submitter type, exact country, learning level, and sponsor/affiliate/government-employment confirmation must come from the entrant.
@@ -55,176 +56,189 @@ ReleaseProof turns an ambiguous external data-sharing request into a minimized, 
 
 ## Try it out
 
-- Live application: [PENDING: public HTTPS URL]
+- Live application: http://8.219.184.228
 - Public source: https://github.com/xiaodouzi666/releaseproof
-- Submitted revision: [PENDING: immutable commit permalink]
-- Demo video, strictly under 3 minutes: [PENDING: public YouTube URL]
-- Qwen integration: https://github.com/xiaodouzi666/releaseproof/blob/main/server/qwen.ts
-- Alibaba Cloud deployment evidence: [PENDING: public evidence link plus required Devpost screenshot]
+- Submitted revision: https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199
+- Demo video: https://youtu.be/s64eo9D5PYc
+- Qwen integration: https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts
+- Alibaba Cloud deployment code: https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/deploy/ecs/docker-compose.prod.yml#L1-L25
+- Alibaba Cloud deployment evidence: https://github.com/xiaodouzi666/releaseproof/blob/main/docs/deployment-proof.md
+- Health endpoint: http://8.219.184.228/api/health
 
 ## Testing instructions
 
-Open the public app and first read the provider badge: it distinguishes a completed live-Qwen workflow from the deterministic Recorded Demo mode. Select **Campaign vendor — minimized**, create the request, inspect the recipient/dataset/agreement receipts and requested-versus-effective manifest, approve as the data owner, wait for observed-state verification, and use **Recall now** to verify revocation. Then run **Restricted health — denied** to see a fail-closed path with no approval or release action. All displayed vendors, datasets, agreements, and share records are synthetic.
+Open the public app and health endpoint first. The application is deployed on Alibaba Cloud and the provider badge truthfully shows Qwen Cloud configured with `qwen3.7-plus`, awaiting a successful release run. The health response reports `live-qwen`; this is configuration evidence, not inference evidence. New model-dependent workflows currently fail closed because Alibaba account KYC returns HTTP 403.
+
+For a reproducible end-to-end workflow, check out the submitted revision locally without `DASHSCOPE_API_KEY`, run `pnpm dev`, and use the clearly labeled Recorded Demo mode. Select **Campaign analysis, minimized**, inspect the recipient/dataset/agreement receipts and Requested → Owner-approved effective → Observed proof, approve as the data owner, wait for exact observed-state verification, and use **Recall now** to verify revocation. Then run **Restricted health data blocked** to see a fail-closed path with no approval or release action. All displayed vendors, datasets, agreements, and share records are synthetic; fixture output is not represented as a successful Qwen call.
 
 ## Inspiration
 
-> Every dataset release needs a recall path.
+Every dataset release needs a recall path.
 
-An external-data request often starts with a vague sentence: “Send the customer file to Northstar for campaign analysis. They need it this week.”
+An external-data request often begins as a vague sentence: “Send the customer file to Northstar for campaign analysis. They need it this week.”
 
-The dangerous part is everything the sentence leaves out. Which legal recipient? Which governed dataset? Which fields are necessary? Is there an active agreement for that recipient? How long should the share remain live? Who owns the decision? Did the provider expose exactly the approved projection? What happens when consent, purpose, or vendor risk changes tomorrow?
+The risk lives in everything that sentence omits. Which legal recipient? Which governed dataset? Which fields are actually necessary? Is there an active agreement? How long should access remain live? Who owns the decision? Did the provider expose exactly what was approved? What happens if consent, purpose, or vendor risk changes tomorrow?
 
-Most release workflows optimize for getting data out. We built ReleaseProof around the other half of the lifecycle: minimizing the release before publication, carrying evidence with it, observing what was actually published, and keeping a verified recall path.
+Most release workflows optimize for publication. ReleaseProof treats minimization, observed-state verification, and recallability as parts of the release itself.
 
 ## What it does
 
-ReleaseProof is an operator workbench for controlled external data releases:
+ReleaseProof is a proof-carrying data release autopilot for temporary external sharing.
 
-1. A requester pastes free-form text or supplies a ticket/agreement image.
-2. In live mode, Qwen extracts a typed intent containing recipient, dataset, purpose, requested fields/actions, TTL, and an optional agreement reference.
-3. Qwen then proposes a read-only evidence plan over recipient, dataset, current-share, and optional agreement lookup. Recorded Demo mode substitutes disclosed deterministic fixtures for these two model steps.
-4. The server allow-lists those functions, validates and rebinds their arguments, adds mandatory reads that Qwen omitted, and dispatches the plan.
-5. Deterministic policy evaluates recipient status, dataset classification and allowed tiers, agreement status/recipient match, purpose presence, field-actions, current state, and TTL.
-6. Unsafe requests are denied before a write. Safe requests become an effective release manifest with unnecessary fields removed and duration capped.
-7. The data owner sees the requested-versus-effective diff, evidence receipts, findings, release tier, and expiry, then approves or rejects that stored effective manifest.
-8. Approval creates one idempotent synthetic share in a Sandbox clean-room adapter.
-9. ReleaseProof reads the share back and reports completion only when observed recipient, dataset, field-actions, and expiry match the approved manifest.
-10. Expiry or manual recall revokes the share and verifies that it is inactive or absent.
-11. A prior-hash-linked audit timeline records the model, tool, policy, owner, release, verification, and recall evidence.
+Its core contract is:
 
-The application also exposes provider-mode telemetry and a deterministic release-policy evaluation so judges can distinguish live Qwen behavior from reproducible fixtures.
+**Requested → Owner-approved effective → Observed**
+
+1. A requester supplies ambiguous prose or an optional ticket/agreement image.
+2. The live Qwen path extracts a typed release intent and proposes narrow, read-only evidence calls.
+3. The server validates and rebinds those calls, completes mandatory recipient, dataset, current-share, and agreement reads, and treats all model output as untrusted.
+4. Deterministic policy either denies the request or produces the smallest permitted manifest.
+5. A data owner reviews and approves that exact effective manifest—not the original prose.
+6. A synthetic clean-room adapter creates one idempotent share.
+7. ReleaseProof reads provider state back and reports completion only when the observed recipient, dataset, tier, fields, expiry, and unique share identity match the approved expectation.
+8. Manual recall or TTL expiry revokes the workflow-created share, followed by read-after-recall verification.
+9. Model, tool, policy, owner, release, verification, and recall events are linked in a prior-hash audit chain.
+
+Qwen is never offered a share-create, approval, recall, or policy-override tool. Language-model output is evidence, not authority.
+
+## Counterfactual minimization receipt
+
+ReleaseProof makes minimization inspectable instead of reducing it to a warning.
+
+Before approval, the operator sees a Requested → Effective manifest receipt. It shows the requested release tier, TTL, and every requested field-action beside the deterministic result. Retained fields are marked explicitly. Removed fields carry the policy finding that removed them. If an action is absent without a recognized permission, the release fails closed instead of inferring authority.
+
+For the synthetic campaign scenario, an over-broad request for direct identifiers, raw export, consent override, and 72 hours becomes an owner-reviewable profile release containing only the allowed aggregate/profile actions with an 8-hour TTL.
+
+This receipt is counterfactual evidence: it shows not only what will leave, but what would have left without the control.
+
+## Recall Contract
+
+Recall is visible before approval, not added after publication.
+
+The pre-approval Recall Contract binds:
+
+- the exact recipient and dataset target;
+- the manual or TTL trigger;
+- the reviewed active-share baseline;
+- the success condition for the workflow-created release; and
+- the required read-after-recall proof.
+
+A recall command is not considered success. ReleaseProof reports success only after observed state returns to the reviewed baseline—normally zero active matching shares for that workflow-created release.
+
+Recall revokes future synthetic access. It does not claim to erase copies a recipient may already have made.
 
 ## How we built it
 
-ReleaseProof is a TypeScript application with a React/Vite workbench and an Express API. The production build ships as one Node.js container: Express serves both the frontend and API, so the Qwen Cloud credential never enters browser code.
+ReleaseProof is a TypeScript application with a React/Vite workbench and an Express API. The production build ships as one Node.js container, with Express serving both the frontend and API so the Qwen credential never enters browser code.
 
-The orchestrator advances an explicit server-side state machine. Qwen handles ambiguous, potentially multimodal extraction and evidence planning. A schema/tool boundary treats the model response as untrusted. Synthetic catalogs provide recipient, dataset, agreement, and current-share facts. Deterministic policy produces the effective manifest. A named owner decision gates the write. The Sandbox clean-room adapter provides idempotent share creation and recall, and a separate verifier defines success from observed state.
+The backend owns an explicit state machine. Qwen handles the ambiguous interpretation boundary. Zod schemas and an allow-listed tool boundary validate the model response. Synthetic catalogs provide recipient, dataset, agreement, and current-share evidence. Deterministic policy owns authorization. A named owner decision gates the write. The sandbox adapter provides idempotent share creation and targeted recall, while separate verifiers define success from observed state.
 
-The preferred deployment is Docker Compose on Alibaba Cloud ECS or Simple Application Server behind Nginx. A checked-in Function Compute manifest is explicitly an architecture experiment, not the submitted live path, because the current background workflow, process timers, and single-instance state need a stable process.
+The submitted backend is running on Alibaba Cloud Simple Application Server behind Nginx:
+
+http://8.219.184.228
+
+The deployed revision is:
+
+https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199
 
 ## How Qwen Cloud is used
 
-When the deployment has a working Qwen Cloud entitlement, Qwen is used for the parts that genuinely require language and visual understanding:
+The implemented live path makes two logical OpenAI-compatible Qwen Cloud calls:
 
-- **Multimodal release-intent extraction:** interpret request prose and an optional ticket/agreement image.
-- **Structured output:** emit a machine-validated object for recipient, dataset, release tier, field-actions, TTL, purpose, agreement reference, confidence, and source mode.
-- **Function planning:** select narrow read-only recipient, dataset, current-share, and optional agreement lookups.
-- **Constrained planning boundary:** the server rejects unknown/malformed calls, rebinds arguments to validated identifiers, completes mandatory evidence reads, and dispatches them.
-- **Fallback-aware telemetry:** record the selected model, fallback use, calls, latency, and token fields without exposing the API key.
+- structured release-intent extraction; and
+- constrained read-only evidence-plan generation.
 
-Qwen never receives a share-create, recall, approval, or policy-override tool. Agreement text and model output are evidence inputs, not release authority.
+The server rejects malformed or unknown calls, rebinds arguments to validated identifiers, adds mandatory evidence reads that the plan omitted, and records provider/model/fallback/call/latency/token metadata without exposing the API key.
 
-A normal live workflow makes two logical OpenAI-compatible Chat Completions requests to the Qwen Cloud endpoint: structured extraction followed by read-plan generation. The primary model is Qwen 3.7 Plus with Qwen 3.6 Flash as the configurable fallback.
+Qwen implementation:
 
-Live-enabled API source: https://github.com/xiaodouzi666/releaseproof/blob/main/server/qwen.ts
+https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts
 
-Live workflow evidence: [PENDING: public evidence link]
+At submission time, the Alibaba-hosted runtime is configured for Qwen 3.7 Plus and discloses that configuration through its provider badge and health endpoint. However, an account-level Qwen Cloud KYC/entitlement activation gate currently prevents a successful live inference.
 
-## The proof-carrying manifest
-
-Every reviewable release carries a bounded evidence packet:
-
-- normalized request and provider mode;
-- resolved recipient, dataset, agreement, and current-share receipts;
-- policy version, findings, and risk;
-- requested versus effective fields/actions and TTL;
-- the effective manifest displayed for the owner decision;
-- idempotency and adapter result;
-- expected versus observed share state;
-- recall/expiry state; and
-- the audit-chain head.
-
-“Proof-carrying” describes inspectable operational evidence, not a formal mathematical proof. The hackathon build retains this packet in a single-instance workflow/audit store. A production version would sign manifests and anchor audit heads externally.
-
-## Architecture
-
-~~~mermaid
-flowchart LR
-    U[Request text or image] --> Q[Qwen extraction and read plan]
-    Q --> B[Schema, allow-list, argument rebinding]
-    B --> T[Recipient, dataset, current-share, agreement reads]
-    T --> P[Deterministic release policy]
-    P --> M[Minimized expiring manifest]
-    M --> O{Data-owner decision}
-    O -->|approve| C[Sandbox clean-room share]
-    O -->|reject| X[No release]
-    C --> V[Read-after-release verification]
-    V --> R[Expiry or manual recall]
-    R --> RV[Read-after-recall verification]
-    Q --> A[Hash-linked proof trail]
-    T --> A
-    P --> A
-    O --> A
-    C --> A
-    V --> A
-    R --> A
-~~~
-
-Architecture image: [ReleaseProof architecture PNG](../public/architecture.png)
+We therefore do not present the configured health response as proof of a model call. The public 2:42 video is clearly labeled Recorded Demo. It substitutes deterministic fixtures only for Qwen extraction and read-plan generation; policy, owner approval, synthetic share creation, observed-state verification, recall, metrics, and audit continue through the same application paths.
 
 ## Challenges we ran into
 
-### Turning ambiguity into a manifest without turning the model into the policy
+### Turning ambiguity into a manifest without turning the model into policy
 
-Recipient names, dataset aliases, purposes, fields, and retention periods arrive in inconsistent prose. Qwen is useful for normalizing that mess, but a plausible model answer cannot establish vendor verification, agreement status, or dataset classification. We split extraction/planning from deterministic release authority and made tool evidence visible.
+Recipient names, dataset aliases, purposes, fields, and retention periods arrive in inconsistent prose. Qwen is useful for normalization and evidence planning, but a plausible response cannot establish vendor verification, agreement status, or dataset classification. We separated interpretation from deterministic release authority.
 
-### Defining “released” from observed state
+### Defining “released” from reality
 
-A successful adapter response does not prove that the intended projection exists. ReleaseProof treats create and recall as small sagas: write idempotently, read provider state, compare it with the approved expectation, and fail closed on mismatch.
+A successful write response does not prove that the intended projection exists. ReleaseProof treats create and recall as small sagas: act idempotently, read state back, compare it with the stored expectation, and fail closed on mismatch.
 
-### Making recall part of the hero path
+### Making reversal part of the approval decision
 
-Many demos stop at publication. We designed the release record, expiry, operator flow, and audit around reversal from the beginning. The prototype is also explicit about the limit: recalling a share does not retroactively erase data that a recipient already copied.
+Many demos stop at publication. We had to carry exact share identity, baseline state, TTL, recall trigger, and verification criteria through the whole workflow. The Recall Contract makes that exit path reviewable before the owner approves.
 
-### Preserving an honest offline demonstration
+### Preserving honest evidence under an external account blocker
 
-Recorded-demo mode replaces only Qwen extraction/planning with labeled deterministic fixtures. Policy, owner decision, synthetic share, verification, recall, metrics, and audit still use the same application paths. A fixture is never presented as a live Qwen invocation.
+The Qwen KYC/entitlement gate remained unresolved while preparing the submission. Rather than disguising a fixture as a successful call, we exposed provider state, retained a clearly labeled Recorded Demo path, and documented the limitation.
 
 ## Accomplishments that we are proud of
 
-- A complete request-to-release-to-recall workflow instead of a publication-only demo.
-- Qwen structured extraction and read-plan generation behind a strict schema/tool boundary.
-- Deterministic minimization of field-actions and TTL.
-- Hard denial for unknown/unverified recipients, plus deterministic removal of dangerous exports and denial when no safe field remains.
-- An owner checkpoint tied to the exact effective manifest shown in the UI.
-- Idempotent synthetic share creation with read-after-release verification.
-- Verified recall based on observed inactive/absent state.
-- A proof packet and prior-hash-linked event chain that make every control inspectable.
-- Explicit live-Qwen versus recorded-demo disclosure.
-- A one-container Alibaba Cloud deployment configuration and documented production gaps.
-
-Local ReleaseProof candidate validation on July 20, 2026: **62/62 automated tests passed and 16/16 deterministic release-policy evaluation cases passed**. These results do not claim a live-Qwen model-quality evaluation. Re-run the commands on the final submitted commit and update this sentence if the result changes.
-
-## What we learned
-
-Data minimization is more useful when it produces an executable projection, not just a warning. Recall is more credible when it is verified, not just scheduled. And model transparency is stronger when the operator can inspect the evidence plan and observed state instead of reading a polished explanation.
-
-We also learned that recall has a hard boundary. Revoking access to a clean-room share is not the same as erasing every downstream copy. A responsible product should reduce raw egress, pair technical controls with contracts and attestations, and communicate that limitation plainly.
+- A complete request-to-release-to-recall lifecycle.
+- A visible Requested → Owner-approved effective → Observed proof model.
+- Counterfactual field minimization with deterministic removal reasons.
+- A pre-approval Recall Contract with a measurable success condition.
+- Qwen structured extraction and read-only planning behind a strict schema/tool boundary.
+- Hard denial for unknown, inactive, or unverified recipients and restricted datasets.
+- Exact-manifest owner approval.
+- Idempotent synthetic share creation.
+- Read-after-release and read-after-recall verification.
+- A prior-hash-linked audit trail.
+- Explicit live-Qwen versus Recorded Demo disclosure.
+- A public Alibaba Cloud deployment of the submitted revision.
+- 66/66 automated tests and 16/16 deterministic policy evaluation cases passing on the submitted revision.
 
 ## What is real and what is simulated
 
-The workflow orchestration, schema/tool boundary, policy, owner transition, idempotency, verification, recall path, metrics, audit chain, UI, and deployment packaging are implemented.
+The workflow orchestration, schema/tool boundary, deterministic policy, owner transition, minimization receipt, Recall Contract, idempotency, observed-state verification, recall path, metrics, audit chain, UI, container, and Alibaba Cloud deployment are implemented.
 
-Recipients, datasets, agreements, and share state are synthetic fixtures. The clean-room adapter does not move real customer data. Destination region, residency enforcement, and semantic agreement-purpose matching are not implemented. ReleaseProof is not a production DLP, consent, legal, or data-governance platform. The provider badge identifies whether a run used live Qwen Cloud or recorded-demo fixtures. Live Qwen and Alibaba Cloud runtime claims remain pending until linked evidence is complete.
+Recipients, datasets, agreements, and share state are synthetic fixtures. The clean-room adapter does not move real customer data. Destination-region enforcement, semantic agreement-purpose matching, authenticated owner identity, and provider-native clean-room integration are not implemented.
+
+ReleaseProof is not a production DLP, privacy, consent, legal-review, or data-governance platform. Its audit chain is tamper-evident, not externally immutable.
+
+## What we learned
+
+Data minimization is more useful when it produces an executable projection rather than a warning.
+
+Approval is not proof. The provider state must be read back.
+
+Recall is more credible when its target, baseline, trigger, and success condition are agreed before release.
+
+And model transparency is stronger when the application shows exactly where the model stops having authority.
 
 ## What is next
 
 The next milestone is a read-only enterprise pilot:
 
 1. connect authoritative vendor, contract, dataset, lineage, consent, and residency sources;
-2. evaluate Qwen extraction on a consented multilingual text/image corpus;
+2. complete Qwen account activation and evaluate extraction on a consented multilingual text/image corpus;
 3. bind authenticated owner approval to a signed canonical manifest;
 4. integrate a provider-native clean room without enabling raw egress;
-5. add transactional state and durable expiry/recall orchestration;
+5. add transactional state and durable expiry/recall scheduling;
 6. sign and externally anchor audit checkpoints; and
-7. enable writes only after privacy, legal, security, and vendor-risk review.
+7. enable production writes only after privacy, legal, security, and vendor-risk review.
+
+## Links
+
+- Public app: http://8.219.184.228
+- Public source: https://github.com/xiaodouzi666/releaseproof
+- Submitted revision: https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199
+- Qwen integration: https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts
+- Alibaba deployment code: https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/deploy/ecs/docker-compose.prod.yml
+- Architecture: https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/public/architecture.png
+- Demo video: https://youtu.be/s64eo9D5PYc
+- License: MIT
 
 ## Built with
 
 - Qwen Cloud
 - Qwen 3.7 Plus
 - Qwen 3.6 Flash fallback
-- Alibaba Cloud Simple Application Server (deployment target; final runtime evidence pending)
+- Alibaba Cloud Simple Application Server (verified public runtime)
 - TypeScript
 - React
 - Vite
@@ -239,11 +253,12 @@ The next milestone is a read-only enterprise pilot:
 
 Before pasting this copy:
 
-- replace every PENDING value;
+- complete the four **ENTRANT INPUT REQUIRED** answers personally;
 - use the final ReleaseProof thumbnail and architecture image;
 - verify the public repository, MIT license, and immutable commit links;
-- show the Qwen Cloud base URL and integration source in commit-pinned links;
-- show a completed live-Qwen workflow if making a live claim;
+- enter the candidate-pinned Qwen Cloud API source permalink (`server/qwen.ts`) for submission field 27543, matching the organizer's Proof of Deployment 101 guidance;
+- keep the candidate-pinned Docker Compose deployment link separately available in the Story and deployment documentation;
+- do not claim successful live-Qwen inference while the KYC 403 remains unresolved;
 - provide the required Alibaba Cloud runtime screenshot;
 - keep all demo data synthetic;
 - publish a public video strictly under 3:00 and test it signed out;

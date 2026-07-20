@@ -6,7 +6,7 @@ Use [`youtube-description.md`](youtube-description.md) for upload copy and signe
 
 ## Required preflight
 
-- [ ] The submitted commit is deployed and the public HTTPS app opens signed out.
+- [x] The submitted commit is deployed and the public HTTP app opens signed out; TLS is not claimed.
 - [ ] `/api/health` shows the intended target, provider mode, and model without secrets.
 - [ ] Say “live Qwen” only if a Qwen call succeeded on that deployment and the UI proves it.
 - [ ] Reset sandbox state; rehearse minimized approval, hard denial, and verified recall.
@@ -16,7 +16,7 @@ Use [`youtube-description.md`](youtube-description.md) for upload copy and signe
 
 ### Provider integrity rule
 
-For a live run, keep the Qwen/model receipt visible. If credentials or network access are unavailable, keep the `recorded-demo` badge visible and use this narration instead:
+For a live run, keep the Qwen/model receipt visible. The submitted runtime is configured for `live-qwen`, but its Alibaba account currently returns KYC HTTP 403, so it has no successful model receipt. Keep the `recorded-demo` badge visible for deterministic footage and use this narration instead:
 
 > This run uses clearly labeled deterministic extraction and planning fixtures. The same server still performs the read-only evidence calls, deterministic policy, exact owner approval, sandbox creation, verification, recall, and hash audit. Qwen integration is implemented, but this footage is not a live-model claim.
 
@@ -32,7 +32,7 @@ For a live run, keep the Qwen/model receipt visible. If credentials or network a
 
 **Screen:** Submit the built-in scenario. Show normalized recipient, dataset, purpose, requested fields, and TTL, then `recipient.lookup`, `dataset.lookup`, `share.current`, and `agreement.lookup`.
 
-> Qwen turns the request into a typed release intent and proposes only read-only context queries. The server validates and rebinds them before dispatch. The model never receives the clean-room write tool, and prose never becomes authority.
+> In the live design, Qwen turns the request into a typed release intent and proposes only read-only context queries. This recorded demonstration uses clearly labeled fixtures for those model steps. The server validates and rebinds the plan before dispatch; the model never receives the clean-room write tool, and prose never becomes authority.
 
 ### 0:38–1:04 — Deterministic minimization
 
@@ -72,9 +72,9 @@ For a live run, keep the Qwen/model receipt visible. If credentials or network a
 
 > ReleaseProof packages the web app and API as one Alibaba-ready container: Qwen for interpretation, deterministic code for authority, a human for consent, and verification for truth. Every dataset release needs a recall path.
 
-**Evidence-gated version:** Use only after Alibaba runtime, repository, live Qwen, and public URLs are independently verified.
+**Submitted-deployment version:**
 
-> This ReleaseProof container is running on Alibaba Cloud with a verified live Qwen workflow. The source, evaluation, deployment proof, and demo are linked with the submission. Every dataset release needs a recall path.
+> This ReleaseProof container is running on Alibaba Cloud. Qwen Cloud is configured, while successful inference remains blocked by account KYC, so this demo does not claim a live model result. The source, evaluation, deployment proof, and demo are linked with the submission. Every dataset release needs a recall path.
 
 Re-time the chosen provider and closing variants. Aim for 2:38–2:45, never 3:00.
 

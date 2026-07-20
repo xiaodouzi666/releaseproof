@@ -2,38 +2,41 @@
 
 ReleaseProof is evaluated at the boundary that matters most: **can untrusted release intent produce a broader, longer, or unauthorized data share?**
 
-The repository contains a deterministic 16-case policy suite. It measures the release-policy boundary independently of model wording. It is not presented as a benchmark of Qwen extraction quality; that requires a separate labeled corpus and an API-enabled run.
+The repository contains a deterministic 16-case policy suite. It measures the release-policy boundary independently of model wording. It is not a Qwen extraction-quality benchmark; that requires a labeled corpus and successful API-enabled inference.
 
 ## Candidate identity
 
-- Expected public repository: [github.com/xiaodouzi666/releaseproof](https://github.com/xiaodouzi666/releaseproof) — **PENDING public-availability verification**.
-- Validated release candidate: [`f46d4eb61cebe4d2830aae162225b645c84eb734`](https://github.com/xiaodouzi666/releaseproof/commit/f46d4eb61cebe4d2830aae162225b645c84eb734) — the link is commit-pinned but is expected to resolve publicly only after the repository is published.
-- Executable evaluation definitions: [`server/evaluation.ts` lines 15–277](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/evaluation.ts#L15-L277).
-- Deterministic policy implementation: [`server/policy.ts` lines 13–430](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/policy.ts#L13-L430).
+- Public repository: [github.com/xiaodouzi666/releaseproof](https://github.com/xiaodouzi666/releaseproof)
+- Validated release candidate: [`458d7ba55417fac18051156059b4802edeb9f199`](https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199)
+- Executable evaluation definitions: [candidate-pinned `server/evaluation.ts`](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/evaluation.ts)
+- Deterministic policy: [candidate-pinned `server/policy.ts`](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/policy.ts)
+- Public deployment: [application](http://8.219.184.228) and [health](http://8.219.184.228/api/health) on Alibaba Cloud Simple Application Server
 
-The pinned links identify the candidate content; they are not a claim that GitHub publication, CI, live Qwen inference, or Alibaba Cloud deployment has completed.
+The repository, immutable candidate, and Alibaba Cloud runtime are verified. The deployment reports a configured `live-qwen` client using Qwen Cloud and `qwen3.7-plus`, but successful inference is not established: calls currently fail with Alibaba account KYC HTTP 403. Health is configuration evidence only.
 
 ## Questions under test
 
-1. Does the policy return the expected `requires_approval` or `deny` outcome and risk tier?
+1. Does policy return the expected `requires_approval` or `deny` outcome and risk tier?
 2. Are direct identifiers, raw export, and consent override removed from an otherwise valid proposal?
-3. Is the release TTL capped by dataset sensitivity?
+3. Is release TTL capped by dataset sensitivity?
 4. Do unknown, inactive, or unverified recipients fail closed?
 5. Do unknown/restricted datasets and missing/expired agreements fail closed?
-6. Can prompt-like text ever bypass policy or the data-owner checkpoint?
+6. Can prompt-like text bypass policy or the data-owner checkpoint?
 7. Do execution, read-after-release verification, recall, and hash audit preserve the approved manifest?
 
 ## Reproduce the evidence
 
 ~~~bash
-git rev-parse HEAD
+git checkout 458d7ba55417fac18051156059b4802edeb9f199
+pnpm install --frozen-lockfile
 pnpm eval
 pnpm test
 pnpm typecheck
+pnpm audit --prod
 pnpm build
 ~~~
 
-Run these commands against the exact submitted commit. Do not hand-edit generated counts or reuse results from the pre-pivot product. If this document and executable fixtures disagree, `server/evaluation.ts` and current command output are authoritative.
+Run these commands against the immutable candidate. If this document and executable fixtures disagree, `server/evaluation.ts` and fresh command output are authoritative.
 
 ## Deterministic reference matrix
 
@@ -48,7 +51,7 @@ Run these commands against the exact submitted commit. Do not hand-edit generate
 | `recipient-unknown` | recipient | `deny` | critical | Unknown recipients fail closed |
 | `recipient-inactive` | recipient | `deny` | critical | Inactive vendor records cannot receive a release |
 | `recipient-unverified` | recipient | `deny` | critical | Unverified suppliers are denied even for aggregate data |
-| `recipient-resolution-mismatch` | recipient | `deny` | critical | One registry record cannot be substituted for another recipient |
+| `recipient-resolution-mismatch` | recipient | `deny` | critical | One registry record cannot substitute for another recipient |
 | `dataset-unknown` | dataset | `deny` | critical | Request text cannot create an ungoverned dataset |
 | `restricted-dataset-deny` | dataset | `deny` | critical | Restricted datasets are never externally released by this prototype |
 | `agreement-missing` | agreement | `deny` | critical | A required agreement must resolve before release |
@@ -56,7 +59,7 @@ Run these commands against the exact submitted commit. Do not hand-edit generate
 | `prompt-injection-contained` | prompt-injection | `requires_approval` | low | Embedded instructions cannot disable policy or the owner gate |
 | `duplicate-existing-share` | duplicate-recall | `requires_approval` | low | Existing state is detected so creation remains idempotent and recall-safe |
 
-The expected values mirror `server/evaluation.ts`. Change a fixture and this table together, with a policy rationale; never weaken an expectation merely to turn a failing run green.
+The expected values mirror the executable fixtures. Change a fixture and this table together, with a policy rationale; never weaken an expectation merely to turn a failing run green.
 
 ## Metrics
 
@@ -68,54 +71,64 @@ case pass rate = passing cases / total cases
 safety-case agreement = passing non-routine cases / total non-routine cases
 ~~~
 
-These are regression metrics, not a formal proof. The fixture invariant explains why each case exists; deeper stateful properties belong in unit and integration tests.
+These are regression metrics, not a formal proof. Stateful safety properties are covered by unit and integration tests.
 
 ## Operational guardrails
 
-| Invariant | Required executable evidence |
+| Invariant | Candidate-pinned executable evidence |
 | --- | --- |
-| A denial cannot write | [Policy veto](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/workflow-service.ts#L558-L569) and [denial tests](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/tests/api.integration.test.ts#L139-L170) |
-| Approval gates the server-held effective manifest | [Approval and reviewed-baseline enforcement](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/workflow-service.ts#L261-L288) plus [execution re-read](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/workflow-service.ts#L599-L651) |
-| Retrying creation produces one share | [Idempotent grant adapter](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/tools.ts#L257-L345) |
-| Completion requires exact observed state | [Exact-state verifier](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/tools.ts#L501-L539) and [workflow read-back](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/workflow-service.ts#L740-L795) |
-| Recall affects only the workflow's share | [Current-grant guard and recall transition](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/workflow-service.ts#L307-L332) |
-| Recall is reported only after inactive/absent state is observed | [Recall followed by verification](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/workflow-service.ts#L799-L869) |
-| Audit mutation or reordering is detectable | [Audit evidence test](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/tests/api-normalization.test.ts#L48-L72) |
-| Provider mode is honest | [Provider disclosure](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/qwen.ts#L260-L284) and [health response](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/app.ts#L100-L119) |
-| A Qwen key never reaches browser code or API output | [Server-only Qwen construction](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/qwen.ts#L252-L266) and [public request integrity tests](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/tests/request-integrity.test.ts#L9-L118) |
-
-`pnpm test` discovers the current suite. Do not copy a historical test count into the submission; preserve the final command output or CI run instead.
+| A denial cannot write | [Workflow policy veto](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/workflow-service.ts) and [integration tests](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/tests/api.integration.test.ts) |
+| Approval gates the server-held effective manifest | [Approval and execution re-read](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/workflow-service.ts) |
+| Retrying creation produces one share | [Idempotent grant adapter](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/tools.ts) |
+| Completion requires exact observed state | [Exact-state verifier](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/tools.ts) and [workflow read-back](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/workflow-service.ts) |
+| Recall affects only the workflow share and requires inactive/absent read-back | [Recall orchestration](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/workflow-service.ts) |
+| Audit mutation or reordering is detectable | [Audit evidence test](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/tests/api-normalization.test.ts) |
+| Provider mode is disclosed | [Provider disclosure](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts) and [health response](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/app.ts) |
+| A Qwen key never reaches browser code or API output | [Server-only Qwen construction](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts) and [public request integrity tests](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/tests/request-integrity.test.ts) |
 
 ## Validated ReleaseProof candidate snapshot
 
-The commands below passed locally against candidate content at `f46d4eb61cebe4d2830aae162225b645c84eb734`. Later commits change only evidence documentation, README presentation, and static screenshots; no application source, fixture, test, dependency, or build configuration changed. This is source-pinned local verification, not CI or public-hosting evidence.
+The commands were freshly run locally against candidate `458d7ba55417fac18051156059b4802edeb9f199`. Documentation and evidence files being prepared after that commit do not change the executable candidate.
 
 | Field | Value |
 | --- | --- |
-| Validated commit | [`f46d4eb61cebe4d2830aae162225b645c84eb734`](https://github.com/xiaodouzi666/releaseproof/commit/f46d4eb61cebe4d2830aae162225b645c84eb734) |
-| Run timestamp (UTC) | `2026-07-20T11:53:56.123Z` (evaluation output) |
+| Validated commit | [`458d7ba55417fac18051156059b4802edeb9f199`](https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199) |
+| Evaluation timestamp (UTC) | `2026-07-20T16:10:12.892Z` |
 | Node / pnpm | `v22.14.0` / `11.7.0` |
 | Policy version | `releaseproof-policy-2026.07.1` |
 | Deterministic cases | `16/16` (`100.0%`) |
-| Test files / tests | `7/7` / `62/62` |
+| Test files / tests | `8/8` / `66/66` |
 | TypeScript | `pnpm typecheck` passed |
 | Production build | `pnpm build` passed |
 | Production dependency audit | `pnpm audit --prod` — no known vulnerabilities |
 
-These local results establish deterministic policy and software behavior for the candidate. They do not establish CI, GitHub publication, live-Qwen extraction quality, or a successful Alibaba Cloud invocation.
+These results establish deterministic policy and software behavior for the candidate. They do not establish CI execution or live-Qwen extraction quality. Alibaba Cloud hosting is separately established by [runtime evidence](deployment-proof.md), while successful Qwen inference remains blocked by KYC HTTP 403.
+
+## Final production HTTP validation
+
+A fresh production-mode server was started locally from the candidate build with an in-memory audit store and no Qwen key. The complete HTTP lifecycle passed:
+
+- `GET /api/health` and `GET /` returned `200`; health disclosed `recorded-demo` and stated that no live model call was claimed.
+- The minimized campaign scenario reached `awaiting_approval`; deterministic policy retained only `aggregate.read` and `profile.read`.
+- Owner approval completed the workflow, created one active synthetic share, and passed exact read-after-release verification.
+- Manual recall moved the workflow to `rolled_back`, revoked that share, and passed read-after-recall verification.
+- The restricted-health scenario ended `denied` with `dataset.restricted_external_release` and no `share.grant` event.
+- The production evaluation endpoint returned `16/16`, `passRate=1`, and `safetyInvariantPassRate=1`.
+
+This smoke test exercised the same production Express build and workflow state machine used by the container. It validates application behavior, not live-Qwen inference.
 
 ## Model-dependent evaluation
 
-A responsible live-Qwen evaluation needs a frozen, consented corpus with paraphrases, incomplete requests, typos, multilingual prompts, screenshots, adversarial embedded instructions, and ambiguous recipients/datasets. Human labels can measure:
+A responsible Qwen evaluation needs a frozen, consented corpus with paraphrases, incomplete requests, typos, multilingual prompts, screenshots, adversarial embedded instructions, and ambiguous recipients/datasets. Human labels could measure:
 
 - exact match for recipient, dataset, purpose, and agreement reference;
 - set precision/recall for requested fields;
 - TTL error and confidence calibration;
 - schema-valid response rate;
-- primary/fallback rate, latency, and token usage;
+- primary/fallback rate, latency, and token usage; and
 - policy invariance across equivalent paraphrases.
 
-Record the model snapshot, region, prompt version, temperature, timestamp, and redaction policy. Never mix deterministic fixture outputs into a live-model accuracy number.
+That evaluation was not run because the submitted account cannot complete inference while KYC returns HTTP 403. Deterministic fixture outputs are never mixed into a live-model accuracy number.
 
 ## Limitations
 

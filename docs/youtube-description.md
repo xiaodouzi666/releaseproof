@@ -1,6 +1,6 @@
 # YouTube upload copy
 
-Do not publish this file verbatim. Replace every bracketed PENDING value, verify each URL signed out, and keep the final video strictly below 3:00.
+Paste the **Description** section into the public upload after a final signed-out link and duration check. This working file also retains upload settings and QA notes that should not be pasted into YouTube.
 
 ## Title
 
@@ -14,25 +14,29 @@ ReleaseProof turns an ambiguous request to share enterprise data with an externa
 
 Built for the Global AI Hackathon Series with Qwen Cloud — Track 4: Autopilot Agent.
 
-Live app: [PENDING: public application URL]
+Live app: http://8.219.184.228
+
+Health: http://8.219.184.228/api/health
 
 Public source: https://github.com/xiaodouzi666/releaseproof
 
-Submitted revision: [PENDING: immutable commit URL]
+Submitted revision: https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199
 
-Qwen Cloud integration: https://github.com/xiaodouzi666/releaseproof/blob/main/server/qwen.ts
+Qwen Cloud integration: https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts
 
-Alibaba Cloud deployment proof: [PENDING: public evidence URL]
+Alibaba Cloud deployment proof: https://github.com/xiaodouzi666/releaseproof/blob/main/docs/deployment-proof.md
 
-Architecture: https://github.com/xiaodouzi666/releaseproof/blob/main/public/architecture.png
+Architecture: https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/public/architecture.png
 
-License: MIT — https://github.com/xiaodouzi666/releaseproof/blob/main/LICENSE
+License: MIT — https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/LICENSE
 
 Qwen performs structured release-intent extraction and read-only evidence planning over recipient, dataset, current-share, and agreement lookups. Deterministic policy minimizes field-actions and TTL or denies the request. A data owner approves the exact effective manifest. A Sandbox clean-room adapter creates the synthetic share idempotently, reads it back, and supports verified recall.
 
 This demo uses synthetic recipients, datasets, agreements, and share state. It does not move real customer data and is not a production DLP, privacy, consent, legal-review, or clean-room service. Recalling a share revokes synthetic access; it does not imply retroactive deletion of copied data.
 
-The visible provider badge and workflow receipt identify whether the recorded run used live Qwen Cloud or clearly labeled deterministic recorded-demo fixtures.
+The Alibaba Cloud runtime is configured as `live-qwen` with Qwen Cloud and `qwen3.7-plus`, but successful inference is not claimed: Alibaba account KYC currently rejects model requests with HTTP 403. The health response proves configuration only. The visible provider badge identifies the mode, and any deterministic recorded-demo fixtures remain explicitly labeled.
+
+Candidate validation: 66/66 automated tests and 16/16 deterministic release-policy cases passed. These results measure software and policy behavior, not live-model quality.
 
 ## Upload settings
 
@@ -49,7 +53,7 @@ The visible provider badge and workflow receipt identify whether the recorded ru
 
 - [ ] Duration is strictly below 3:00.
 - [ ] Playback reaches 1080p and works without login.
-- [ ] Title and description contain no PENDING values.
+- [ ] Title and description contain no unresolved placeholders.
 - [ ] All links are public and source links are pinned to the submitted revision.
 - [ ] No key, cookie, account identifier, billing detail, unrelated tab, or private notification appears.
 - [ ] No real vendor, agreement, dataset, employee, or customer data appears.
