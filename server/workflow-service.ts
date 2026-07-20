@@ -7,6 +7,7 @@ import type {
   ExtractedAccessRequest,
   MetricsResponse,
   ResourceProfile,
+  TicketEvidence,
   ToolTrace,
   Workflow,
   WorkflowStatus,
@@ -16,19 +17,19 @@ import { QwenClient, mergeModelStats, type ContextToolCall } from "./qwen.js";
 import { findScenario } from "./scenarios.js";
 import { StoreNotFoundError, WorkflowStore } from "./store.js";
 import {
-  assertSandboxGrantIsCurrent,
-  calculateAccessDiff,
+  assertSandboxShareIsCurrent,
+  calculateReleaseDiff,
   ExpiredProposalError,
-  getCurrentAccess,
-  grantAccess,
-  lookupDirectoryUser,
-  lookupResource,
-  lookupTicket,
-  reconcileSandboxEffectiveStates,
-  restoreAccessBaseline,
-  restoreExpiredAccessBaseline,
+  createShare,
+  getCurrentShares,
+  lookupAgreement,
+  lookupDataset,
+  lookupRecipient,
+  reconcileSandboxShareStates,
+  restoreExpiredShareBaseline,
+  restoreShareBaseline,
   StaleGrantError,
-  verifyAccess,
+  verifyShare,
 } from "./tools.js";
 
 export class WorkflowConflictError extends Error {
@@ -127,21 +128,21 @@ function completeTrustedContextPlan(
   const trusted: ContextToolCall[] = [];
   for (const call of calls) {
     if (trusted.some((item) => item.name === call.name)) continue;
-    if (call.name === "directory.lookup") {
+    if (call.name === "recipient.lookup") {
       trusted.push({
         name: call.name,
         arguments: { subjectEmail: request.subjectEmail },
         source: call.source,
         sanitized: call.sanitized || call.arguments.subjectEmail !== request.subjectEmail,
       });
-    } else if (call.name === "resource.lookup") {
+    } else if (call.name === "dataset.lookup") {
       trusted.push({
         name: call.name,
         arguments: { resourceId: request.resourceId },
         source: call.source,
         sanitized: call.sanitized || call.arguments.resourceId !== request.resourceId,
       });
-    } else if (call.name === "access.current") {
+    } else if (call.name === "share.current") {
       trusted.push({
         name: call.name,
         arguments: { subjectEmail: request.subjectEmail, resourceId: request.resourceId },
@@ -151,7 +152,7 @@ function completeTrustedContextPlan(
           call.arguments.subjectEmail !== request.subjectEmail ||
           call.arguments.resourceId !== request.resourceId,
       });
-    } else if (call.name === "ticket.lookup" && request.ticketId) {
+    } else if (call.name === "agreement.lookup" && request.ticketId) {
       trusted.push({
         name: call.name,
         arguments: { ticketId: request.ticketId },
@@ -161,25 +162,25 @@ function completeTrustedContextPlan(
     }
   }
 
-  if (!trusted.some((item) => item.name === "directory.lookup")) {
+  if (!trusted.some((item) => item.name === "recipient.lookup")) {
     trusted.push({
-      name: "directory.lookup",
+      name: "recipient.lookup",
       arguments: { subjectEmail: request.subjectEmail },
       source: "mandatory",
       sanitized: false,
     });
   }
-  if (!trusted.some((item) => item.name === "resource.lookup")) {
+  if (!trusted.some((item) => item.name === "dataset.lookup")) {
     trusted.push({
-      name: "resource.lookup",
+      name: "dataset.lookup",
       arguments: { resourceId: request.resourceId },
       source: "mandatory",
       sanitized: false,
     });
   }
-  if (!trusted.some((item) => item.name === "access.current")) {
+  if (!trusted.some((item) => item.name === "share.current")) {
     trusted.push({
-      name: "access.current",
+      name: "share.current",
       arguments: { subjectEmail: request.subjectEmail, resourceId: request.resourceId },
       source: "mandatory",
       sanitized: false,
@@ -231,7 +232,7 @@ export class WorkflowService {
       makeAuditEvent(workflow, {
         type: "workflow.created",
         actor: "requester",
-        message: "Access request accepted into the GrantGuard safety workflow.",
+        message: "External data-release request accepted into the ReleaseProof safety workflow.",
         data: {
           scenarioId: input.scenarioId ?? null,
           hasImage: Boolean(input.imageDataUrl),
@@ -272,7 +273,7 @@ export class WorkflowService {
     const workflow = await this.commit(id, {
       type: "approval.approved",
       actor: "approver",
-      message: `${approver} approved the constrained access change.`,
+      message: `${approver} approved the minimized external release.`,
       data: { approver, note: note ?? null, idempotencyKey: idempotencyKey ?? null },
       expectedStatuses: ["awaiting_approval"],
       mutate: (draft) => {
@@ -293,7 +294,7 @@ export class WorkflowService {
     return this.commit(id, {
       type: "approval.rejected",
       actor: "approver",
-      message: `${approver} rejected the proposed access change. No IAM write occurred.`,
+      message: `${approver} rejected the proposed release. No external share was created.`,
       data: { approver, note: note ?? null, idempotencyKey: idempotencyKey ?? null },
       expectedStatuses: ["awaiting_approval"],
       mutate: (draft) => {
@@ -303,14 +304,14 @@ export class WorkflowService {
     });
   }
 
-  async rollback(id: string, actor: string, note?: string, idempotencyKey?: string): Promise<Workflow> {
+  async recall(id: string, actor: string, note?: string, idempotencyKey?: string): Promise<Workflow> {
     const current = await this.getWorkflow(id);
     if (["rolling_back", "rolled_back"].includes(current.status)) return current;
     if (!current.grant) {
-      throw new WorkflowConflictError("This workflow did not create a grant, so there is nothing to roll back", current.status);
+      throw new WorkflowConflictError("This workflow did not create a share, so there is nothing to recall", current.status);
     }
     try {
-      assertSandboxGrantIsCurrent(current.grant.grantId);
+      assertSandboxShareIsCurrent(current.grant.grantId);
     } catch (error) {
       if (error instanceof StaleGrantError) {
         throw new WorkflowConflictError(error.message, current.status);
@@ -318,9 +319,9 @@ export class WorkflowService {
       throw error;
     }
     const workflow = await this.commit(id, {
-      type: "rollback.requested",
+      type: "recall.requested",
       actor: "approver",
-      message: `${actor} requested immediate rollback of the temporary grant.`,
+      message: `${actor} requested immediate recall of the temporary share.`,
       data: { actor, note: note ?? null, idempotencyKey: idempotencyKey ?? null },
       expectedStatuses: ["completed", "failed"],
       mutate: (draft) => {
@@ -329,6 +330,11 @@ export class WorkflowService {
     });
     this.scheduleRollback(id);
     return workflow;
+  }
+
+  // Compatibility alias for older clients; new product surfaces call this action "recall".
+  async rollback(id: string, actor: string, note?: string, idempotencyKey?: string): Promise<Workflow> {
+    return this.recall(id, actor, note, idempotencyKey);
   }
 
   subscribe(workflowId: string, listener: (event: AuditEvent, workflow: Workflow) => void): () => void {
@@ -360,6 +366,7 @@ export class WorkflowService {
       byStatus,
       completionRate: round(workflows.length ? completed / workflows.length : 0),
       approvalRate: round(decisions.length ? approvals / decisions.length : 0),
+      recallRate: round(approvals ? rolledBack / approvals : 0),
       rollbackRate: round(approvals ? rolledBack / approvals : 0),
       denialRate: round(decisions.length ? denied / decisions.length : 0),
       averageTimeToDecisionMs: round(
@@ -410,7 +417,7 @@ export class WorkflowService {
     let workflow = await this.commit(id, {
       type: "extraction.started",
       actor: "system",
-      message: "Parsing untrusted request content into a validated access-request schema.",
+      message: "Parsing untrusted request content into a validated external-release schema.",
       expectedStatuses: ["queued"],
       mutate: (draft) => {
         draft.status = "extracting";
@@ -428,8 +435,8 @@ export class WorkflowService {
       actor: workflow.model.mode === "live-qwen" ? "qwen" : "system",
       message:
         workflow.model.mode === "live-qwen"
-          ? "Qwen produced structured request fields; Zod validation succeeded."
-          : "Recorded-demo fixture produced structured request fields; no live model call was made.",
+          ? "Qwen produced structured recipient, dataset, purpose, tier, field, duration, and agreement fields; Zod validation succeeded."
+          : "Recorded-demo fixture produced structured release fields; no live model call was made.",
       data: {
         confidence: extraction.request.confidence,
         source: extraction.request.source,
@@ -465,7 +472,7 @@ export class WorkflowService {
         draft.toolPlan = [
           ...contextPlan.map((call) => call.name),
           "policy.evaluate",
-          "access.diff",
+          "release.diff",
           "human.approval",
         ];
         draft.status = "enriching_context";
@@ -474,44 +481,45 @@ export class WorkflowService {
 
     let directoryUser: DirectoryUser | null = null;
     let resource: ResourceProfile | null = null;
+    let agreementEvidence: TicketEvidence | null = null;
     let currentAccess = workflow.currentAccess;
     for (const call of contextPlan) {
-      if (call.name === "directory.lookup") {
+      if (call.name === "recipient.lookup") {
         directoryUser = await this.runTool(
           id,
           call.name,
           call.arguments,
-          () => lookupDirectoryUser(call.arguments.subjectEmail),
+          () => lookupRecipient(call.arguments.subjectEmail),
           (draft, result) => {
             draft.directoryUser = result ?? undefined;
           },
         );
-      } else if (call.name === "resource.lookup") {
+      } else if (call.name === "dataset.lookup") {
         resource = await this.runTool(
           id,
           call.name,
           call.arguments,
-          () => lookupResource(call.arguments.resourceId),
+          () => lookupDataset(call.arguments.resourceId),
           (draft, result) => {
             draft.resource = result ?? undefined;
           },
         );
-      } else if (call.name === "access.current") {
+      } else if (call.name === "share.current") {
         currentAccess = await this.runTool(
           id,
           call.name,
           call.arguments,
-          () => getCurrentAccess(call.arguments.subjectEmail, call.arguments.resourceId),
+          () => getCurrentShares(call.arguments.subjectEmail, call.arguments.resourceId),
           (draft, result) => {
             draft.currentAccess = result;
           },
         );
-      } else if (call.name === "ticket.lookup") {
-        await this.runTool(
+      } else if (call.name === "agreement.lookup") {
+        agreementEvidence = await this.runTool(
           id,
           call.name,
           call.arguments,
-          () => lookupTicket(call.arguments.ticketId),
+          () => lookupAgreement(call.arguments.ticketId),
           (draft, result) => {
             draft.ticketEvidence = result ?? undefined;
           },
@@ -523,7 +531,7 @@ export class WorkflowService {
     await this.commit(id, {
       type: "policy.started",
       actor: "policy-engine",
-      message: "Running fail-closed deterministic authorization policy.",
+      message: "Running fail-closed deterministic external-release policy.",
       expectedStatuses: ["enriching_context"],
       mutate: (draft) => {
         draft.status = "evaluating_policy";
@@ -532,8 +540,15 @@ export class WorkflowService {
     const decision = await this.runTool(
       id,
       "policy.evaluate",
-      { policyInput: "validated-request+directory+resource+current-access" },
-      async () => evaluatePolicy({ request: extracted, user: directoryUser, resource, currentAccess }),
+      { policyInput: "validated-release+recipient+dataset+agreement+current-shares" },
+      async () =>
+        evaluatePolicy({
+          request: extracted,
+          user: directoryUser,
+          resource,
+          agreement: agreementEvidence,
+          currentAccess,
+        }),
       (draft, result) => {
         draft.decision = result;
       },
@@ -544,7 +559,7 @@ export class WorkflowService {
       await this.commit(id, {
         type: "policy.denied",
         actor: "policy-engine",
-        message: "Deterministic policy vetoed the request. Approval and IAM execution are disabled.",
+        message: "Deterministic release policy vetoed the request. Approval and external sharing are disabled.",
         data: { risk: decision.risk, score: decision.score, policyVersion: decision.policyVersion },
         expectedStatuses: ["evaluating_policy"],
         mutate: (draft) => {
@@ -556,9 +571,9 @@ export class WorkflowService {
 
     const diff = await this.runTool(
       id,
-      "access.diff",
+      "release.diff",
       { subjectEmail: extracted.subjectEmail, resourceId: extracted.resourceId },
-      async () => calculateAccessDiff({ request: extracted, decision, currentAccess }),
+      async () => calculateReleaseDiff({ request: extracted, decision, currentAccess }),
       (draft, result) => {
         draft.diff = result;
         draft.proposedExpiresAt = result.after.expiresAt;
@@ -567,7 +582,7 @@ export class WorkflowService {
     await this.commit(id, {
       type: "approval.required",
       actor: "system",
-      message: "Least-privilege proposal is ready and paused at the mandatory human approval gate.",
+      message: "Field-minimized release is ready and paused at the mandatory human approval gate.",
       data: {
         risk: decision.risk,
         effectiveRole: decision.effectiveRole,
@@ -585,7 +600,7 @@ export class WorkflowService {
     let workflow = await this.commit(id, {
       type: "execution.started",
       actor: "system",
-      message: "Approval gate satisfied. Executing the exact reviewed diff in the IAM sandbox.",
+      message: "Approval gate satisfied. Creating the exact reviewed share in the release sandbox.",
       expectedStatuses: ["approved"],
       mutate: (draft) => {
         draft.status = "executing";
@@ -603,13 +618,13 @@ export class WorkflowService {
 
     const executionBaseline = await this.runTool(
       id,
-      "access.current",
+      "share.current",
       {
         subjectEmail: extractedRequest.subjectEmail,
         resourceId: extractedRequest.resourceId,
         phase: "pre-execution-baseline",
       },
-      () => getCurrentAccess(extractedRequest.subjectEmail, extractedRequest.resourceId),
+      () => getCurrentShares(extractedRequest.subjectEmail, extractedRequest.resourceId),
       () => undefined,
     );
     workflow = await this.getWorkflow(id);
@@ -617,7 +632,7 @@ export class WorkflowService {
       await this.commit(id, {
         type: "execution.stale_baseline",
         actor: "system",
-        message: "Execution stopped because effective access changed after the proposal was reviewed.",
+        message: "Execution stopped because the recipient's effective shares changed after the proposal was reviewed.",
         data: {
           reviewedGrantIds: reviewedBaseline.map((grant) => grant.grantId),
           executionGrantIds: executionBaseline.map((grant) => grant.grantId),
@@ -627,7 +642,7 @@ export class WorkflowService {
           draft.status = "failed";
           draft.error = {
             code: "STALE_APPROVAL_BASELINE",
-            message: "Access changed after approval; create and approve a fresh proposal.",
+            message: "Share state changed after approval; create and approve a fresh release proposal.",
             retryable: true,
           };
         },
@@ -649,13 +664,13 @@ export class WorkflowService {
       await this.commit(id, {
         type: "execution.noop",
         actor: "system",
-        message: "Existing access already matches the reviewed proposal; no duplicate IAM grant was created.",
+        message: "An existing share already matches the reviewed release; no duplicate share was created.",
         expectedStatuses: ["executing"],
         mutate: (draft) => {
           draft.status = "verifying";
         },
       });
-      const verification = await verifyAccess({
+      const verification = await verifyShare({
         subjectEmail: extractedRequest.subjectEmail,
         resourceId: extractedRequest.resourceId,
         expected: {
@@ -684,7 +699,7 @@ export class WorkflowService {
 
     const granted = await this.runTool(
       id,
-      "iam.grant",
+      "share.grant",
       {
         subjectEmail: extractedRequest.subjectEmail,
         resourceId: extractedRequest.resourceId,
@@ -692,7 +707,7 @@ export class WorkflowService {
         expiresAt: reviewedDiff.after.expiresAt,
       },
       () =>
-        grantAccess({
+        createShare({
           subjectEmail: extractedRequest.subjectEmail,
           resourceId: extractedRequest.resourceId,
           role: decision.effectiveRole,
@@ -708,7 +723,7 @@ export class WorkflowService {
     workflow = await this.commit(id, {
       type: "expiry.scheduled",
       actor: "system",
-      message: `Automatic revocation scheduled for ${granted.grant.expiresAt}.`,
+      message: `Automatic recall scheduled for ${granted.grant.expiresAt}.`,
       data: {
         grantId: granted.grant.grantId,
         replacedGrantIds: granted.replacedGrants.map((grant) => grant.grantId),
@@ -724,7 +739,7 @@ export class WorkflowService {
 
     const verification = await this.runTool(
       id,
-      "iam.verify",
+      "share.verify",
       {
         grantId: granted.grant.grantId,
         expectedRole: decision.effectiveRole,
@@ -732,7 +747,7 @@ export class WorkflowService {
         expectedExpiresAt: reviewedDiff.after.expiresAt,
       },
       () =>
-        verifyAccess({
+        verifyShare({
           subjectEmail: extractedRequest.subjectEmail,
           resourceId: extractedRequest.resourceId,
           expected: {
@@ -748,15 +763,15 @@ export class WorkflowService {
     );
 
     if (!verification.verified) {
-      const restored = await restoreAccessBaseline({
+      const restored = await restoreShareBaseline({
         grantId: granted.grant.grantId,
         baseline: workflow.currentAccess,
         idempotencyKey: `workflow:${id}:verification-failure-restore:v1`,
       });
       await this.commit(id, {
-        type: "verification.failed_rollback",
+        type: "verification.failed_recall",
         actor: "system",
-        message: "Read-after-write verification failed; the new grant was immediately revoked.",
+        message: "Read-after-share verification failed; the new release was immediately recalled.",
         data: { details: verification.details },
         expectedStatuses: ["verifying"],
         mutate: (draft) => {
@@ -771,7 +786,7 @@ export class WorkflowService {
     workflow = await this.commit(id, {
       type: "workflow.completed",
       actor: "system",
-      message: "Temporary least-privilege access is active and read-after-write verification passed.",
+      message: "The temporary field-minimized share is active and read-after-share verification passed.",
       data: { grantId: granted.grant.grantId, verified: true },
       expectedStatuses: ["verifying"],
       mutate: (draft) => {
@@ -784,11 +799,11 @@ export class WorkflowService {
   private async executeRollback(id: string, expired = false): Promise<void> {
     const workflow = await this.getWorkflow(id);
     if (!workflow.grant || !workflow.extractedRequest || !workflow.diff) {
-      throw new Error("Rollback inputs are incomplete");
+      throw new Error("Recall inputs are incomplete");
     }
     const revoked = await this.runTool(
       id,
-      "iam.revoke",
+      "share.recall",
       { grantId: workflow.grant.grantId, restoreGrantIds: workflow.currentAccess.map((grant) => grant.grantId) },
       () => {
         const input = {
@@ -796,7 +811,7 @@ export class WorkflowService {
           baseline: workflow.currentAccess,
           idempotencyKey: `workflow:${id}:${expired ? "expiry" : "rollback"}:v1`,
         };
-        return expired ? restoreExpiredAccessBaseline(input) : restoreAccessBaseline(input);
+        return expired ? restoreExpiredShareBaseline(input) : restoreShareBaseline(input);
       },
       (draft, result) => {
         draft.grant = result.revokedGrant;
@@ -806,7 +821,7 @@ export class WorkflowService {
       (grant) => grant.status === "active" && new Date(grant.expiresAt).getTime() > Date.now(),
     );
     if (baseline.length > 1) {
-      throw new Error("Rollback baseline contains multiple active grants and cannot satisfy the unique-state invariant");
+      throw new Error("Recall baseline contains multiple active shares and cannot satisfy the unique-state invariant");
     }
     const expectedBaseline = baseline[0]
       ? {
@@ -818,7 +833,7 @@ export class WorkflowService {
       : null;
     const verification = await this.runTool(
       id,
-      "iam.verify",
+      "share.verify",
       {
         grantId: workflow.grant.grantId,
         expectedRole: expectedBaseline?.role ?? null,
@@ -826,7 +841,7 @@ export class WorkflowService {
         expectedExpiresAt: expectedBaseline?.expiresAt ?? null,
       },
       () =>
-        verifyAccess({
+        verifyShare({
           subjectEmail: workflow.extractedRequest!.subjectEmail,
           resourceId: workflow.extractedRequest!.resourceId,
           expected: expectedBaseline,
@@ -836,11 +851,11 @@ export class WorkflowService {
       },
     );
     await this.commit(id, {
-      type: "rollback.completed",
+      type: "recall.completed",
       actor: "system",
       message: verification.verified
-        ? "Rollback verified: the temporary grant is revoked and the previous access state is restored."
-        : "Rollback write completed, but verification did not match the previous state.",
+        ? "Recall verified: the temporary share is revoked and the previous release state is restored."
+        : "Recall completed, but verification did not match the previous release state.",
       data: {
         grantId: revoked.revokedGrant.grantId,
         restoredGrantIds: revoked.restoredGrants.map((grant) => grant.grantId),
@@ -950,7 +965,7 @@ export class WorkflowService {
       await this.commit(id, {
         type: "workflow.failed",
         actor: "system",
-        message: "The workflow failed closed; no further write action will run automatically.",
+        message: "The workflow failed closed; no further release action will run automatically.",
         data: { error: (error as Error).message },
         mutate: (draft) => {
           draft.status = "failed";
@@ -992,7 +1007,7 @@ export class WorkflowService {
       await this.commit(id, {
         type: "expiry.reached",
         actor: "system",
-        message: "The temporary access window expired; automatic rollback started.",
+        message: "The temporary release window expired; automatic recall started.",
         expectedStatuses: ["completed"],
         mutate: (draft) => {
           draft.status = "rolling_back";
@@ -1033,7 +1048,7 @@ export class WorkflowService {
         (grant) => grant.status === "active" && new Date(grant.expiresAt).getTime() > now,
       );
       // Legacy append-only stores may contain multiple active snapshots. Never
-      // recreate that unsafe union on boot; fail closed to no access instead.
+      // recreate that unsafe union on boot; fail closed to no external share instead.
       const uniqueBaseline = baseline.length === 1 ? baseline[0]! : null;
       const completedGrant =
         workflow.status === "completed" &&
@@ -1049,7 +1064,7 @@ export class WorkflowService {
         grant: desired ? structuredClone(desired) : null,
       });
     }
-    reconcileSandboxEffectiveStates([...finalByTarget.values()]);
+    reconcileSandboxShareStates([...finalByTarget.values()]);
 
     for (const workflow of workflows) {
       if (workflow.status === "queued") this.schedulePreApproval(workflow.id);
@@ -1081,7 +1096,7 @@ export class WorkflowService {
             expiresAt: baseline[0]!.expiresAt,
           }
         : null;
-    const verification = await verifyAccess({
+    const verification = await verifyShare({
       subjectEmail: workflow.extractedRequest.subjectEmail,
       resourceId: workflow.extractedRequest.resourceId,
       expected,
@@ -1090,8 +1105,8 @@ export class WorkflowService {
       type: "expiry.recovered_on_restart",
       actor: "system",
       message: verification.verified
-        ? "The grant expired while the service was offline; the reconciled baseline was verified."
-        : "The grant expired while offline, but baseline verification failed closed.",
+        ? "The share expired while the service was offline; the reconciled baseline was verified."
+        : "The share expired while offline, but baseline verification failed closed.",
       data: { grantId: workflow.grant.grantId, verified: verification.verified },
       expectedStatuses: ["completed"],
       mutate: (draft) => {

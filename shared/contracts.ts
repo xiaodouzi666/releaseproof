@@ -50,28 +50,30 @@ export interface DirectoryUser {
   id: string;
   email: string;
   displayName: string;
-  department: string;
-  managerEmail: string;
-  employmentType: "employee" | "contractor";
+  organization: string;
+  relationship: "processor" | "partner" | "contractor";
   active: boolean;
-  mfaEnrolled: boolean;
+  verified: boolean;
+  agreementRequired: boolean;
   clearance: "standard" | "confidential" | "restricted";
 }
 
 export interface ResourceProfile {
   id: string;
   name: string;
-  environment: "development" | "staging" | "production";
+  environment: "analytics" | "operational" | "regulated";
   classification: "internal" | "confidential" | "restricted";
   ownerEmail: string;
   allowedRoles: Array<ExtractedAccessRequest["requestedRole"]>;
+  containsDirectIdentifiers: boolean;
 }
 
 export interface TicketEvidence {
   ticketId: string;
   title: string;
-  status: "open" | "in_progress" | "closed";
+  status: "active" | "expired" | "draft";
   ownerEmail: string;
+  recipientEmail: string;
   referenceOnly: true;
 }
 
@@ -123,15 +125,15 @@ export interface AccessDiff {
 export interface ToolTrace {
   id: string;
   name:
-    | "directory.lookup"
-    | "resource.lookup"
-    | "access.current"
-    | "ticket.lookup"
+    | "recipient.lookup"
+    | "dataset.lookup"
+    | "share.current"
+    | "agreement.lookup"
     | "policy.evaluate"
-    | "access.diff"
-    | "iam.grant"
-    | "iam.verify"
-    | "iam.revoke";
+    | "release.diff"
+    | "share.grant"
+    | "share.verify"
+    | "share.recall";
   status: "running" | "succeeded" | "failed";
   startedAt: string;
   finishedAt?: string;
@@ -221,7 +223,7 @@ export interface WorkflowListResponse {
 
 export interface HealthResponse {
   status: "ok" | "degraded";
-  service: "grantguard-api";
+  service: "releaseproof-api";
   version: string;
   deploymentTarget: string;
   timestamp: string;
@@ -236,6 +238,8 @@ export interface MetricsResponse {
   byStatus: Partial<Record<WorkflowStatus, number>>;
   completionRate: number;
   approvalRate: number;
+  recallRate: number;
+  /** @deprecated Compatibility field for the pre-pivot frontend. */
   rollbackRate: number;
   denialRate: number;
   averageTimeToDecisionMs: number;

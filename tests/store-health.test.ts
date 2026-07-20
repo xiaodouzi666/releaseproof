@@ -7,21 +7,24 @@ import { createApp } from "../server/app.js";
 
 const previousAuditStore = process.env.AUDIT_STORE;
 const previousDataFile = process.env.GRANTGUARD_DATA_FILE;
+const previousReleaseProofDataFile = process.env.RELEASEPROOF_DATA_FILE;
 
 afterEach(() => {
   if (previousAuditStore === undefined) delete process.env.AUDIT_STORE;
   else process.env.AUDIT_STORE = previousAuditStore;
   if (previousDataFile === undefined) delete process.env.GRANTGUARD_DATA_FILE;
   else process.env.GRANTGUARD_DATA_FILE = previousDataFile;
+  if (previousReleaseProofDataFile === undefined) delete process.env.RELEASEPROOF_DATA_FILE;
+  else process.env.RELEASEPROOF_DATA_FILE = previousReleaseProofDataFile;
   vi.restoreAllMocks();
 });
 
 describe("audit-store health", () => {
   it("reports degraded without leaking paths and blocks mutations when file persistence is unavailable", async () => {
-    const directory = await mkdtemp(join(tmpdir(), "grantguard-unwritable-store-"));
+    const directory = await mkdtemp(join(tmpdir(), "releaseproof-unwritable-store-"));
     process.env.AUDIT_STORE = "file";
     // Passing a directory as the data file makes initialization fail on every platform.
-    process.env.GRANTGUARD_DATA_FILE = directory;
+    process.env.RELEASEPROOF_DATA_FILE = directory;
     vi.spyOn(console, "error").mockImplementation(() => undefined);
 
     try {
@@ -40,7 +43,7 @@ describe("audit-store health", () => {
 
       const mutation = await request(app)
         .post("/api/workflows")
-        .send({ scenarioId: "developer-staging-deploy" })
+        .send({ scenarioId: "existing-aggregate-share" })
         .expect(503);
       expect(mutation.body.error.code).toBe("STORE_UNAVAILABLE");
     } finally {

@@ -5,7 +5,7 @@ import "./styles.css";
 
 const root = document.getElementById("root");
 
-if (!root) throw new Error("GrantGuard root element was not found");
+if (!root) throw new Error("ReleaseProof root element was not found");
 
 createRoot(root).render(
   <StrictMode>

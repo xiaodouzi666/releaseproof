@@ -34,7 +34,17 @@ import {
   X,
   XCircle,
 } from "lucide-react";
-import { compactId, formatDateTime, formatDuration, formatStatus, relativeTime, sentenceCase } from "../format";
+import {
+  compactId,
+  formatDateTime,
+  formatDuration,
+  formatReleaseAction,
+  formatReleaseProfile,
+  formatStatus,
+  relativeTime,
+  releaseLanguage,
+  sentenceCase,
+} from "../format";
 import type { PermissionChange, TimelineEvent, Workflow, WorkflowStatus } from "../types";
 
 interface WorkflowDashboardProps {
@@ -68,13 +78,13 @@ const statusOrder: WorkflowStatus[] = [
 ];
 
 const stages = [
-  { label: "Intake", detail: "Captured", icon: FileCheck2 },
-  { label: "Understand", detail: "Qwen extract", icon: Sparkles },
-  { label: "Constrain", detail: "Policy engine", icon: Scale },
-  { label: "Approve", detail: "Human gate", icon: UserCheck },
-  { label: "Execute", detail: "Sandbox IAM", icon: KeyRound },
-  { label: "Verify", detail: "Read after write", icon: Fingerprint },
-  { label: "Expire", detail: "Auto-revoke", icon: TimerReset },
+  { label: "Intake", detail: "Brief captured", icon: FileCheck2 },
+  { label: "Interpret", detail: "Qwen intent", icon: Sparkles },
+  { label: "Minimize", detail: "Release policy", icon: Scale },
+  { label: "Authorize", detail: "Owner gate", icon: UserCheck },
+  { label: "Release", detail: "Sandbox share", icon: KeyRound },
+  { label: "Prove", detail: "Read actual manifest", icon: Fingerprint },
+  { label: "Recall", detail: "Expiry + recall", icon: TimerReset },
 ];
 
 function currentStage(workflow: Workflow): number {
@@ -86,10 +96,10 @@ function currentStage(workflow: Workflow): number {
   if (status === "rejected") return 3;
   if (status === "failed") {
     const evidence = workflow.timeline.map((event) => `${event.type} ${event.tool ?? ""}`).join(" ").toLowerCase();
-    if (evidence.includes("rollback") || evidence.includes("iam.revoke")) return 6;
-    if (evidence.includes("verification") || evidence.includes("iam.verify")) return 5;
-    if (evidence.includes("execution") || evidence.includes("iam.grant")) return 4;
-    if (evidence.includes("policy") || evidence.includes("access.diff")) return 2;
+    if (evidence.includes("rollback") || evidence.includes("recall") || evidence.includes("iam.revoke") || evidence.includes("share.recall")) return 6;
+    if (evidence.includes("verification") || evidence.includes("iam.verify") || evidence.includes("share.verify") || evidence.includes("release.prove")) return 5;
+    if (evidence.includes("execution") || evidence.includes("iam.grant") || evidence.includes("share.grant") || evidence.includes("share.create")) return 4;
+    if (evidence.includes("policy") || evidence.includes("access.diff") || evidence.includes("release.diff") || evidence.includes("manifest.diff")) return 2;
     return 1;
   }
   const index = statusOrder.indexOf(status);
@@ -148,7 +158,7 @@ function SummaryCard({ workflow }: { workflow: Workflow }) {
     return (
       <section className="console-card summary-card" aria-labelledby="summary-title">
         <div className="card-heading">
-          <div><span className="card-kicker">Normalized request</span><h3 id="summary-title">Extracting intent</h3></div>
+          <div><span className="card-kicker">Normalized release</span><h3 id="summary-title">Extracting release intent</h3></div>
           <LoaderCircle size={18} className="spin muted-icon" />
         </div>
         <div className="summary-skeleton">
@@ -163,35 +173,35 @@ function SummaryCard({ workflow }: { workflow: Workflow }) {
   return (
     <section className="console-card summary-card" aria-labelledby="summary-title">
       <div className="card-heading">
-        <div><span className="card-kicker">Normalized request</span><h3 id="summary-title">Intent, not raw prose</h3></div>
+        <div><span className="card-kicker">Normalized release</span><h3 id="summary-title">Release intent, not raw prose</h3></div>
         {confidence !== undefined ? <span className="confidence-badge">{confidence}% confidence</span> : null}
       </div>
       <div className="identity-line">
         <span className="identity-avatar"><UserRoundCheck size={19} /></span>
         <span>
-          <strong>{asString(directory.displayName, request.requester)}</strong>
-          <small>{asString(directory.department, request.requesterRole || "Identity directory match")}</small>
+          <strong>{releaseLanguage(asString(directory.displayName, request.requester))}</strong>
+          <small>{releaseLanguage(asString(directory.organization, asString(directory.department, request.requesterRole || "Vendor registry match")))}</small>
         </span>
-        {directory.mfaEnrolled === true ? <span className="verified-chip"><ShieldCheck size={12} /> MFA</span> : null}
+        {directory.verified === true || directory.mfaEnrolled === true ? <span className="verified-chip"><ShieldCheck size={12} /> VERIFIED</span> : null}
       </div>
       <dl className="request-facts">
-        <div><dt>Subject</dt><dd>{asString(extracted.subjectEmail, request.requester)}</dd></div>
-        <div><dt>Resource</dt><dd>{asString(resource.name, request.resource)}</dd></div>
-        <div><dt>Requested role</dt><dd className="mono-value">{request.accessLevel}</dd></div>
-        <div><dt>Time window</dt><dd>{request.duration}</dd></div>
-        <div className="fact-wide"><dt>Business reason</dt><dd>{request.reason}</dd></div>
+        <div><dt>Vendor recipient</dt><dd>{releaseLanguage(asString(extracted.subjectEmail, request.requester))}</dd></div>
+        <div><dt>Dataset</dt><dd>{releaseLanguage(asString(resource.name, request.resource))}</dd></div>
+        <div><dt>Release profile</dt><dd className="mono-value">{formatReleaseProfile(request.accessLevel)}</dd></div>
+        <div><dt>Release window</dt><dd>{request.duration}</dd></div>
+        <div className="fact-wide"><dt>Declared purpose</dt><dd>{releaseLanguage(request.reason)}</dd></div>
         {Object.keys(ticket).length ? (
           <div className="fact-wide">
-            <dt>Ticket evidence</dt>
+            <dt>Data-sharing agreement</dt>
             <dd>
               <span className="mono-value">{asString(ticket.ticketId)}</span>
-              {` · ${asString(ticket.title, "Reference located")} · ${sentenceCase(asString(ticket.status, "unknown"))} · reference only`}
+              {` · ${releaseLanguage(asString(ticket.title, "Reference located"))} · ${sentenceCase(asString(ticket.status, "unknown"))} · context only`}
             </dd>
           </div>
         ) : null}
       </dl>
       <div className="summary-foot">
-        <span><Database size={13} /> {asString(resource.environment, request.environment || "Resource context pending")}</span>
+        <span><Database size={13} /> {releaseLanguage(asString(resource.environment, request.environment || "Dataset context pending"))}</span>
         <span><FileCheck2 size={13} /> {asString(extracted.source, request.source || "text")}</span>
       </div>
     </section>
@@ -203,15 +213,15 @@ function RiskCard({ workflow }: { workflow: Workflow }) {
   if (!risk) {
     return (
       <section className="console-card risk-card" aria-labelledby="risk-title">
-        <div className="card-heading"><div><span className="card-kicker">Risk posture</span><h3 id="risk-title">Evaluating controls</h3></div></div>
-        <div className="risk-pending"><Gauge size={28} /><span>Deterministic checks are running.</span></div>
+        <div className="card-heading"><div><span className="card-kicker">Release risk</span><h3 id="risk-title">Evaluating controls</h3></div></div>
+        <div className="risk-pending"><Gauge size={28} /><span>Deterministic release checks are running.</span></div>
       </section>
     );
   }
   const style = { "--risk-angle": `${risk.score * 3.6}deg` } as CSSProperties;
   return (
     <section className={`console-card risk-card risk-card--${risk.level}`} aria-labelledby="risk-title">
-      <div className="card-heading"><div><span className="card-kicker">Risk posture</span><h3 id="risk-title">{sentenceCase(risk.level)} risk</h3></div><ShieldAlert size={18} /></div>
+      <div className="card-heading"><div><span className="card-kicker">Release risk</span><h3 id="risk-title">{sentenceCase(risk.level)} risk</h3></div><ShieldAlert size={18} /></div>
       <div className="risk-body">
         <div className="risk-gauge" style={style} aria-label={`Risk score ${risk.score} out of 100`}>
           <div><strong>{risk.score}</strong><small>/ 100</small></div>
@@ -219,21 +229,21 @@ function RiskCard({ workflow }: { workflow: Workflow }) {
         <div className="risk-copy">
           <strong>
             {workflow.status === "denied"
-              ? "Policy blocks execution"
+              ? "Policy blocks delivery"
               : workflow.approval?.status === "approved"
-                ? "Human approval recorded"
+                ? "Data owner approval recorded"
                 : workflow.approval?.status === "rejected"
-                  ? "Human reviewer rejected"
+                  ? "Data owner rejected"
               : risk.level === "critical" || risk.level === "high"
-                ? "Human decision required"
-                : "Guardrails still apply"}
+                ? "Owner decision required"
+                : "Release controls still apply"}
           </strong>
-          <p>{risk.reasons[0] || "Risk score is derived from identity, resource, scope, and duration."}</p>
+          <p>{releaseLanguage(risk.reasons[0] || "Risk score is derived from recipient, dataset, field scope, and duration.")}</p>
         </div>
       </div>
       {risk.reasons.length > 1 ? (
         <ul className="risk-reasons">
-          {risk.reasons.slice(1, 4).map((reason) => <li key={reason}>{reason}</li>)}
+          {risk.reasons.slice(1, 4).map((reason) => <li key={reason}>{releaseLanguage(reason)}</li>)}
         </ul>
       ) : null}
     </section>
@@ -259,7 +269,7 @@ function AgentTimeline({ workflow }: { workflow: Workflow }) {
   return (
     <section className="console-card timeline-card" aria-labelledby="timeline-title">
       <div className="card-heading card-heading--rule">
-        <div><span className="card-kicker">Agent + tool trace</span><h3 id="timeline-title">What happened, in order</h3></div>
+        <div><span className="card-kicker">Autopilot + evidence trace</span><h3 id="timeline-title">What happened, in order</h3></div>
         <span className="event-count">{events.length} events</span>
       </div>
       {events.length ? (
@@ -275,13 +285,13 @@ function AgentTimeline({ workflow }: { workflow: Workflow }) {
               <span className="timeline-marker"><TimelineIcon event={event} /></span>
               <div className="timeline-content">
                 <div className="timeline-title-row">
-                  <strong>{event.title}</strong>
+                  <strong>{releaseLanguage(event.title)}</strong>
                   <time dateTime={event.timestamp}>{relativeTime(event.timestamp)}</time>
                 </div>
-                {event.message ? <p>{event.message}</p> : null}
+                {event.message ? <p>{releaseLanguage(event.message)}</p> : null}
                 <div className="timeline-meta">
-                  {event.actor ? <span>{event.actor}</span> : null}
-                  {event.tool ? <code>{event.tool}</code> : null}
+                  {event.actor ? <span>{releaseLanguage(event.actor)}</span> : null}
+                  {event.tool ? <code>{releaseLanguage(event.tool)}</code> : null}
                   {event.durationMs !== undefined ? <span>{formatDuration(event.durationMs)}</span> : null}
                   <span className="sequence-chip">#{String(index + 1).padStart(2, "0")}</span>
                 </div>
@@ -304,7 +314,7 @@ function AgentTimeline({ workflow }: { workflow: Workflow }) {
         <div className="timeline-empty">
           <Activity size={25} />
           <strong>Waiting for the first trace</strong>
-          <span>Agent steps and deterministic tool calls appear here.</span>
+          <span>Qwen interpretation and deterministic release tools appear here.</span>
         </div>
       )}
     </section>
@@ -326,14 +336,14 @@ function PermissionDiffCard({ workflow }: { workflow: Workflow }) {
   return (
     <section className="console-card diff-card" aria-labelledby="diff-title">
       <div className="card-heading card-heading--rule">
-        <div><span className="card-kicker">Least-privilege compiler</span><h3 id="diff-title">Permission diff</h3></div>
-        {changes.length ? <span className="diff-count">{changes.filter((item) => item.action === "add").length} add · {changes.filter((item) => item.action === "remove").length} remove</span> : null}
+        <div><span className="card-kicker">Data minimization compiler</span><h3 id="diff-title">Release manifest diff</h3></div>
+        {changes.length ? <span className="diff-count">{changes.filter((item) => item.action === "add").length} include · {changes.filter((item) => item.action === "remove").length} exclude</span> : null}
       </div>
       {Object.keys(rawDiff).length ? (
         <div className="diff-overview">
-          <div><span>Before</span><strong>{asString(before.role, "No access")}</strong></div>
+          <div><span>Active</span><strong>{formatReleaseProfile(asString(before.role, "No access"))}</strong></div>
           <ChevronRight size={18} />
-          <div><span>Proposed</span><strong>{asString(after.role, "Pending")}</strong></div>
+          <div><span>Proposed</span><strong>{formatReleaseProfile(asString(after.role, "Pending"))}</strong></div>
         </div>
       ) : null}
       {changes.length ? (
@@ -342,17 +352,17 @@ function PermissionDiffCard({ workflow }: { workflow: Workflow }) {
             <li className={`diff-item diff-item--${change.action}`} key={change.id}>
               <span className="diff-symbol"><DiffIcon action={change.action} /></span>
               <span className="diff-copy">
-                <strong>{change.permission}</strong>
-                <small>{change.scope || change.reason || (change.action === "keep" ? "Already satisfied" : "Minimum required scope")}</small>
+                <strong>{formatReleaseAction(change.permission)}</strong>
+                <small>{releaseLanguage(change.scope || change.reason || (change.action === "keep" ? "Already in active manifest" : "Minimum required data scope"))}</small>
               </span>
-              <span className="diff-action">{change.action}</span>
+              <span className="diff-action">{{ add: "include", remove: "exclude", keep: "retain", deny: "block" }[change.action]}</span>
             </li>
           ))}
         </ul>
       ) : (
-        <div className="card-empty"><CircleDashed size={22} /><span>The minimal change set appears after policy evaluation.</span></div>
+        <div className="card-empty"><CircleDashed size={22} /><span>The field-minimized manifest appears after policy evaluation.</span></div>
       )}
-      {asString(rawDiff.summary, "") ? <p className="diff-summary">{asString(rawDiff.summary)}</p> : null}
+      {asString(rawDiff.summary, "") ? <p className="diff-summary">{releaseLanguage(asString(rawDiff.summary))}</p> : null}
     </section>
   );
 }
@@ -360,11 +370,11 @@ function PermissionDiffCard({ workflow }: { workflow: Workflow }) {
 function PolicyCard({ workflow }: { workflow: Workflow }) {
   const raw = asRecord(workflow.raw);
   const decision = asRecord(raw.decision);
-  const policyVersion = asString(decision.policyVersion, "Control set pending");
+  const policyVersion = releaseLanguage(asString(decision.policyVersion, "Release controls pending"));
   return (
     <section className="console-card policy-card" aria-labelledby="policy-title">
       <div className="card-heading card-heading--rule">
-        <div><span className="card-kicker">Deterministic evidence</span><h3 id="policy-title">Policy findings</h3></div>
+        <div><span className="card-kicker">Deterministic evidence</span><h3 id="policy-title">Release-policy findings</h3></div>
         <code className="policy-version">{policyVersion}</code>
       </div>
       {workflow.policyEvidence.length ? (
@@ -374,62 +384,62 @@ function PolicyCard({ workflow }: { workflow: Workflow }) {
               <span className="finding-icon">
                 {evidence.verdict === "pass" ? <CheckCircle2 size={16} /> : evidence.verdict === "block" ? <AlertOctagon size={16} /> : <AlertTriangle size={16} />}
               </span>
-              <span><strong>{evidence.policy}</strong><small>{evidence.explanation || "Policy evidence recorded."}</small></span>
+              <span><strong>{releaseLanguage(evidence.policy)}</strong><small>{releaseLanguage(evidence.explanation || "Release-policy evidence recorded.")}</small></span>
               <em>{evidence.verdict}</em>
             </li>
           ))}
         </ul>
       ) : (
-        <div className="card-empty"><Scale size={22} /><span>Policy evidence is being assembled.</span></div>
+        <div className="card-empty"><Scale size={22} /><span>Release-policy evidence is being assembled.</span></div>
       )}
-      <div className="policy-authority"><LockKeyhole size={14} /> Application policy has final authority. Model output cannot bypass a deny.</div>
+      <div className="policy-authority"><LockKeyhole size={14} /> Application policy has final authority. Model output cannot expand the release manifest.</div>
     </section>
   );
 }
 
 function ApprovalGate({ workflow, busy, error, onAction }: Pick<WorkflowDashboardProps, "workflow" | "actionBusy" | "actionError" | "onAction"> & { busy?: WorkflowDashboardProps["actionBusy"]; error?: string }) {
-  const [approver, setApprover] = useState("Security reviewer");
+  const [approver, setApprover] = useState("Data owner reviewer");
   const [note, setNote] = useState("");
   const rawStatus = asString(asRecord(workflow.raw).status, workflow.status).toLowerCase();
   const waiting = workflow.status === "awaiting_approval";
   const policyDenied = workflow.status === "denied" || rawStatus === "denied";
 
   const heading = waiting
-    ? "A human owns this decision"
+    ? "The data owner owns this decision"
     : policyDenied
-      ? "Policy denied this request"
+      ? "Policy denied this release"
       : workflow.status === "rejected"
-        ? "Reviewer rejected this request"
+        ? "Owner rejected this release"
         : workflow.approval?.status === "approved" || ["approved", "executing", "verifying", "completed"].includes(workflow.status)
-          ? "Human approval recorded"
-          : "Approval gate is locked";
+          ? "Data owner approval recorded"
+          : "Owner gate is locked";
 
   return (
     <section className={`console-card approval-card ${waiting ? "approval-card--waiting" : ""}`} aria-labelledby="approval-title">
       <div className="approval-beacon"><UserCheck size={21} /></div>
-      <span className="card-kicker">Human-in-the-loop gate</span>
+      <span className="card-kicker">Data-owner checkpoint</span>
       <h3 id="approval-title">{heading}</h3>
       <p>
         {waiting
-          ? "Review the normalized request, policy findings, and exact permission diff. No write occurs until you decide."
+          ? "Review the normalized intent, policy findings, recipient, fields, tier, and expiry. No data is released until you decide."
           : policyDenied
-            ? "A hard policy constraint stopped execution. Human approval cannot override a deterministic deny."
-            : workflow.approval?.note || "The control plane will stop here until analysis reaches a reviewable decision."}
+            ? "A hard release constraint stopped delivery. Owner approval cannot override a deterministic deny."
+            : releaseLanguage(workflow.approval?.note || "The control plane will stop here until analysis reaches a reviewable release manifest.")}
       </p>
 
       {waiting ? (
         <div className="approval-form">
-          <label htmlFor="approver-name">Reviewer</label>
+          <label htmlFor="approver-name">Data owner</label>
           <input id="approver-name" value={approver} onChange={(event) => setApprover(event.target.value)} maxLength={100} />
           <label htmlFor="approval-note">Decision note <span>optional</span></label>
-          <textarea id="approval-note" value={note} onChange={(event) => setNote(event.target.value)} rows={3} maxLength={500} placeholder="Why is this time-bound access appropriate?" />
+          <textarea id="approval-note" value={note} onChange={(event) => setNote(event.target.value)} rows={3} maxLength={500} placeholder="Why are this recipient, purpose, fields, and expiry appropriate?" />
           {error ? <div className="compact-error" role="alert"><AlertTriangle size={14} /> {error}</div> : null}
           <div className="approval-actions">
             <button type="button" className="button button--danger" data-testid="reject-workflow" disabled={Boolean(busy)} onClick={() => onAction("reject", { approver: approver.trim() || undefined, note: note.trim() || undefined })}>
               {busy === "reject" ? <LoaderCircle className="spin" size={17} /> : <X size={17} />} Reject
             </button>
             <button type="button" className="button button--approve" data-testid="approve-workflow" disabled={Boolean(busy)} onClick={() => onAction("approve", { approver: approver.trim() || undefined, note: note.trim() || undefined })}>
-              {busy === "approve" ? <LoaderCircle className="spin" size={17} /> : <ShieldCheck size={17} />} Approve temporary grant
+              {busy === "approve" ? <LoaderCircle className="spin" size={17} /> : <ShieldCheck size={17} />} Approve data release
             </button>
           </div>
         </div>
@@ -437,7 +447,7 @@ function ApprovalGate({ workflow, busy, error, onAction }: Pick<WorkflowDashboar
         <div className="gate-status">
           {policyDenied || workflow.status === "rejected" ? <XCircle size={17} /> : workflow.approval?.status === "approved" ? <CheckCircle2 size={17} /> : <Clock3 size={17} />}
           <span>
-            <strong>{workflow.approval?.decidedBy || (policyDenied ? "Deterministic policy engine" : "Waiting on upstream steps")}</strong>
+            <strong>{releaseLanguage(workflow.approval?.decidedBy || (policyDenied ? "Deterministic release policy" : "Waiting on upstream steps"))}</strong>
             <small>{workflow.approval?.decidedAt ? formatDateTime(workflow.approval.decidedAt) : formatStatus(workflow.status)}</small>
           </span>
         </div>
@@ -466,32 +476,32 @@ function ExecutionAudit({ workflow, busy, onRollback }: { workflow: Workflow; bu
 
   const states: AuditState[] = [
     {
-      label: "Temporary grant",
-      detail: hasGrant ? `${asString(grant.role, "Scoped role")} · ${compactId(asString(grant.grantId, "grant"))}` : "Not executed",
+      label: "Temporary release",
+      detail: hasGrant ? `${formatReleaseProfile(asString(grant.role, "Scoped release"))} · ${compactId(asString(grant.grantId, "release"))}` : "Not released",
       state: hasGrant ? "done" : workflow.status === "executing" ? "active" : "pending",
       icon: KeyRound,
     },
     {
-      label: "Read-after-write",
-      detail: verified ? asString(verification.details, "Observed access matches proposal") : "Verification pending",
+      label: "Read-after-release proof",
+      detail: verified ? releaseLanguage(asString(verification.details, "Observed manifest matches the approved release")) : "Proof pending",
       state: verified ? "done" : workflow.status === "verifying" ? "active" : "pending",
       icon: Fingerprint,
     },
     {
-      label: "Automatic revocation",
+      label: "Scheduled recall",
       detail: rolledBack
-        ? "Revocation observed and verified"
+        ? "Recall observed and proven"
         : rollingBack
-          ? "Revoking and reading state back"
+          ? "Recalling and reading state back"
           : expiresAt
             ? `Scheduled ${formatDateTime(expiresAt)}`
-            : "Scheduled after grant",
+            : "Scheduled after release",
       state: rolledBack ? "done" : rollingBack ? "active" : "pending",
       icon: TimerReset,
     },
     {
-      label: "Rollback path",
-      detail: rolledBack ? "Revocation verified" : rollingBack ? "Revoking and verifying" : hasGrant ? "Ready if conditions change" : "Available after execution",
+      label: "Recall path",
+      detail: rolledBack ? "Recall proven" : rollingBack ? "Recalling and reading back" : hasGrant ? "Ready if recipient, scope, or policy drifts" : "Available after release",
       state: rolledBack ? "done" : rollingBack ? "active" : "pending",
       icon: RotateCcw,
     },
@@ -501,7 +511,7 @@ function ExecutionAudit({ workflow, busy, onRollback }: { workflow: Workflow; bu
   return (
     <section className="console-card audit-card" aria-labelledby="audit-title">
       <div className="card-heading card-heading--rule">
-        <div><span className="card-kicker">Execution assurance</span><h3 id="audit-title">Grant lifecycle</h3></div>
+        <div><span className="card-kicker">Delivery assurance</span><h3 id="audit-title">Release lifecycle</h3></div>
         <span className="tamper-chip"><Fingerprint size={13} /> hash-linked audit</span>
       </div>
       <div className="audit-state-grid">
@@ -517,9 +527,9 @@ function ExecutionAudit({ workflow, busy, onRollback }: { workflow: Workflow; bu
       </div>
       {canRollback || rollingBack ? (
         <div className="rollback-row">
-          <span><AlertTriangle size={15} /> Emergency path is idempotent and verified.</span>
+          <span><AlertTriangle size={15} /> Emergency recall is idempotent and proven by read-back.</span>
           <button type="button" className="button button--secondary" data-testid="rollback-workflow" disabled={rollingBack || Boolean(busy)} onClick={onRollback}>
-            {rollingBack || busy === "rollback" ? <LoaderCircle size={16} className="spin" /> : <RotateCcw size={16} />} Roll back grant
+            {rollingBack || busy === "rollback" ? <LoaderCircle size={16} className="spin" /> : <RotateCcw size={16} />} Recall release
           </button>
         </div>
       ) : null}
@@ -542,7 +552,7 @@ function ModelReceipt({ workflow }: { workflow: Workflow }) {
         <span><small>Tokens in → out</small><strong>{metadata.inputTokens !== undefined || metadata.outputTokens !== undefined ? `${metadata.inputTokens || 0} → ${metadata.outputTokens || 0}` : "—"}</strong></span>
       </div>
       {metadata.fallbackUsed ? <div className="fallback-note"><AlertTriangle size={13} /> Fallback model used and disclosed by backend.</div> : null}
-      {metadata.disclosure ? <p className="receipt-disclosure">{metadata.disclosure}</p> : null}
+      {metadata.disclosure ? <p className="receipt-disclosure">{releaseLanguage(metadata.disclosure)}</p> : null}
     </section>
   );
 }
@@ -562,7 +572,7 @@ export function WorkflowDashboard({
     <section className="workflow-section" aria-labelledby="workflow-heading">
       <div className="workflow-header">
         <div>
-          <span className="eyebrow"><Activity size={14} /> Active control run</span>
+          <span className="eyebrow"><Activity size={14} /> Active release run</span>
           <h2 id="workflow-heading">{formatStatus(workflow.status)}</h2>
           <div className="workflow-id-row">
             <code>{compactId(workflow.id)}</code>
@@ -573,19 +583,19 @@ export function WorkflowDashboard({
         <div className="workflow-header-actions">
           <button className="icon-text-button" type="button" onClick={onRefresh} aria-label="Refresh workflow"><RefreshCw size={16} /> Refresh</button>
           <button className="icon-text-button" type="button" onClick={onExport}><ArrowDownToLine size={16} /> Export JSON</button>
-          <button className="button button--secondary" type="button" onClick={onNewRequest}>New request</button>
+          <button className="button button--secondary" type="button" onClick={onNewRequest}>New release</button>
         </div>
       </div>
 
-      {connectionError ? <div className="connection-notice"><AlertTriangle size={15} /> {connectionError}. The control room will keep reconciling state.</div> : null}
-      {actionError ? <div className="connection-notice" role="alert"><AlertTriangle size={15} /> {actionError}</div> : null}
+      {connectionError ? <div className="connection-notice"><AlertTriangle size={15} /> {releaseLanguage(connectionError)}. The release room will keep reconciling state.</div> : null}
+      {actionError ? <div className="connection-notice" role="alert"><AlertTriangle size={15} /> {releaseLanguage(actionError)}</div> : null}
       {workflow.error ? (
         <div className="workflow-failure-notice" role="alert">
           <AlertOctagon size={17} />
           <div>
-            <strong>{workflow.error.code}</strong>
-            <span>{workflow.error.message}</span>
-            <small>{workflow.error.retryable ? "Retry is allowed after the underlying condition is corrected." : "This failure is terminal for the current workflow."}</small>
+            <strong>{releaseLanguage(workflow.error.code)}</strong>
+            <span>{releaseLanguage(workflow.error.message)}</span>
+            <small>{workflow.error.retryable ? "Retry is allowed after the underlying condition is corrected." : "This failure is terminal for the current release run."}</small>
           </div>
         </div>
       ) : null}
@@ -606,7 +616,7 @@ export function WorkflowDashboard({
 
       <div className="console-grid console-grid--evidence">
         <PolicyCard workflow={workflow} />
-        <ExecutionAudit workflow={workflow} busy={actionBusy} onRollback={() => onAction("rollback", { approver: "Security reviewer", note: "Emergency rollback from GrantGuard control room" })} />
+        <ExecutionAudit workflow={workflow} busy={actionBusy} onRollback={() => onAction("rollback", { approver: "Data owner reviewer", note: "Emergency recall from the ReleaseProof release room" })} />
       </div>
 
       <ModelReceipt workflow={workflow} />

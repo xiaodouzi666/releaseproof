@@ -11,11 +11,11 @@ const app = await createApp();
 const server = createServer(app);
 
 server.listen(port, host, () => {
-  console.log(`GrantGuard API listening on http://${host}:${port}`);
+  console.log(`ReleaseProof API listening on http://${host}:${port}`);
 });
 
 function shutdown(signal: string): void {
-  console.log(`${signal} received; draining GrantGuard API connections`);
+  console.log(`${signal} received; draining ReleaseProof API connections`);
   server.close((error) => {
     if (error) {
       console.error("Graceful shutdown failed", error);

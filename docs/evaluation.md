@@ -1,160 +1,118 @@
-# Evaluation methodology
+# ReleaseProof evaluation methodology
 
-GrantGuard is evaluated at the boundary that matters most: **can untrusted intent ever produce a broader, longer, or unauthorized access change?**
+ReleaseProof is evaluated at the boundary that matters most: **can untrusted release intent produce a broader, longer, or unauthorized data share?**
 
-The repository uses a deterministic 16-case policy suite so results are repeatable, cheap to run, and independent of model phrasing. This is deliberately not presented as a benchmark of Qwen intelligence. Live-model extraction quality requires a separate labeled corpus and API-enabled run.
+The repository contains a deterministic 16-case policy suite. It measures the release-policy boundary independently of model wording. It is not presented as a benchmark of Qwen extraction quality; that requires a separate labeled corpus and an API-enabled run.
 
 ## Questions under test
 
-1. Does the deterministic engine return the expected `allow`, `requires_approval`, or `deny` outcome?
-2. Does it assign the expected risk tier?
-3. Does an allowed proposal stay within role, action, resource, and duration bounds?
-4. Do unknown, inactive, insufficiently secured, or out-of-policy identities fail closed?
-5. Does suspicious/injection-like input remain unable to bypass policy?
-6. Does the workflow preserve the human gate, idempotency, verification, rollback, and audit invariants around policy evaluation?
+1. Does the policy return the expected `requires_approval` or `deny` outcome and risk tier?
+2. Are direct identifiers, raw export, and consent override removed from an otherwise valid proposal?
+3. Is the release TTL capped by dataset sensitivity?
+4. Do unknown, inactive, or unverified recipients fail closed?
+5. Do unknown/restricted datasets and missing/expired agreements fail closed?
+6. Can prompt-like text ever bypass policy or the data-owner checkpoint?
+7. Do execution, read-after-release verification, recall, and hash audit preserve the approved manifest?
 
-## Reproducing the run
+## Reproduce the evidence
 
-```bash
-pnpm eval
-```
-
-For shareable evidence, capture the exact commit and output:
-
-```bash
+~~~bash
 git rev-parse HEAD
 pnpm eval
 pnpm test
-```
+pnpm typecheck
+pnpm build
+~~~
 
-Do not hand-edit generated counts. If the code and this document disagree, the executable fixtures and current command output are authoritative, and the documentation should be updated before submission.
+Run these commands against the exact submitted commit. Do not hand-edit generated counts or reuse results from the pre-pivot product. If this document and executable fixtures disagree, `server/evaluation.ts` and current command output are authoritative.
 
-## Reference case matrix
+## Deterministic reference matrix
 
-The suite contains 16 deterministic cases spanning the following risk surface. These IDs and expectations mirror `server/evaluation.ts`; that executable fixture remains authoritative if policy changes.
+| ID | Category | Expected | Risk | Safety property |
+| --- | --- | --- | --- | --- |
+| `routine-aggregate-release` | routine | `requires_approval` | low | Aggregate-only releases still require owner approval |
+| `routine-profile-release` | routine | `requires_approval` | low | A valid profile release retains only named safe fields |
+| `confidential-profile-release` | data-minimization | `requires_approval` | medium | Confidential profile data receives enhanced review and a shorter TTL |
+| `contact-fields-stripped` | data-minimization | `requires_approval` | high | Direct contact exports are removed while safe aggregate fields survive |
+| `raw-and-consent-actions-stripped` | data-minimization | `requires_approval` | critical | Raw export, identifiers, and consent override are stripped |
+| `release-duration-cap` | scope-duration | `requires_approval` | low | A release cannot exceed its deterministic TTL cap |
+| `recipient-unknown` | recipient | `deny` | critical | Unknown recipients fail closed |
+| `recipient-inactive` | recipient | `deny` | critical | Inactive vendor records cannot receive a release |
+| `recipient-unverified` | recipient | `deny` | critical | Unverified suppliers are denied even for aggregate data |
+| `recipient-resolution-mismatch` | recipient | `deny` | critical | One registry record cannot be substituted for another recipient |
+| `dataset-unknown` | dataset | `deny` | critical | Request text cannot create an ungoverned dataset |
+| `restricted-dataset-deny` | dataset | `deny` | critical | Restricted datasets are never externally released by this prototype |
+| `agreement-missing` | agreement | `deny` | critical | A required agreement must resolve before release |
+| `agreement-expired` | agreement | `deny` | critical | Expired evidence cannot authorize a release |
+| `prompt-injection-contained` | prompt-injection | `requires_approval` | low | Embedded instructions cannot disable policy or the owner gate |
+| `duplicate-existing-share` | duplicate-recall | `requires_approval` | low | Existing state is detected so creation remains idempotent and recall-safe |
 
-| ID | Category | Request condition | Expected outcome | Expected risk | Safety property exercised |
-| --- | --- | --- | --- | --- | --- |
-| `routine-staging-viewer` | routine | Active employee requests bounded staging viewer access | `requires_approval` | low | Even routine grants remain human-gated |
-| `routine-staging-contributor` | routine | Active employee requests named staging contributor actions | `requires_approval` | low | Valid contributor scope retains only named actions |
-| `routine-dev-admin-reduced` | routine | Admin is requested for ordinary development actions | `requires_approval` | medium | Admin is reduced to the minimum role for the actions |
-| `scope-staging-duration-cap` | scope-duration | Staging viewer access is requested for 96 hours | `requires_approval` | low | Effective duration cannot exceed the 24-hour cap |
-| `scope-prod-admin-reduced` | scope-duration | Eligible MFA employee requests production admin for incident actions | `requires_approval` | critical | Production admin is narrowed/capped and still human-gated |
-| `scope-dangerous-action-stripped` | scope-duration | Development request includes `iam.manage` plus an unverified ticket-shaped reference | `requires_approval` | high | Dangerous action is always stripped before review |
-| `identity-inactive` | identity-mfa | Subject exists but is inactive | `deny` | critical | Inactive identity fails closed |
-| `identity-unknown` | identity-mfa | Subject is absent from the directory | `deny` | critical | Unknown identity fails closed |
-| `identity-prod-no-mfa` | identity-mfa | Production subject is not MFA-enrolled | `deny` | critical | Production requires MFA |
-| `identity-subject-mismatch` | identity-mfa | Resolved directory user differs from requested subject | `deny` | critical | Identity substitution fails closed |
-| `restricted-clearance-deny` | restricted-production | Contractor without restricted clearance requests restricted ledger | `deny` | critical | Clearance/classification constraint is authoritative |
-| `production-contractor-operator-deny` | restricted-production | Contractor requests privileged production operator actions | `deny` | critical | Contractor production privilege is blocked |
-| `production-confidential-viewer` | restricted-production | Eligible employee requests bounded confidential-production read access | `requires_approval` | high | Sensitive read access remains high-risk and time-boxed |
-| `injection-valid-request-contained` | prompt-injection | Valid staging request embeds text telling policy to grant admin | `requires_approval` | low | Embedded instructions are inert data and do not change scope/gate |
-| `injection-unknown-resource-deny` | prompt-injection | Embedded claims attempt to create an unknown root resource | `deny` | critical | Prompt text cannot create authoritative resource context |
-| `duplicate-existing-access` | duplicate-rollback | Equivalent production viewer grant already exists | `requires_approval` | high | Existing access is detected for an idempotent, rollback-safe diff |
-
-If the implementation intentionally uses a different risk tier for an edge case, change both the executable expectation and the row with a policy rationale. Do not alter expected values merely to turn a failing run green.
+The expected values mirror `server/evaluation.ts`. Change a fixture and this table together, with a policy rationale; never weaken an expectation merely to turn a failing run green.
 
 ## Metrics
 
-### Decision agreement
-
-```text
-decision agreement = cases with actualOutcome == expectedOutcome / total cases
-```
-
-This is the primary policy-correctness metric.
-
-### Risk agreement
-
-```text
-risk agreement = cases with actualRisk == expectedRisk / total cases
-```
-
-Exact-tier agreement is intentionally stricter than "within one level."
-
-### Case pass rate
-
-```text
+~~~text
+decision agreement = outcome matches / total cases
+risk agreement = exact risk-tier matches / total cases
 case pass = outcome match AND risk match
 case pass rate = passing cases / total cases
-```
-
-The human-readable `invariant` attached to each fixture explains why the case exists; deeper properties such as effective action removal are enforced by policy/unit assertions, not inferred from this two-field pass boolean.
-
-### Safety-case agreement (non-routine)
-
-```text
 safety-case agreement = passing non-routine cases / total non-routine cases
-```
+~~~
 
-In the current evaluator, this is a focused outcome/risk regression metric over all cases whose category is not `routine`. It is not a separate formal proof of every named invariant. Max duration, allowed role/actions, required approval, and no-write-on-deny require the unit/integration evidence below.
+These are regression metrics, not a formal proof. The fixture invariant explains why each case exists; deeper stateful properties belong in unit and integration tests.
 
-### Operational guardrail coverage
+## Operational guardrails
 
-The following workflow properties are better proven by unit/integration tests than by the policy-case matrix:
-
-| Invariant | Required evidence |
+| Invariant | Required executable evidence |
 | --- | --- |
-| Denied workflow cannot be approved/executed | API/state-transition test |
-| Approval is required before grant | API/state-transition test |
-| Duplicate execution returns one grant | IAM adapter idempotency test |
-| Completion requires an exact observed state | Exact-state verifier unit tests plus successful grant/verification integration tests |
-| Rollback restores only its own captured baseline | Successful rollback, stale-revision conflict, and restart-recovery integration tests |
-| Audit chain detects mutation/reordering | Hash-chain validation test |
-| Missing API key discloses recorded-demo mode | Health/workflow metadata test |
-| Live key never appears in client bundle/response | build inspection and response test |
+| A denial cannot write | API/state-transition test and absence of `share.grant` |
+| Approval gates the server-held effective manifest | API state-transition test plus stale-baseline execution test |
+| Retrying creation produces one share | Clean-room adapter idempotency test |
+| Completion requires exact observed state | `share.verify` unit and workflow integration tests |
+| Recall affects only the workflow's share | Recall identity, stale-revision, and recovery tests |
+| Recall is reported only after inactive/absent state is observed | `share.recall` plus post-recall verification test |
+| Audit mutation or reordering is detectable | Hash-chain validation test |
+| Provider mode is honest | Health/workflow metadata tests |
+| A Qwen key never reaches browser code or API output | Build inspection and response test |
 
-### Durable automated test suite
+`pnpm test` discovers the current suite. Do not copy a historical test count into the submission; preserve the final command output or CI run instead.
 
-`pnpm test` asks Vitest to discover the current suite rather than relying on a documented test count. The repository currently separates coverage into:
+## Latest local ReleaseProof snapshot
 
-- deterministic policy unit tests, including fail-closed identity/resource handling, MFA, contractor/production constraints, prompt-injection inertness, action/role consistency, duration reduction, and existing-access behavior;
-- sandbox tool unit tests for bounded diffs, idempotent grants, and idempotent revocation;
-- HTTP workflow integration tests for provider disclosure, approval plus verified grant/rollback, terminal denial, human rejection without writes, and stable validation/not-found/evaluation/metrics contracts.
-
-The suite may grow as invariants are added. Do not copy a test total from this document into the submission. Generate the count from the final submitted commit with `pnpm test`, and preserve that command output or CI run as evidence. A timeout or partial pass is not a passing baseline.
-
-## Validated result snapshot
-
-This snapshot was generated from the immutable code commit below. The follow-up documentation commit only records these results and does not change executable code.
+The commands below passed on the current uncommitted working tree. This is useful regression evidence, but it is not yet immutable submission evidence. After the final commit is created, rerun the same commands, replace the commit field, and preserve the output or CI link.
 
 | Field | Value |
 | --- | --- |
-| Validated code commit | `3a64ebb1b45515c83edfed2930827309913e7983` |
-| Run timestamp (UTC) | `2026-07-20T08:32:11.672Z` |
-| Node / pnpm version | `v22.14.0` / `11.7.0` |
-| Policy version | `grantguard-policy-2026.07.3` |
-| Cases passed | `16/16` |
-| Case pass rate | `100.0%` |
-| Decision agreement | `100.0%` |
-| Risk agreement | `100.0%` |
-| Safety-case agreement (non-routine) | `100.0%` |
-| Test files / tests | `7 / 62` |
+| Validated commit | `PENDING — working tree not committed` |
+| Run timestamp (UTC) | `2026-07-20T11:28:47.019Z` |
+| Node / pnpm | `v22.14.0` / `11.7.0` |
+| Policy version | `releaseproof-policy-2026.07.1` |
+| Deterministic cases | `16/16` (`100.0%`) |
+| Test files / tests | `7/7` / `62/62` |
 | TypeScript | `pnpm typecheck` passed |
 | Production build | `pnpm build` passed |
-| Production dependency audit | `pnpm audit --prod` - no known vulnerabilities |
+| Production dependency audit | `pnpm audit --prod` — no known vulnerabilities |
 
-These are deterministic policy and software-regression results. They do not claim live-Qwen extraction quality or a successful Alibaba Cloud invocation; those require the separate deployment evidence checklist.
+Replace the remaining `PENDING` only after rerunning from the exact final commit. These results establish deterministic policy and software behavior; they do not establish live-Qwen extraction quality or a successful Alibaba Cloud invocation.
 
-## Model-dependent evaluation (future / optional evidence)
+## Model-dependent evaluation
 
-The deterministic suite establishes authorization safety, not extraction accuracy. A responsible live-Qwen evaluation would use a frozen, consented corpus containing paraphrases, partial tickets, typos, multilingual requests, screenshots, adversarial embedded instructions, and ambiguous identities/resources. Human-labeled fields would support:
+A responsible live-Qwen evaluation needs a frozen, consented corpus with paraphrases, incomplete requests, typos, multilingual prompts, screenshots, adversarial embedded instructions, and ambiguous recipients/datasets. Human labels can measure:
 
-- exact match for subject/resource/role;
-- set precision/recall for requested actions;
-- absolute error for duration;
-- confidence calibration;
+- exact match for recipient, dataset, purpose, and agreement reference;
+- set precision/recall for requested fields;
+- TTL error and confidence calibration;
 - schema-valid response rate;
 - primary/fallback rate, latency, and token usage;
-- policy invariance when equivalent requests are paraphrased.
+- policy invariance across equivalent paraphrases.
 
-Run that corpus only with a valid Model Studio key and record the model snapshot, region, prompt version, temperature, timestamp, and redaction policy. Do not mix recorded-demo outputs into a live-model accuracy number.
+Record the model snapshot, region, prompt version, temperature, timestamp, and redaction policy. Never mix deterministic fixture outputs into a live-model accuracy number.
 
 ## Limitations
 
-- Sixteen cases provide focused regression coverage, not statistical assurance.
-- Fixture directory/resources cannot represent every enterprise policy or identity lifecycle condition.
-- Expected labels are authored by the project; independent security review is still required.
-- The IAM adapter is a sandbox, so provider-specific eventual consistency and authorization failures are simulated rather than measured.
-- Exact risk tiers are product policy, not universal industry classifications.
-- Passing tests do not make the prototype safe for real IAM credentials; the production gate in [`security.md`](security.md) still applies.
+- Sixteen cases are focused regression coverage, not statistical assurance.
+- Fixture recipients, datasets, and agreements cannot model every enterprise lifecycle or jurisdiction.
+- Expected labels are project-authored and still need independent security/privacy review.
+- The clean-room adapter creates synthetic share records; it does not move or erase real data.
+- Recall blocks future sandbox access but cannot retract copies a recipient already made.
+- Passing tests do not make this prototype a production DLP, consent platform, or data-sharing gateway.

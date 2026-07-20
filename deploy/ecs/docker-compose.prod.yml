@@ -1,9 +1,9 @@
 services:
-  grantguard:
+  releaseproof:
     build:
       context: ../..
       dockerfile: Dockerfile
-    image: grantguard:${GRANTGUARD_IMAGE_TAG:-latest}
+    image: releaseproof:${RELEASEPROOF_IMAGE_TAG:-latest}
     init: true
     restart: unless-stopped
     env_file:
@@ -12,12 +12,12 @@ services:
       NODE_ENV: production
       PORT: "8787"
       AUDIT_STORE: file
-      GRANTGUARD_DATA_FILE: /app/data/grantguard-store.json
+      RELEASEPROOF_DATA_FILE: /app/data/releaseproof-store.json
       WORKFLOW_CREATE_LIMIT_PER_MINUTE: ${WORKFLOW_CREATE_LIMIT_PER_MINUTE:-1}
     ports:
       - "127.0.0.1:8787:8787"
     volumes:
-      - grantguard-data:/app/data
+      - releaseproof-data:/app/data
     read_only: true
     tmpfs:
       - /tmp:size=32m,mode=1777
@@ -43,4 +43,4 @@ services:
     stop_grace_period: 20s
 
 volumes:
-  grantguard-data:
+  releaseproof-data:

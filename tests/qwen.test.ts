@@ -12,14 +12,14 @@ vi.mock("openai", () => ({
 import { QwenClient } from "../server/qwen.js";
 
 const extracted: ExtractedAccessRequest = {
-  requesterEmail: "mateo@acme.example",
-  subjectEmail: "mateo@acme.example",
-  resourceId: "storefront-staging",
+  requesterEmail: "privacy@acme.example",
+  subjectEmail: "analyst@northstar.example",
+  resourceId: "campaign-performance",
   requestedRole: "contributor",
-  requestedActions: ["read", "write", "deploy"],
-  durationHours: 12,
-  justification: "Deploy and validate a staging endpoint.",
-  ticketId: "DEV-193",
+  requestedActions: ["aggregate.read", "profile.read"],
+  durationHours: 8,
+  justification: "Measure campaign lift using minimized profile fields.",
+  ticketId: "DPA-203",
   confidence: 0.98,
   source: "text",
 };
@@ -37,7 +37,7 @@ describe("QwenClient", () => {
     openAiMock.create.mockResolvedValue(completion({ content: JSON.stringify(extracted) }));
     const client = new QwenClient("test-key");
 
-    const result = await client.extract({ requestText: "grant staging contributor access" });
+    const result = await client.extract({ requestText: "release minimized campaign profiles to a verified vendor" });
 
     expect(result.request).toEqual(extracted);
     expect(result.stats).toMatchObject({
@@ -55,50 +55,50 @@ describe("QwenClient", () => {
     );
   });
 
-  it("sanitizes Qwen and ticket arguments, ignores unknown and duplicate tools, and completes mandatory reads", async () => {
+  it("sanitizes Qwen and agreement arguments, ignores unknown and duplicate tools, and completes mandatory reads", async () => {
     openAiMock.create.mockResolvedValue(
       completion({
         content: "",
         tool_calls: [
           {
-            id: "call-directory",
+            id: "call-recipient",
             type: "function",
             function: {
-              name: "directory_lookup",
+              name: "recipient_lookup",
               arguments: JSON.stringify({ subjectEmail: "attacker@acme.example" }),
             },
           },
           {
-            id: "call-access",
+            id: "call-share",
             type: "function",
             function: {
-              name: "access_current",
+              name: "share_current",
               arguments: JSON.stringify({
                 subjectEmail: extracted.subjectEmail,
-                resourceId: "finance-ledger-prod",
+                resourceId: "orders-raw-restricted",
               }),
             },
           },
           {
-            id: "call-ticket",
+            id: "call-agreement",
             type: "function",
             function: {
-              name: "ticket_lookup",
-              arguments: JSON.stringify({ ticketId: "SEC-999" }),
+              name: "agreement_lookup",
+              arguments: JSON.stringify({ ticketId: "DPA-999" }),
             },
           },
           {
-            id: "call-ticket-duplicate",
+            id: "call-agreement-duplicate",
             type: "function",
             function: {
-              name: "ticket_lookup",
+              name: "agreement_lookup",
               arguments: JSON.stringify({ ticketId: extracted.ticketId }),
             },
           },
           {
             id: "call-unknown",
             type: "function",
-            function: { name: "grant_access", arguments: "{}" },
+            function: { name: "share_create", arguments: "{}" },
           },
         ],
       }),
@@ -108,24 +108,24 @@ describe("QwenClient", () => {
     const result = await client.planContextTools(extracted);
 
     expect(result.calls).toHaveLength(4);
-    expect(result.calls.find((call) => call.name === "directory.lookup")).toEqual({
-      name: "directory.lookup",
+    expect(result.calls.find((call) => call.name === "recipient.lookup")).toEqual({
+      name: "recipient.lookup",
       arguments: { subjectEmail: extracted.subjectEmail },
       source: "qwen",
       sanitized: true,
     });
-    expect(result.calls.find((call) => call.name === "access.current")).toEqual({
-      name: "access.current",
+    expect(result.calls.find((call) => call.name === "share.current")).toEqual({
+      name: "share.current",
       arguments: { subjectEmail: extracted.subjectEmail, resourceId: extracted.resourceId },
       source: "qwen",
       sanitized: true,
     });
-    expect(result.calls.find((call) => call.name === "resource.lookup")).toMatchObject({
+    expect(result.calls.find((call) => call.name === "dataset.lookup")).toMatchObject({
       source: "mandatory",
       sanitized: false,
     });
-    expect(result.calls.find((call) => call.name === "ticket.lookup")).toEqual({
-      name: "ticket.lookup",
+    expect(result.calls.find((call) => call.name === "agreement.lookup")).toEqual({
+      name: "agreement.lookup",
       arguments: { ticketId: extracted.ticketId },
       source: "qwen",
       sanitized: true,
@@ -140,18 +140,18 @@ describe("QwenClient", () => {
     const tools = openAiMock.create.mock.calls[0]?.[0]?.tools as Array<{
       function: { name: string };
     }>;
-    expect(tools.map((tool) => tool.function.name)).toContain("ticket_lookup");
+    expect(tools.map((tool) => tool.function.name)).toContain("agreement_lookup");
   });
 
-  it("ignores malformed optional ticket calls while still completing the three mandatory reads", async () => {
+  it("ignores malformed optional agreement calls while still completing the three mandatory reads", async () => {
     openAiMock.create.mockResolvedValue(
       completion({
         content: "",
         tool_calls: [
           {
-            id: "call-ticket-malformed",
+            id: "call-agreement-malformed",
             type: "function",
-            function: { name: "ticket_lookup", arguments: '{"ticketId":' },
+            function: { name: "agreement_lookup", arguments: '{"ticketId":' },
           },
         ],
       }),
@@ -161,22 +161,22 @@ describe("QwenClient", () => {
     const result = await client.planContextTools(extracted);
 
     expect(result.calls.map((call) => call.name)).toEqual([
-      "directory.lookup",
-      "resource.lookup",
-      "access.current",
+      "recipient.lookup",
+      "dataset.lookup",
+      "share.current",
     ]);
     expect(result.calls.every((call) => call.source === "mandatory")).toBe(true);
   });
 
-  it("rejects ticket lookup when the validated extraction has no ticketId", async () => {
+  it("rejects agreement lookup when the validated extraction has no agreement ID", async () => {
     openAiMock.create.mockResolvedValue(
       completion({
         content: "",
         tool_calls: [
           {
-            id: "call-ticket-unbound",
+            id: "call-agreement-unbound",
             type: "function",
-            function: { name: "ticket_lookup", arguments: JSON.stringify({ ticketId: "SEC-902" }) },
+            function: { name: "agreement_lookup", arguments: JSON.stringify({ ticketId: "DPA-999" }) },
           },
         ],
       }),
@@ -186,7 +186,7 @@ describe("QwenClient", () => {
     const result = await client.planContextTools({ ...extracted, ticketId: undefined });
 
     expect(result.calls).toHaveLength(3);
-    expect(result.calls.some((call) => call.name === "ticket.lookup")).toBe(false);
+    expect(result.calls.some((call) => call.name === "agreement.lookup")).toBe(false);
   });
 
   it("falls back once and exposes the responding model", async () => {
@@ -195,7 +195,7 @@ describe("QwenClient", () => {
       .mockResolvedValueOnce(completion({ content: JSON.stringify(extracted) }, { prompt_tokens: 9, completion_tokens: 5 }));
     const client = new QwenClient("test-key");
 
-    const result = await client.extract({ requestText: "grant staging contributor access" });
+    const result = await client.extract({ requestText: "release minimized profile data" });
 
     expect(openAiMock.create).toHaveBeenCalledTimes(2);
     expect(openAiMock.create.mock.calls.map(([params]) => params.model)).toEqual(["qwen3.7-plus", "qwen3.6-flash"]);
@@ -211,61 +211,61 @@ describe("QwenClient", () => {
     openAiMock.create.mockResolvedValue(completion({ content: JSON.stringify({ ...extracted, durationHours: 0 }) }));
     const client = new QwenClient("test-key");
 
-    await expect(client.extract({ requestText: "grant access forever" })).rejects.toThrow();
+    await expect(client.extract({ requestText: "release data forever" })).rejects.toThrow();
   });
 
-  it("does not treat a blank model-produced ticketId as validated", async () => {
+  it("does not treat a blank model-produced agreement ID as validated", async () => {
     openAiMock.create.mockResolvedValue(completion({ content: JSON.stringify({ ...extracted, ticketId: "   " }) }));
     const client = new QwenClient("test-key");
 
-    await expect(client.extract({ requestText: "grant access with a blank ticket" })).rejects.toThrow();
+    await expect(client.extract({ requestText: "release data with a blank agreement" })).rejects.toThrow();
   });
 
   it("keeps recorded-demo mode fully offline", async () => {
     const client = new QwenClient("");
 
     const result = await client.extract({
-      requestText: "DEV-193 contributor storefront-staging for 12 hours",
-      scenarioId: "developer-staging-deploy",
+      requestText: "DPA-203 minimized campaign release for 72 hours",
+      scenarioId: "campaign-vendor-minimized",
     });
 
     expect(client.mode).toBe("recorded-demo");
     expect(result.request).toMatchObject({
-      subjectEmail: extracted.subjectEmail,
-      resourceId: extracted.resourceId,
-      requestedRole: extracted.requestedRole,
-      requestedActions: extracted.requestedActions,
-      durationHours: extracted.durationHours,
-      ticketId: extracted.ticketId,
+      subjectEmail: "analyst@northstar.example",
+      resourceId: "campaign-performance",
+      requestedRole: "admin",
+      requestedActions: expect.arrayContaining(["aggregate.read", "profile.read", "raw.export", "consent.override"]),
+      durationHours: 72,
+      ticketId: "DPA-203",
     });
     const plan = await client.planContextTools(result.request);
     expect(plan.calls.map((call) => call.name)).toEqual([
-      "directory.lookup",
-      "resource.lookup",
-      "access.current",
-      "ticket.lookup",
+      "recipient.lookup",
+      "dataset.lookup",
+      "share.current",
+      "agreement.lookup",
     ]);
     expect(plan.calls.at(-1)).toMatchObject({
-      arguments: { ticketId: extracted.ticketId },
+      arguments: { ticketId: "DPA-203" },
       source: "recorded-demo",
       sanitized: false,
     });
     expect(openAiMock.create).not.toHaveBeenCalled();
   });
 
-  it("does not invent a recorded-demo ticket lookup when no ticket was extracted", async () => {
+  it("does not invent a recorded-demo agreement lookup when no agreement was extracted", async () => {
     const client = new QwenClient("");
     const extraction = await client.extract({
-      requestText: "mateo@acme.example requests viewer on storefront-staging for 2 hours to inspect deployment health",
+      requestText: "insights@atlas.example requests aggregate product-telemetry for 2 hours to refresh adoption summaries",
     });
 
     const plan = await client.planContextTools(extraction.request);
 
     expect(extraction.request.ticketId).toBeUndefined();
     expect(plan.calls.map((call) => call.name)).toEqual([
-      "directory.lookup",
-      "resource.lookup",
-      "access.current",
+      "recipient.lookup",
+      "dataset.lookup",
+      "share.current",
     ]);
   });
 
@@ -285,8 +285,8 @@ describe("QwenClient", () => {
     try {
       const client = new QwenClient("test-key");
       await Promise.all([
-        client.extract({ requestText: "first valid staging request" }),
-        client.extract({ requestText: "second valid staging request" }),
+        client.extract({ requestText: "first valid release request" }),
+        client.extract({ requestText: "second valid release request" }),
       ]);
       expect(maximumActive).toBe(1);
     } finally {

@@ -25,9 +25,9 @@ describe("frontend workflow normalization", () => {
         risk: "critical",
         findings: [
           {
-            id: "identity.inactive",
-            title: "Inactive identity",
-            detail: "The directory marks this subject inactive; no grant can be proposed.",
+            id: "recipient.inactive_or_unknown",
+            title: "Inactive recipient",
+            detail: "The vendor registry marks this recipient inactive; no share can be proposed.",
             effect: "deny",
           },
         ],
@@ -37,10 +37,10 @@ describe("frontend workflow normalization", () => {
     expect(workflow.status).toBe("denied");
     expect(workflow.policyEvidence).toEqual([
       expect.objectContaining({
-        id: "identity.inactive",
-        policy: "Inactive identity",
+        id: "recipient.inactive_or_unknown",
+        policy: "Inactive recipient",
         verdict: "block",
-        explanation: "The directory marks this subject inactive; no grant can be proposed.",
+        explanation: "The vendor registry marks this recipient inactive; no share can be proposed.",
       }),
     ]);
   });
@@ -119,14 +119,14 @@ describe("frontend workflow normalization", () => {
       status: "failed",
       error: {
         code: "STALE_APPROVAL_BASELINE",
-        message: "Observed access changed after approval.",
+        message: "Observed share state changed after approval.",
         retryable: true,
       },
     });
 
     expect(workflow.error).toEqual({
       code: "STALE_APPROVAL_BASELINE",
-      message: "Observed access changed after approval.",
+      message: "Observed share state changed after approval.",
       retryable: true,
     });
   });
@@ -134,7 +134,7 @@ describe("frontend workflow normalization", () => {
   it("maps the evaluation total and generation timestamp", () => {
     const evaluation = normalizeEvaluation({
       generatedAt: "2026-07-20T08:00:00.000Z",
-      policyVersion: "grantguard-policy-2026.07.3",
+      policyVersion: "releaseproof-policy-2026.07.1",
       total: 16,
       passed: 16,
       passRate: 1,

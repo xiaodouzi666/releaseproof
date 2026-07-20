@@ -26,13 +26,13 @@ describe("public request integrity", () => {
   it("rejects edited text or imagery attached to a locked preset", async () => {
     const edited = await request(app)
       .post("/api/workflows")
-      .send({ scenarioId: "developer-staging-deploy", requestText: "This is completely different custom request text." })
+      .send({ scenarioId: "existing-aggregate-share", requestText: "This is completely different custom request text." })
       .expect(400);
     expect(edited.body.error.code).toBe("SCENARIO_OVERRIDE_NOT_ALLOWED");
 
     const imaged = await request(app)
       .post("/api/workflows")
-      .send({ scenarioId: "developer-staging-deploy", imageDataUrl: "data:image/png;base64,aA==" })
+      .send({ scenarioId: "existing-aggregate-share", imageDataUrl: "data:image/png;base64,aA==" })
       .expect(400);
     expect(imaged.body.error.code).toBe("SCENARIO_OVERRIDE_NOT_ALLOWED");
   });
@@ -74,7 +74,7 @@ describe("public request integrity", () => {
   it("marks workflow state responses as non-cacheable", async () => {
     const created = await request(app)
       .post("/api/workflows")
-      .send({ scenarioId: "developer-staging-deploy" })
+      .send({ scenarioId: "existing-aggregate-share" })
       .expect(202);
     expect(created.headers["cache-control"]).toBe("no-store");
 
@@ -85,7 +85,7 @@ describe("public request integrity", () => {
   it("requires JSON and an explicit approver on state-changing actions", async () => {
     const created = await request(app)
       .post("/api/workflows")
-      .send({ scenarioId: "developer-staging-deploy" })
+      .send({ scenarioId: "existing-aggregate-share" })
       .expect(202);
 
     await request(app)
@@ -105,11 +105,11 @@ describe("public request integrity", () => {
     process.env.WORKFLOW_CREATE_LIMIT_PER_MINUTE = "2";
     const limitedApp = await createApp();
 
-    await request(limitedApp).post("/api/workflows").send({ scenarioId: "developer-staging-deploy" }).expect(202);
-    await request(limitedApp).post("/api/workflows").send({ scenarioId: "developer-staging-deploy" }).expect(202);
+    await request(limitedApp).post("/api/workflows").send({ scenarioId: "existing-aggregate-share" }).expect(202);
+    await request(limitedApp).post("/api/workflows").send({ scenarioId: "existing-aggregate-share" }).expect(202);
     const limited = await request(limitedApp)
       .post("/api/workflows")
-      .send({ scenarioId: "developer-staging-deploy" })
+      .send({ scenarioId: "existing-aggregate-share" })
       .expect(429);
 
     expect(limited.body.error.code).toBe("RATE_LIMITED");
@@ -123,11 +123,11 @@ describe("public request integrity", () => {
     await request(limitedApp).post("/api/workflows").send({ requestText: "short" }).expect(400);
     await request(limitedApp)
       .post("/api/workflows")
-      .send({ scenarioId: "developer-staging-deploy" })
+      .send({ scenarioId: "existing-aggregate-share" })
       .expect(202);
     await request(limitedApp)
       .post("/api/workflows")
-      .send({ scenarioId: "developer-staging-deploy" })
+      .send({ scenarioId: "existing-aggregate-share" })
       .expect(429);
   });
 });

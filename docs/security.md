@@ -1,170 +1,225 @@
-# Security model and threat analysis
+# Security, privacy, and threat analysis
 
-GrantGuard is a security-oriented prototype, not a production authorization service. Its most important property is architectural: probabilistic model output is treated as untrusted data and cannot directly cause an access mutation.
+ReleaseProof is a security-oriented data-release prototype, not a production DLP, privacy, consent, legal-review, or clean-room service. It uses synthetic recipients, datasets, agreements, and shares. The sandbox adapter must never be represented as a real external data publication.
+
+Its central safety goal is narrower and testable: untrusted request text or model output must not create a broader, longer, or unrecallable release than deterministic policy and the data owner approved.
 
 ## Security objectives
 
-1. A model, requester, or browser cannot bypass deterministic policy.
-2. No access write occurs without a valid human approval transition.
-3. The executed grant is no broader or longer than the policy-constrained proposal.
-4. Duplicate requests do not create duplicate grants.
-5. Success is based on observed state, not a write API acknowledgement.
-6. Every material action is actor-labeled and tamper-evident within the retained audit chain; prototype actor labels are not authenticated identities.
-7. Model credentials never reach browser code, logs, fixtures, or the public repository.
-8. The application never implies that sandbox access is a real cloud IAM grant.
+1. Qwen, a requester, or the browser cannot bypass deterministic release policy.
+2. Unknown, inactive, or unverified recipients cannot receive a share.
+3. Prohibited actions such as raw export or consent override cannot reach the adapter.
+4. Effective fields/actions and TTL never exceed the policy-constrained manifest.
+5. A share write requires data-owner approval for the same manifest revision.
+6. Duplicate requests do not create duplicate active shares.
+7. Success is based on observed share state, not a write acknowledgement.
+8. Recall succeeds only when inactive/absent state is observed.
+9. Every material event is actor-labeled and prior-hash-linked; public-demo actor labels are not authenticated identities.
+10. Qwen credentials remain server-side.
+11. Recorded-demo mode is never presented as live Qwen evidence.
 
 ## Assets
 
 | Asset | Why it matters |
 | --- | --- |
-| Model Studio API key | Authorizes paid Qwen requests and may expose account quota. |
-| Access request content | May include personal data, business justification, ticket IDs, and resource names. |
-| Directory/resource context | Maps identities to employment, manager, clearance, resource owner, and classification. |
-| Approval identity and decision | Establishes accountability for a write. |
-| Effective access proposal | Defines subject, resource, role/actions, and expiry. |
-| IAM adapter state | Represents active/revoked grants in this prototype. |
-| Audit chain | Supports investigation and demonstrates which controls ran. |
-| Policy implementation/version | Defines the actual authorization boundary. |
+| Qwen Cloud API key | Authorizes model requests and consumes account quota |
+| Release request | May contain recipient, dataset, purpose, agreement, geography, and business context |
+| Vendor/recipient catalog | Establishes the resolved counterparty and verification state |
+| Dataset catalog | Defines owner, classification, allowed release tiers, and whether direct identifiers are present |
+| Agreement evidence | Supplies reference-only status, owner, and recipient identity |
+| Effective release manifest | Defines the recipient/dataset target, release tier, fields, declared purpose, and expiry |
+| Data-owner decision | Establishes accountability for one manifest revision |
+| Sandbox clean-room state | Represents active/recalled synthetic shares |
+| Audit chain and proof packet | Supports investigation and carries control evidence |
+| Policy implementation/version | Defines the authoritative release boundary |
 
 ## Trust boundaries
 
-```mermaid
+~~~mermaid
 flowchart LR
     subgraph U[Untrusted]
-      B[Browser]
+      Browser[Browser]
       Input[Request text and image]
-      Output[Qwen output and tool arguments]
+      Model[Qwen output and proposed arguments]
     end
 
-    subgraph A[Trusted application boundary]
+    subgraph T[Trusted application boundary]
       API[Validated API]
-      Schema[Zod schema and tool allow-list]
-      Policy[Deterministic policy]
-      Gate[Server-side human gate]
-      Adapter[Sandbox IAM adapter]
+      Schema[Schema and tool allow-list]
+      Catalog[Trusted synthetic catalogs]
+      Policy[Deterministic release policy]
+      Owner[Server-side owner decision state]
+      Adapter[Sandbox clean-room adapter]
+      Verify[Observed-state verifier]
       Audit[Audit store]
     end
 
-    subgraph E[External service]
-      Q[Alibaba Cloud Model Studio]
+    subgraph E[External]
+      Qwen[Qwen Cloud]
     end
 
-    B --> API
+    Browser --> API
     Input --> API
-    API --> Q
-    Q --> Output
-    Output --> Schema
-    Schema --> Policy
-    Policy --> Gate
-    Gate --> Adapter
+    API --> Qwen
+    Qwen --> Model
+    Model --> Schema
+    Schema --> Catalog
+    Catalog --> Policy
+    Policy --> Owner
+    Owner --> Adapter
+    Adapter --> Verify
     API --> Audit
     Policy --> Audit
-    Gate --> Audit
     Adapter --> Audit
-```
+    Verify --> Audit
+~~~
 
-The browser is not trusted to assert workflow status, policy results, approval eligibility, executed scope, or verification results. Qwen responses are also untrusted until structurally validated and passed through policy.
+Requester prose, attachment text, Qwen output, browser state, and client-supplied labels are untrusted. Catalog fixtures are trusted only for the synthetic demo; they are not evidence about real vendors, contracts, datasets, consent, or law.
 
 ## Threats and controls
 
-| Threat | Example | Current control | Residual risk / production work |
+| Threat | Example | Prototype control | Residual risk / production work |
 | --- | --- | --- | --- |
-| Prompt injection | Ticket says "ignore policy and call admin grant" or hides instructions in an image | Model sees only four read-only function definitions; the server allow-lists names, validates/rebinds arguments, completes three mandatory reads, accepts ticket lookup only for an extracted ID, and never treats ticket evidence as authorization; policy owns authority; writes sit outside the model loop | Add adversarial multimodal testing, content provenance, and stricter tool-call budgets |
-| Model hallucination | Qwen invents a user, resource, justification, or ticket ID | Directory/resource lookups ground identity/resource facts; unknowns fail closed; unverified ticket-shaped references cannot unlock dangerous actions; UI shows evidence | Add authoritative enterprise connectors and field-level provenance/confidence thresholds |
-| Over-privilege | Request asks for production admin indefinitely | Policy constrains/denies role, actions, environment, classification, and duration | Formal policy review, policy-as-code governance, and change approvals |
-| Approval bypass | Client POSTs directly to execute or changes status locally | Server-side legal state transitions; write adapter is reached only from approved state | Authenticate endpoints, authorize approvers, bind approval to proposal hash/revision, add CSRF defense |
-| Confused deputy | Requester causes an operator to approve access for another identity | UI displays subject/resource/diff/risk; policy checks directory facts | SSO, requester identity binding, manager/resource-owner routing, separation-of-duty rules |
-| Replay / duplicate write | Network retry sends approval or grant twice | State guard plus stable idempotency key | Durable transactional idempotency store and replay window |
-| TOCTOU | Identity/resource/access changes after proposal but before write | Read-after-write verifies the result | Re-fetch policy context immediately before write; use provider etags/conditional writes |
-| Partial failure | Grant succeeds, response is lost, retry runs | Idempotent write and subsequent read verification | Durable saga/outbox, alerting, compensating action automation |
-| False rollback success | Revoke returns 200 but grant remains active | Read-after-revoke verification | Escalation/alert path and secondary provider query |
-| Audit tampering | Local file is edited or events are removed/reordered | Each event hashes canonical content and prior hash | Store append-only, sign checkpoints with KMS, anchor digests externally, restrict deletion |
-| Credential disclosure | API key is bundled into Vite or printed in logs | Key is read server-side from `DASHSCOPE_API_KEY`; no `VITE_*` secret; docs prohibit commits | Alibaba Cloud KMS/secret manager, automatic rotation, log redaction, least-privilege RAM identity |
-| Personal-data leakage | Prompts or audit events retain employee data | Prototype sends only needed request content and keeps keys server-side | Define consent/retention, redact fields, regional review, encryption at rest, DLP, deletion workflow |
-| Cost / availability abuse | Anonymous users exhaust the bounded public model-call budget or starve judges | Process-local create-rate cap, Qwen concurrency queue, request/image size limits, upstream timeouts, Nginx rate/connection limits, recorded-demo option, visible provider mode; ECS public default is one workflow/minute | Authentication, per-user/distributed quotas, queue cap, daily token/spend budget, circuit breaker, Model Studio quota alerts |
-| File-store race or loss | Multiple replicas write one JSON file or ephemeral storage disappears | Documented single-instance constraint | Transactional managed database, locking, backups, restore tests |
-| Supply-chain compromise | Dependency or container base image is compromised | Lockfile, multi-stage image, non-root runtime | Pin image digest, dependency scanning/SBOM, signed images, CI provenance |
-| Cross-site request forgery | Signed-in approver is induced to POST approval | No production auth is claimed | SameSite session, CSRF token, Origin checks, re-auth for high-risk approval |
-| Cross-site scripting | Request text or model explanation contains markup | React text rendering escapes by default | Avoid raw HTML, add CSP, sanitize any future rich-text renderer |
+| Prompt injection | An agreement image says to ignore policy and export raw rows | Qwen sees only four read functions; calls are allow-listed/rebound; policy and write adapter sit outside the model loop | Adversarial multimodal corpus, attachment provenance, OCR isolation, stricter budgets |
+| Recipient substitution | Request names a familiar brand but supplies a different vendor account | Recipient lookup resolves a catalog identity; mismatches/unknowns fail closed | Authoritative vendor master, verified destination identity, signed onboarding |
+| Model hallucination | Qwen invents a dataset, fields, or agreement | Strict schema plus catalog/agreement reads; unknown facts do not become authority | Field-level provenance, confidence thresholds, human correction flow |
+| Agreement laundering | A ticket-shaped ID is presented as permission | Agreement lookup is reference evidence only; policy checks active status and exact recipient match | Contract-system integration, purpose/field-scope metadata, and legal-policy review |
+| Overbroad export | Request asks for raw rows, emails, phones, or consent override | Allow-listed actions plus deterministic removal/denial; exact effective manifest shown | Independent DLP scan and schema-level enforcement at provider |
+| Purpose drift | Marketing request is later used for model training | A concrete declared purpose is required and shown to the owner; this prototype does not semantically bind it to agreement scope | Agreement-purpose taxonomy, provider usage controls, monitoring, downstream attestations, legal enforcement |
+| Residency violation | EU-restricted data is sent to an unsupported location | Not implemented: destination region is not a structured field or policy input in this prototype | Add requested destination, authoritative residency metadata, policy rules, and destination-side enforcement before real use |
+| Excessive retention | Request asks for indefinite access | Finite TTL with policy cap; expiry pre-authorizes recall | Durable scheduler, provider-native TTL, alerting and reconciliation |
+| Approval bypass | Client posts directly to execution or changes UI state | Server-side legal transitions; write reachable only after an approved manifest | SSO, owner authorization, manifest signature, CSRF/replay controls |
+| Approval race / stale manifest | Evidence changes after an owner approves | Workflow revision/state guards and read-back verification | Re-resolve evidence immediately before write; bind approval to canonical manifest hash |
+| Replay / duplicate share | Network retry creates a second release | Stable idempotency key and state guard | Transactional provider idempotency ledger and replay window |
+| Partial publication | Adapter returns success after publishing the wrong projection | Read-after-release compares observed state with the manifest | Provider-native schema checks and compensating recall automation |
+| False recall success | Revoke returns success while the share remains active | Read-after-recall verification | Secondary reconciliation, paging, and incident escalation |
+| Link forwarding / recipient compromise | Correct vendor forwards or leaks the released data | Prototype does not claim downstream-use control | Clean-room query controls, watermarking, egress monitoring, contractual controls |
+| Audit tampering | Local evidence file is edited or replaced | Each event commits to canonical content and previous hash | KMS signatures, WORM storage, independent timestamp/anchor |
+| Credential disclosure | API key appears in frontend, logs, screenshot, or video | Server-only environment variable; no Vite secret; documented capture rules | Secret manager, rotation, scoped credentials, log redaction |
+| Sensitive prompt retention | Real dataset names or personal details enter model/audit logs | Demo uses synthetic data and bounded payloads | Data minimization, tokenization, retention controls, regional/legal review |
+| Anonymous cost abuse | Public users exhaust Qwen quota | Request/image limits, process rate cap, concurrency queue, upstream timeout, Nginx limits | Authentication, distributed quotas, daily spend cap, circuit breaker |
+| File-store race/loss | Multiple instances write one JSON snapshot | Single-instance deployment is explicit | Transactional database, locking, backups, restore testing |
+| Supply-chain compromise | Dependency or base image is altered | Lockfile, multi-stage image, non-root runtime | Digest pinning, SBOM, signatures, SAST/dependency/container scanning |
+| Cross-site request forgery | Signed-in owner is induced to approve/recall | No production authentication is claimed | SameSite session, CSRF token, Origin checks, step-up auth |
+| Cross-site scripting | Request/model text includes markup | React escapes text by default; Nginx CSP | No raw HTML, sanitization for future rich text, security testing |
 
 ## Prompt-injection containment
 
-Request text and images are data, even if they look like instructions. The containment strategy is defense in depth:
+Request text and images are data even when they contain instructions.
 
-1. The system prompt states that embedded instructions are untrusted request content.
-2. Extracted model output must match a narrow JSON schema with enumerated roles and bounded duration.
-3. A second Qwen call can select only directory, governed-resource, current-access, and reference-only ticket functions.
-4. The orchestrator rejects unknown, duplicate, and malformed proposed calls, replaces their arguments with the validated extracted subject/resource, and appends any mandatory read Qwen omitted.
-5. The orchestrator, not Qwen, dispatches those actual reads before policy and enforces workflow state.
-6. Directory and resource facts override assertions in the request.
-7. The deterministic policy engine computes the allowed scope and human-readable findings.
-8. A human reviews the normalized identity, resource, diff, risk, expiry, and findings.
-9. The write adapter receives only policy-effective values.
+1. The extraction prompt treats embedded instructions as untrusted release content.
+2. Output must match a narrow schema for recipient, dataset, release tier, requested actions/fields, duration, purpose, optional agreement reference, confidence, and source mode.
+3. The function-planning call exposes only recipient lookup, dataset lookup, current-share lookup, and optional agreement lookup.
+4. The server rejects unknown, duplicate, and malformed calls.
+5. Accepted call arguments are rebound to validated extraction values; the model cannot redirect a lookup to a different vendor or dataset.
+6. Mandatory recipient, dataset, and current-share reads are completed even if Qwen omits them.
+7. Agreement lookup is accepted only for a validated agreement reference and never grants authority on its own.
+8. Deterministic policy computes the effective projection and TTL from grounded facts.
+9. The data owner sees the exact manifest and evidence.
+10. The sandbox adapter receives only policy-effective values after a legal approval transition.
 
-Thus, a successful prompt injection might degrade extraction or function selection, but it should not expand the authorization envelope. The evaluation suite includes injection-like cases; production readiness would require a much larger red-team corpus.
+A successful injection could still degrade extraction or evidence selection. It should not expand the release envelope. Production assurance requires a larger text/image red-team corpus and provider-side enforcement.
 
-## Policy and approval invariants
+## Release-policy and approval invariants
 
-Before any write, the server should assert all of the following in one transition:
+Before a share write, the server should establish atomically:
 
-- workflow status is exactly `approved`;
-- a non-deny `PolicyDecision` exists;
-- an approval record exists and targets the current proposal revision;
-- subject and resource exist and are active/eligible;
-- effective role/actions are members of the resource's allowed set;
-- expiry is present, future, and within `maxDurationHours`;
-- idempotency key is stable for the workflow/proposal;
-- no prior active grant exists for that idempotency key;
-- audit persistence is healthy enough to record the action.
+- workflow state is approved;
+- the policy outcome is not deny;
+- recipient and dataset are resolved and eligible;
+- the recipient is verified and active;
+- agreement evidence is present and valid where required;
+- the request contains a concrete declared purpose;
+- a required agreement is active and belongs to the resolved recipient;
+- every effective action/field is explicitly authorized;
+- prohibited raw export and consent override actions are absent;
+- expiry exists, is in the future, and is within the policy cap;
+- approval targets the canonical effective manifest revision;
+- the idempotency key is stable for that revision;
+- no active share already exists for the same key; and
+- audit persistence is healthy enough to record the transition.
 
-The prototype may not yet implement proposal revision signatures or approver authentication; those are explicitly required before a real IAM integration.
+The hackathon prototype may not yet authenticate the owner label or cryptographically bind approval to a canonical manifest. Both are required before a real adapter.
+
+## Proof-carrying release scope
+
+The phrase proof-carrying does not mean a formal mathematical proof. It means each workflow retains a bounded evidence packet that lets an operator reconstruct why a particular projection was allowed and whether it was actually observed.
+
+The packet should include:
+
+- normalized intent and provider mode;
+- tool inputs/outputs and timestamps;
+- resolved recipient, dataset, agreement, and current-share evidence;
+- policy version, outcome, risk, constraints, and findings;
+- requested and effective manifests;
+- data-owner decision and manifest revision;
+- idempotency key and adapter result;
+- expected versus observed share state;
+- recall/expiry evidence; and
+- audit-chain head.
+
+Production evidence should be signed, independently anchored, access-controlled, retention-bounded, and exportable for audit.
 
 ## Secret handling
 
-- Keep `DASHSCOPE_API_KEY` only in the server process environment.
-- Never prefix it with `VITE_`; Vite intentionally embeds such variables into browser assets.
-- Never commit `.env`, paste keys into screenshots, or include them in Devpost/video evidence.
-- Prefer an instance role and Alibaba Cloud secret service for production. If using an `.env` file on a demo ECS instance, set owner-only permissions (`chmod 600 .env`) and restrict SSH access.
-- Use an API key from the same Model Studio region/base URL and limit spend with quota/monitoring controls.
-- Rotate the key immediately if it is ever visible in terminal history, logs, a recording, or repository history.
+- Keep **DASHSCOPE_API_KEY** only in the server process environment.
+- Never prefix it with **VITE_**.
+- Never commit the local environment file or paste keys into screenshots, videos, logs, or Devpost fields.
+- On a demo VM, restrict the environment file to the deployment user.
+- Prefer Alibaba Cloud secret management/KMS for a real service.
+- Use a key compatible with the configured Qwen Cloud base URL and apply quota/spend controls.
+- Rotate any key that appears in a terminal recording, browser capture, log, or repository history.
 
-## Audit-chain scope
+## Audit-chain limits
 
-`previousHash` and `hash` detect editing, insertion, deletion, or reordering when the chain is validated from a trusted head. They do **not** prevent an administrator from replacing the entire file and recomputing every hash. Production-grade evidence requires an external trust anchor, such as periodically signing the chain head with KMS and writing it to an append-only/WORM destination.
+The previous-hash chain detects editing, insertion, deletion, or reordering when validated from a trusted chain head. It does not stop an administrator from replacing the entire file and recomputing every hash.
 
-Audit events should include workflow ID, monotonically increasing sequence, UTC timestamp, actor category, event type, bounded data, previous hash, and hash. They should never include API keys, authorization headers, raw credentials, or unnecessary full image payloads.
+A production design should periodically sign the chain head with KMS and write it to an append-only/WORM destination. Audit payloads must exclude API keys, authorization headers, raw credentials, unnecessary image payloads, and unnecessary personal data.
 
 ## Data lifecycle
 
-The hackathon build uses fixture identities/resources and a local audit adapter. Before real employee or customer data is introduced, define:
+The public build must use only synthetic vendors, datasets, agreements, and records. Before any real data is introduced, define:
 
-- collection purpose and lawful basis/consent;
-- fields sent to Model Studio and chosen deployment region;
-- encryption in transit and at rest;
-- access controls for request and audit records;
-- retention by data class;
-- deletion/export workflows;
-- incident response and breach notification;
-- subprocessor and cross-border review.
+- lawful basis, consent, contract, and approved purposes;
+- dataset ownership and classification;
+- field-level lineage and permitted projection;
+- fields sent to Qwen and the selected processing region;
+- cross-border and data-residency requirements;
+- recipient verification and destination controls;
+- encryption in transit/at rest;
+- access controls for manifests and evidence;
+- release, expiry, recall, and downstream deletion semantics;
+- retention for requests, manifests, and audit records;
+- subject-rights, incident, and breach workflows; and
+- subprocessors and vendor-risk ownership.
+
+Recall cannot undo a recipient's prior copying or use. The UI and submission must not imply that revoking a share guarantees deletion of already exported data. A real clean-room integration should minimize or prohibit raw egress and provide destination-side controls and attestations.
 
 ## Production-readiness gate
 
-Do not connect GrantGuard to a real IAM provider until all of these are complete:
+Do not connect ReleaseProof to real customer data or a real external-share provider until all items are complete:
 
-- [ ] SSO authentication for requesters and approvers
-- [ ] Server-side RBAC/ABAC and separation of duties
-- [ ] Proposal revision hash bound to approval
-- [ ] Authenticated-session CSRF/replay controls plus distributed per-user quotas and daily token/spend budgets (the demo already requires JSON, bounds body/image size, and applies process/edge rate limits)
-- [ ] Durable transactional workflow/idempotency store
-- [ ] Durable scheduler and alerts for expiry/revocation
-- [ ] KMS/secret-manager integration and key rotation
-- [ ] Append-only externally anchored audit storage
-- [ ] Provider-scoped least-privilege service identity
-- [ ] Policy owner review and versioned change process
-- [ ] Privacy/retention review
-- [ ] Threat modeling, SAST/dependency/container scanning, penetration test
-- [ ] Failure-injection, backup/restore, and incident-response exercises
+- [ ] SSO for requesters and data owners
+- [ ] Owner authorization, separation of duties, and step-up authentication
+- [ ] Canonical manifest hash bound to approval
+- [ ] CSRF, replay, and distributed rate/spend controls
+- [ ] Transactional workflow, idempotency, and outbox state
+- [ ] Durable expiry/recall scheduler and reconciliation alerts
+- [ ] Authoritative vendor, agreement, dataset, lineage, consent, and residency sources
+- [ ] Independent DLP/classification validation
+- [ ] Provider-native least-privilege service identity
+- [ ] KMS/secret-manager integration and rotation
+- [ ] Signed, append-only, externally anchored audit evidence
+- [ ] Encryption, retention, deletion, and access-review policies
+- [ ] Privacy, legal, security, and vendor-risk approval
+- [ ] SAST/dependency/container scanning and penetration testing
+- [ ] Failure injection, backup/restore, recall, and incident exercises
 
 ## Responsible demo guidance
 
-The UI, video, and submission should say **Sandbox IAM** whenever a mutation is shown. Recorded-demo model output must remain labeled. Deployment proof may show service/resource identifiers and health metadata, but must redact API keys, cookies, RAM secrets, account IDs when unnecessary, and other credentials.
+- Always call the mutation target **Sandbox clean room** or **synthetic share**.
+- Never claim ReleaseProof moved, anonymized, deleted, or recalled real data.
+- Keep the live-Qwen or recorded-demo badge visible.
+- Use synthetic recipient emails, datasets, agreements, and fields.
+- Explain that recall revokes the simulated share; it does not retroactively erase copied data.
+- Redact API keys, cookies, account IDs where unnecessary, billing details, and cloud credentials from all evidence.

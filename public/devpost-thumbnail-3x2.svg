@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="1024" viewBox="0 0 1536 1024" role="img" aria-labelledby="title desc">
+  <title id="title">ReleaseProof — Every dataset release needs a recall path</title>
+  <desc id="desc">Three-by-two presentation of the ReleaseProof proof-carrying data release autopilot.</desc>
+  <defs>
+    <linearGradient id="bg3x2" x1="0" y1="0" x2="1536" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#06120f"/>
+      <stop offset="0.58" stop-color="#071814"/>
+      <stop offset="1" stop-color="#06100e"/>
+    </linearGradient>
+    <pattern id="grid3x2" width="33" height="33" patternUnits="userSpaceOnUse">
+      <path d="M33 0H0V33" fill="none" stroke="#7bc1ad" stroke-opacity="0.05"/>
+    </pattern>
+  </defs>
+  <rect width="1536" height="1024" fill="url(#bg3x2)"/>
+  <rect width="1536" height="1024" fill="url(#grid3x2)"/>
+  <image href="devpost-thumbnail.svg" x="-32" y="62" width="1600" height="900" preserveAspectRatio="xMidYMid meet"/>
+</svg>

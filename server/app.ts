@@ -102,7 +102,7 @@ export async function createApp(service?: WorkflowService): Promise<express.Expr
     const store = workflows.store.health();
     const body: HealthResponse = {
       status: store.healthy ? "ok" : "degraded",
-      service: "grantguard-api",
+      service: "releaseproof-api",
       version: "0.1.0",
       deploymentTarget: process.env.DEPLOYMENT_TARGET ?? "local",
       timestamp: new Date().toISOString(),
@@ -141,7 +141,7 @@ export async function createApp(service?: WorkflowService): Promise<express.Expr
       parsed.requestText ??
       scenario?.requestText ??
       (parsed.imageDataUrl
-        ? "Image-only access request submitted for secure structured extraction."
+        ? "Image-only data-release request submitted for secure structured extraction."
         : undefined);
     if (!requestText) {
       throw new ClientInputError("REQUEST_TEXT_REQUIRED", "requestText is required unless a valid scenarioId is supplied");
@@ -238,15 +238,23 @@ export async function createApp(service?: WorkflowService): Promise<express.Expr
     );
   });
 
-  app.post("/api/workflows/:id/rollback", requireJson, async (request, response) => {
+  app.post("/api/workflows/:id/recall", requireJson, async (request, response) => {
     const body = actionSchema.parse(request.body);
-    const workflow = await workflows.rollback(
+    const workflow = await workflows.recall(
       String(request.params.id),
       body.approver,
       body.note,
       idempotencyKey(request),
     );
     response.status(202).json(workflow);
+  });
+
+  // Backward-compatible endpoint for the pre-pivot UI; new clients use /recall.
+  app.post("/api/workflows/:id/rollback", requireJson, async (request, response) => {
+    const body = actionSchema.parse(request.body);
+    response.status(202).json(
+      await workflows.recall(String(request.params.id), body.approver, body.note, idempotencyKey(request)),
+    );
   });
 
   const distDirectory = join(process.cwd(), "dist");
@@ -270,7 +278,7 @@ export async function createApp(service?: WorkflowService): Promise<express.Expr
   const errorHandler: ErrorRequestHandler = (error, request, response, _next) => {
     let status = 500;
     let code = "INTERNAL_ERROR";
-    let message = "GrantGuard could not complete this request";
+    let message = "ReleaseProof could not complete this request";
     let details: unknown;
 
     if (error instanceof ZodError) {

@@ -24,13 +24,13 @@ export function Header({ view, onViewChange, health, metadata, healthLoading, he
   return (
     <header className="site-header">
       <div className="header-inner">
-        <button className="brand" type="button" onClick={() => chooseView("workspace")} aria-label="GrantGuard home">
+        <button className="brand" type="button" onClick={() => chooseView("workspace")} aria-label="ReleaseProof home">
           <span className="brand-mark" aria-hidden="true">
             <ShieldCheck size={24} strokeWidth={1.8} />
           </span>
           <span className="brand-wordmark">
-            <strong>GrantGuard</strong>
-            <small>Access Autopilot</small>
+            <strong>ReleaseProof</strong>
+            <small>Data Release Autopilot</small>
           </span>
         </button>
 
@@ -42,7 +42,7 @@ export function Header({ view, onViewChange, health, metadata, healthLoading, he
             onClick={() => chooseView("workspace")}
             aria-current={view === "workspace" ? "page" : undefined}
           >
-            Control room
+            Release room
           </button>
           <button
             type="button"

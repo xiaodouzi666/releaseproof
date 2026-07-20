@@ -37,7 +37,9 @@ export class WorkflowStore {
     const filePath =
       requested === "memory"
         ? null
-        : process.env.GRANTGUARD_DATA_FILE ?? join(process.cwd(), "data", "grantguard-store.json");
+        : process.env.RELEASEPROOF_DATA_FILE ??
+          process.env.GRANTGUARD_DATA_FILE ??
+          join(process.cwd(), "data", "releaseproof-store.json");
     const store = new WorkflowStore(filePath);
     await store.initialize();
     return store;
@@ -51,7 +53,7 @@ export class WorkflowStore {
         const raw = await readFile(this.filePath, "utf8");
         const parsed = JSON.parse(raw) as Partial<PersistedState>;
         if (parsed.version !== 1 || !parsed.workflows || !parsed.idempotency) {
-          throw new Error("Unsupported or malformed GrantGuard store");
+          throw new Error("Unsupported or malformed ReleaseProof store");
         }
         this.state = parsed as PersistedState;
       } catch (error) {
@@ -65,7 +67,7 @@ export class WorkflowStore {
       this.mode = "memory";
       this.healthy = false;
       this.detail = "File persistence unavailable; writes disabled";
-      console.error("GrantGuard file store initialization failed", error);
+      console.error("ReleaseProof file store initialization failed", error);
     }
   }
 
@@ -157,7 +159,7 @@ export class WorkflowStore {
       this.mode = "memory";
       this.healthy = false;
       this.detail = "File persistence failed; writes disabled";
-      console.error("GrantGuard file store write failed", error);
+      console.error("ReleaseProof file store write failed", error);
       throw new StoreUnavailableError();
     }
   }

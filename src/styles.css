@@ -3306,7 +3306,7 @@ input:focus-visible {
   .hero-copy h1,
   .architecture-hero h1 {
     margin-top: 19px;
-    font-size: clamp(3.1rem, 16vw, 4.2rem);
+    font-size: clamp(2.35rem, 11vw, 3.2rem);
     line-height: 0.95;
   }
 

@@ -1,10 +1,10 @@
 {
-  "name": "grantguard",
+  "name": "releaseproof",
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
   "packageManager": "pnpm@11.7.0",
-  "description": "Human-gated least-privilege access autopilot powered by Qwen Cloud.",
+  "description": "Proof-carrying data release autopilot powered by Qwen Cloud.",
   "type": "module",
   "scripts": {
     "dev": "concurrently -k \"pnpm dev:web\" \"pnpm dev:api\"",

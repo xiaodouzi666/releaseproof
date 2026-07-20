@@ -9,7 +9,7 @@ const result = runEvaluation();
 if (process.argv.includes("--json")) {
   process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
 } else {
-  console.log("GrantGuard deterministic policy evaluation");
+  console.log("ReleaseProof deterministic external-release policy evaluation");
   console.log(`Policy: ${result.policyVersion}`);
   console.log(`Generated: ${result.generatedAt}`);
   console.log("");

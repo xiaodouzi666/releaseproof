@@ -1,16 +1,16 @@
 import { describe, expect, it } from "vitest";
 import type { AccessGrant, ExtractedAccessRequest, PolicyDecision } from "../shared/contracts.js";
-import { IamSandbox, calculateAccessDiff, lookupTicket } from "../server/tools.js";
+import { ShareSandbox, calculateReleaseDiff, lookupAgreement } from "../server/tools.js";
 
 const extracted: ExtractedAccessRequest = {
   requesterEmail: "test@acme.example",
-  subjectEmail: "test@acme.example",
-  resourceId: "developer-sandbox",
+  subjectEmail: "analyst@northstar.example",
+  resourceId: "campaign-performance",
   requestedRole: "admin",
-  requestedActions: ["read", "write"],
+  requestedActions: ["aggregate.read", "profile.read"],
   durationHours: 48,
-  justification: "Validate an approved integration in the developer sandbox.",
-  ticketId: "DEV-200",
+  justification: "Measure campaign lift with minimized profile fields.",
+  ticketId: "DPA-203",
   confidence: 0.99,
   source: "text",
 };
@@ -21,42 +21,42 @@ const decision: PolicyDecision = {
   score: 35,
   requestedRole: "admin",
   effectiveRole: "contributor",
-  effectiveActions: ["read", "write"],
+  effectiveActions: ["aggregate.read", "profile.read"],
   maxDurationHours: 24,
   requiresHumanApproval: true,
   findings: [],
   policyVersion: "test",
 };
 
-describe("IAM sandbox safety tools", () => {
-  it("looks up reference-only ticket evidence and fails closed for an unknown ticket", async () => {
-    await expect(lookupTicket("DEV-193")).resolves.toMatchObject({
-      ticketId: "DEV-193",
-      status: "open",
+describe("release sandbox safety tools", () => {
+  it("looks up reference-only agreement evidence and fails closed for an unknown agreement", async () => {
+    await expect(lookupAgreement("DPA-203")).resolves.toMatchObject({
+      ticketId: "DPA-203",
+      status: "active",
       referenceOnly: true,
     });
-    await expect(lookupTicket("DEV-DOES-NOT-EXIST")).resolves.toBeNull();
+    await expect(lookupAgreement("DPA-DOES-NOT-EXIST")).resolves.toBeNull();
   });
 
   it("calculates a least-privilege, time-bounded diff", () => {
     const now = new Date("2026-07-20T00:00:00.000Z");
-    const diff = calculateAccessDiff({ request: extracted, decision, currentAccess: [], now });
+    const diff = calculateReleaseDiff({ request: extracted, decision, currentAccess: [], now });
 
     expect(diff.before.role).toBeNull();
     expect(diff.after.role).toBe("contributor");
-    expect(diff.additions).toEqual(["read", "write"]);
+    expect(diff.additions).toEqual(["aggregate.read", "profile.read"]);
     expect(diff.after.expiresAt).toBe("2026-07-21T00:00:00.000Z");
   });
 
-  it("replays an identical grant idempotently", () => {
-    const sandbox = new IamSandbox();
+  it("replays an identical share idempotently", () => {
+    const sandbox = new ShareSandbox();
     const input = {
       subjectEmail: extracted.subjectEmail,
       resourceId: extracted.resourceId,
       role: decision.effectiveRole,
       actions: decision.effectiveActions,
       expiresAt: "2026-07-21T00:00:00.000Z",
-      idempotencyKey: "wf_test:grant",
+      idempotencyKey: "wf_test:share",
       expectedBaseline: [],
     } as const;
 
@@ -69,8 +69,8 @@ describe("IAM sandbox safety tools", () => {
     expect(sandbox.list(extracted.subjectEmail, extracted.resourceId)).toHaveLength(1);
   });
 
-  it("replays a repeated revocation safely", () => {
-    const sandbox = new IamSandbox();
+  it("replays a repeated recall safely", () => {
+    const sandbox = new ShareSandbox();
     const created = sandbox.grant({
       subjectEmail: extracted.subjectEmail,
       resourceId: extracted.resourceId,
@@ -89,15 +89,15 @@ describe("IAM sandbox safety tools", () => {
     expect(second.grant.status).toBe("revoked");
   });
 
-  it("atomically replaces an operator grant with exact viewer state and restores the baseline", () => {
+  it("atomically replaces a contact-tier share with exact aggregate state and restores the baseline", () => {
     const now = new Date("2030-01-01T00:00:00.000Z");
-    const sandbox = new IamSandbox(() => new Date(now));
+    const sandbox = new ShareSandbox(() => new Date(now));
     const baseline: AccessGrant = {
       grantId: "gr_operator_baseline",
       subjectEmail: extracted.subjectEmail,
       resourceId: extracted.resourceId,
       role: "operator",
-      actions: ["read", "list", "logs", "restart"],
+      actions: ["aggregate.read", "profile.read", "email.export", "phone.export"],
       createdAt: now.toISOString(),
       expiresAt: "2030-01-02T00:00:00.000Z",
       status: "active",
@@ -105,11 +105,26 @@ describe("IAM sandbox safety tools", () => {
     };
     sandbox.restore(baseline);
 
+    const reviewed = calculateReleaseDiff({
+      request: {
+        ...extracted,
+        subjectEmail: baseline.subjectEmail,
+        resourceId: baseline.resourceId,
+        requestedRole: "viewer",
+        requestedActions: ["aggregate.read"],
+        durationHours: 2,
+      },
+      decision: { ...decision, effectiveRole: "viewer", effectiveActions: ["aggregate.read"], maxDurationHours: 24 },
+      currentAccess: [baseline],
+      now,
+    });
+    expect(reviewed.after.expiresAt).toBe("2030-01-01T02:00:00.000Z");
+
     const applied = sandbox.grant({
       subjectEmail: extracted.subjectEmail,
       resourceId: extracted.resourceId,
       role: "viewer",
-      actions: ["read", "list"],
+      actions: ["aggregate.read"],
       expiresAt: "2030-01-01T02:00:00.000Z",
       idempotencyKey: "exact-downgrade",
       expectedBaseline: [baseline],
@@ -120,7 +135,7 @@ describe("IAM sandbox safety tools", () => {
       expect.objectContaining({
         grantId: applied.grant.grantId,
         role: "viewer",
-        actions: ["read", "list"],
+        actions: ["aggregate.read"],
         expiresAt: "2030-01-01T02:00:00.000Z",
       }),
     ]);
@@ -133,7 +148,7 @@ describe("IAM sandbox safety tools", () => {
         expected: {
           grantId: applied.grant.grantId,
           role: "viewer",
-          actions: ["list", "read"],
+          actions: ["aggregate.read"],
           expiresAt: "2030-01-01T02:00:00.000Z",
         },
       }),
@@ -160,21 +175,36 @@ describe("IAM sandbox safety tools", () => {
     ).toBe(true);
   });
 
-  it("replaces same role/actions when the reviewed expiry is shorter", () => {
+  it("replaces the same release envelope when the reviewed expiry is shorter", () => {
     const now = new Date("2030-01-01T00:00:00.000Z");
-    const sandbox = new IamSandbox(() => new Date(now));
+    const sandbox = new ShareSandbox(() => new Date(now));
     const baseline: AccessGrant = {
       grantId: "gr_long_ttl",
       subjectEmail: "ttl@acme.example",
-      resourceId: "developer-sandbox",
+      resourceId: "product-telemetry",
       role: "viewer",
-      actions: ["read", "list"],
+      actions: ["aggregate.read"],
       createdAt: now.toISOString(),
       expiresAt: "2030-01-02T00:00:00.000Z",
       status: "active",
       idempotencyKey: "long-ttl",
     };
     sandbox.restore(baseline);
+
+    const reviewed = calculateReleaseDiff({
+      request: {
+        ...extracted,
+        subjectEmail: baseline.subjectEmail,
+        resourceId: baseline.resourceId,
+        requestedRole: "viewer",
+        requestedActions: ["aggregate.read"],
+        durationHours: 2,
+      },
+      decision: { ...decision, effectiveRole: "viewer", effectiveActions: ["aggregate.read"], maxDurationHours: 24 },
+      currentAccess: [baseline],
+      now,
+    });
+    expect(reviewed.after.expiresAt).toBe("2030-01-01T02:00:00.000Z");
 
     const applied = sandbox.grant({
       subjectEmail: baseline.subjectEmail,
@@ -193,15 +223,15 @@ describe("IAM sandbox safety tools", () => {
     expect(applied.replacedGrants.map((grant) => grant.grantId)).toEqual([baseline.grantId]);
   });
 
-  it("expires grants using the injected clock and ignores them in diff and verification", () => {
+  it("expires shares using the injected clock and ignores them in diff and verification", () => {
     let now = new Date("2030-01-01T00:00:00.000Z");
-    const sandbox = new IamSandbox(() => new Date(now));
+    const sandbox = new ShareSandbox(() => new Date(now));
     const expiring: AccessGrant = {
       grantId: "gr_expiring",
       subjectEmail: "clock@acme.example",
-      resourceId: "developer-sandbox",
+      resourceId: "product-telemetry",
       role: "operator",
-      actions: ["read", "list", "logs", "restart"],
+      actions: ["aggregate.read", "profile.read", "email.export", "phone.export"],
       createdAt: now.toISOString(),
       expiresAt: "2030-01-01T01:00:00.000Z",
       status: "active",
@@ -218,14 +248,14 @@ describe("IAM sandbox safety tools", () => {
       sandbox.verify({ subjectEmail: expiring.subjectEmail, resourceId: expiring.resourceId, expected: null }),
     ).toMatchObject({ verified: true, activeGrantCount: 0 });
 
-    const diff = calculateAccessDiff({
+    const diff = calculateReleaseDiff({
       request: { ...extracted, subjectEmail: expiring.subjectEmail, resourceId: expiring.resourceId },
-      decision: { ...decision, effectiveRole: "viewer", effectiveActions: ["read", "list"] },
+      decision: { ...decision, effectiveRole: "viewer", effectiveActions: ["aggregate.read"] },
       currentAccess: [{ ...expiring, status: "active" }],
       now,
     });
     expect(diff.before.role).toBeNull();
     expect(diff.removals).toEqual([]);
-    expect(diff.additions).toEqual(["read", "list"]);
+    expect(diff.additions).toEqual(["aggregate.read"]);
   });
 });

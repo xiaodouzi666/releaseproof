@@ -1,11 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <defs>
     <linearGradient id="g" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#79f2c0"/>
-      <stop offset="1" stop-color="#39bff8"/>
+      <stop stop-color="#a7ff5c"/>
+      <stop offset="1" stop-color="#49e4d0"/>
     </linearGradient>
   </defs>
   <path fill="#07110f" d="M32 2 58 17v30L32 62 6 47V17z"/>
   <path fill="none" stroke="url(#g)" stroke-width="4" stroke-linejoin="round" d="M32 8 52 20v24L32 56 12 44V20z"/>
-  <path fill="none" stroke="url(#g)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" d="M21 31h22M24 31v13m16-13v13M20 45h24M27 31v-5a5 5 0 0 1 10 0v5"/>
+  <ellipse cx="27" cy="23" rx="10" ry="4" fill="none" stroke="url(#g)" stroke-width="3"/>
+  <path d="M17 23v13c0 2 4 4 10 4 3 0 5-.4 7-1.2M17 30c0 2 4 4 10 4 3 0 5-.4 7-1.2" fill="none" stroke="url(#g)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M34 27h12l-4-4m4 4-4 4M45 39H33l4-4m-4 4 4 4" fill="none" stroke="url(#g)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

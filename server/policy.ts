@@ -7,15 +7,25 @@ import type {
   PolicyFinding,
   ResourceProfile,
   RiskLevel,
+  TicketEvidence,
 } from "../shared/contracts.js";
 
-export const POLICY_VERSION = "grantguard-policy-2026.07.3";
+export const POLICY_VERSION = "releaseproof-policy-2026.07.1";
 
+// The stable internal tier values keep the workflow/store compatible. Publicly
+// they mean aggregate, profile, contact-export, and raw release respectively.
 const ROLE_ACTIONS: Record<ExtractedAccessRequest["requestedRole"], string[]> = {
-  viewer: ["read", "list"],
-  contributor: ["read", "list", "write", "deploy"],
-  operator: ["read", "list", "logs", "deploy", "restart"],
-  admin: ["read", "list", "logs", "write", "deploy", "restart", "iam.manage", "delete"],
+  viewer: ["aggregate.read"],
+  contributor: ["aggregate.read", "profile.read"],
+  operator: ["aggregate.read", "profile.read", "email.export", "phone.export"],
+  admin: [
+    "aggregate.read",
+    "profile.read",
+    "email.export",
+    "phone.export",
+    "raw.export",
+    "consent.override",
+  ],
 };
 
 const ROLE_RANK: Record<ExtractedAccessRequest["requestedRole"], number> = {
@@ -26,15 +36,16 @@ const ROLE_RANK: Record<ExtractedAccessRequest["requestedRole"], number> = {
 };
 
 const ACTION_ROLE: Record<string, ExtractedAccessRequest["requestedRole"]> = {
-  read: "viewer",
-  list: "viewer",
-  logs: "operator",
-  write: "contributor",
-  deploy: "contributor",
-  restart: "operator",
-  "iam.manage": "admin",
-  delete: "admin",
+  "aggregate.read": "viewer",
+  "profile.read": "contributor",
+  "email.export": "operator",
+  "phone.export": "operator",
+  "raw.export": "admin",
+  "consent.override": "admin",
 };
+
+const DIRECT_IDENTIFIER_ACTIONS = new Set(["email.export", "phone.export"]);
+const PROHIBITED_ACTIONS = new Set(["raw.export", "consent.override"]);
 
 function finding(
   id: string,
@@ -74,15 +85,16 @@ export interface PolicyInput {
   request: ExtractedAccessRequest;
   user: DirectoryUser | null;
   resource: ResourceProfile | null;
+  agreement?: TicketEvidence | null;
   currentAccess: AccessGrant[];
 }
 
 /**
- * Deterministic, fail-closed authorization policy. Model output is treated as
- * untrusted input and can never override these rules.
+ * Deterministic, fail-closed external-release policy. Qwen output and agreement
+ * text are evidence, never authority. Only code can reduce or reject fields.
  */
 export function evaluatePolicy(input: PolicyInput): PolicyDecision {
-  const { request, user, resource, currentAccess } = input;
+  const { request, user: recipient, resource: dataset, agreement, currentAccess } = input;
   const findings: PolicyFinding[] = [];
   let score = 5;
   let denied = false;
@@ -94,12 +106,12 @@ export function evaluatePolicy(input: PolicyInput): PolicyDecision {
     score = 100;
     findings.push(
       finding(
-        "request.actions_invalid",
+        "request.fields_invalid",
         "critical",
-        "Invalid action scope",
+        "Invalid release scope",
         normalizedActions.invalid.length
-          ? `Unknown or empty actions are not permitted: ${normalizedActions.invalid.map((action) => action || "<empty>").join(", ")}.`
-          : "At least one explicit allowlisted action is required; role defaults are never expanded implicitly.",
+          ? `Unknown or empty field actions are not releasable: ${normalizedActions.invalid.map((action) => action || "<empty>").join(", ")}.`
+          : "At least one explicit allowlisted field action is required; a release tier never expands into unnamed fields.",
         "deny",
       ),
     );
@@ -112,117 +124,142 @@ export function evaluatePolicy(input: PolicyInput): PolicyDecision {
     score = 100;
     findings.push(
       finding(
-        "privilege.actions_exceed_requested_role",
+        "release.fields_exceed_requested_tier",
         "critical",
-        "Actions exceed requested role",
-        `The named actions require ${initiallyRequiredRole}, which is broader than the explicitly requested ${request.requestedRole} role. GrantGuard will not infer a role escalation.`,
+        "Fields exceed requested tier",
+        `The named fields require ${initiallyRequiredRole}, broader than the explicitly requested ${request.requestedRole} tier. ReleaseProof will not infer a broader release.`,
         "deny",
       ),
     );
     actions = [];
   }
 
-  if (!user || !user.active) {
+  if (!recipient || !recipient.active) {
     denied = true;
     score = 100;
     findings.push(
       finding(
-        "identity.inactive_or_unknown",
+        "recipient.inactive_or_unknown",
         "critical",
-        "Identity is not eligible",
-        "The subject is absent from the directory or is inactive. Policy fails closed.",
+        "Recipient is not eligible",
+        "The external recipient is absent from the vendor registry or inactive. ReleaseProof fails closed.",
+        "deny",
+      ),
+    );
+  } else if (!recipient.verified) {
+    denied = true;
+    score = 100;
+    findings.push(
+      finding(
+        "recipient.unverified",
+        "critical",
+        "Vendor is not verified",
+        "Vendor verification must be complete before any data field, including aggregates, can be shared.",
         "deny",
       ),
     );
   }
 
-  if (!resource) {
+  if (!dataset) {
     denied = true;
     score = 100;
     findings.push(
       finding(
-        "resource.unknown",
+        "dataset.unknown",
         "critical",
-        "Unknown resource",
-        "The requested resource is not in the governed resource catalog.",
+        "Unknown dataset",
+        "The requested dataset is not in the governed data catalog.",
         "deny",
       ),
     );
   }
 
-  if (user && request.subjectEmail.toLowerCase() !== user.email.toLowerCase()) {
+  if (recipient && request.subjectEmail.toLowerCase() !== recipient.email.toLowerCase()) {
     denied = true;
     score = 100;
     findings.push(
       finding(
-        "identity.subject_mismatch",
+        "recipient.mismatch",
         "critical",
-        "Subject mismatch",
-        "The extracted subject does not match the resolved directory identity.",
+        "Recipient mismatch",
+        "The extracted recipient does not match the resolved vendor-registry entry.",
         "deny",
       ),
     );
   }
 
-  if (resource?.environment === "production") {
-    score += 35;
+  if (dataset?.classification === "restricted") {
+    denied = true;
+    score = 100;
     findings.push(
       finding(
-        "environment.production",
-        "high",
-        "Production resource",
-        "Production changes require an explicit human approval and a short expiry.",
-        "constrain",
+        "dataset.restricted_external_release",
+        "critical",
+        "Restricted dataset cannot leave the boundary",
+        "This prototype never releases restricted datasets externally, even when a recipient and agreement are valid.",
+        "deny",
       ),
     );
-    if (user && !user.mfaEnrolled) {
-      denied = true;
-      score = 100;
-      findings.push(
-        finding("identity.mfa_required", "critical", "MFA required", "Production access requires enrolled MFA.", "deny"),
-      );
-    }
-  }
-
-  if (resource?.classification === "restricted") {
-    score += 45;
-    if (user?.clearance !== "restricted") {
-      denied = true;
-      score = 100;
-      findings.push(
-        finding(
-          "clearance.insufficient",
-          "critical",
-          "Insufficient clearance",
-          "Restricted data may only be accessed by identities with restricted clearance.",
-          "deny",
-        ),
-      );
-    }
-  } else if (resource?.classification === "confidential") {
+  } else if (dataset?.classification === "confidential") {
     score += 25;
     findings.push(
       finding(
-        "data.confidential",
+        "dataset.confidential",
         "high",
-        "Confidential data",
-        "Access is time boxed and recorded for the resource owner.",
+        "Confidential dataset",
+        "Only minimized fields may be released, with an active agreement, a short expiry, and named human approval.",
         "constrain",
       ),
     );
   }
 
-  if (user?.employmentType === "contractor") {
-    score += 20;
-    if (resource?.environment === "production" && ROLE_RANK[request.requestedRole] >= ROLE_RANK.operator) {
+  if (dataset?.containsDirectIdentifiers) {
+    score += 15;
+    findings.push(
+      finding(
+        "dataset.direct_identifiers_present",
+        "high",
+        "Direct identifiers present",
+        "The source contains direct identifiers, so the release envelope is minimized before approval.",
+        "constrain",
+      ),
+    );
+  }
+
+  if (recipient?.agreementRequired) {
+    if (!request.ticketId || !agreement) {
       denied = true;
       score = 100;
       findings.push(
         finding(
-          "contractor.production_privileged",
+          "agreement.missing",
           "critical",
-          "Privileged contractor access blocked",
-          "Contractors cannot receive operator or administrator roles in production.",
+          "Active agreement required",
+          "The recipient requires a registered agreement, and no matching agreement record was resolved.",
+          "deny",
+        ),
+      );
+    } else if (agreement.status !== "active") {
+      denied = true;
+      score = 100;
+      findings.push(
+        finding(
+          "agreement.inactive",
+          "critical",
+          "Agreement is not active",
+          `Agreement ${agreement.ticketId} is ${agreement.status}; draft or expired agreements cannot authorize a release.`,
+          "deny",
+        ),
+      );
+    } else if (agreement.recipientEmail.toLowerCase() !== request.subjectEmail.toLowerCase()) {
+      denied = true;
+      score = 100;
+      findings.push(
+        finding(
+          "agreement.recipient_mismatch",
+          "critical",
+          "Agreement belongs to another recipient",
+          "Agreement evidence is reference-only and cannot be transferred to a different vendor identity.",
           "deny",
         ),
       );
@@ -234,10 +271,10 @@ export function evaluatePolicy(input: PolicyInput): PolicyDecision {
     score = 100;
     findings.push(
       finding(
-        "request.justification_missing",
+        "request.purpose_missing",
         "critical",
-        "Insufficient justification",
-        "A specific business or incident justification is required.",
+        "Specific purpose required",
+        "A concrete external-use purpose is required before any field-level release can be proposed.",
         "deny",
       ),
     );
@@ -247,55 +284,57 @@ export function evaluatePolicy(input: PolicyInput): PolicyDecision {
     score += 30;
     findings.push(
       finding(
-        "privilege.admin_requested",
+        "release.raw_tier_requested",
         "critical",
-        "Administrator role requested",
-        "Administrator requests receive the highest scrutiny even when least-privilege reduction is possible.",
+        "Raw release tier requested",
+        "Raw or consent-override requests receive maximum scrutiny and are reduced to safe, named fields when possible.",
         "constrain",
       ),
     );
   }
 
-  if (resource?.environment === "production" && !request.ticketId) {
+  const directIdentifiers = actions.filter((action) => DIRECT_IDENTIFIER_ACTIONS.has(action));
+  if (directIdentifiers.length) {
+    actions = actions.filter((action) => !DIRECT_IDENTIFIER_ACTIONS.has(action));
     score += 20;
     findings.push(
       finding(
-        "request.ticket_missing",
-        "high",
-        "No change ticket detected",
-        "Approval should confirm an accountable ticket before execution.",
+        "fields.direct_identifiers_removed",
+        "critical",
+        "Direct identifiers removed",
+        `Field minimization removed ${directIdentifiers.join(", ")}; this release sandbox never exports direct contact identifiers.`,
         "constrain",
       ),
     );
   }
 
-  const dangerous: string[] = actions.filter((action) => action === "iam.manage" || action === "delete");
-  if (dangerous.length) {
-    actions = actions.filter((action) => !dangerous.includes(action));
+  const prohibited = actions.filter((action) => PROHIBITED_ACTIONS.has(action));
+  if (prohibited.length) {
+    actions = actions.filter((action) => !PROHIBITED_ACTIONS.has(action));
     score += 25;
     findings.push(
       finding(
-        "privilege.dangerous_actions_removed",
+        "fields.prohibited_exports_removed",
         "critical",
-        "Dangerous actions removed",
-        "This prototype never grants IAM-management or delete scope; a ticket-shaped reference is not authoritative proof.",
+        "Raw and consent-bypass actions removed",
+        `ReleaseProof removed ${prohibited.join(", ")}; an agreement-shaped reference never permits raw export or consent override.`,
         "constrain",
       ),
     );
+  }
 
-    if (actions.length === 0) {
-      denied = true;
-      score = 100;
-      findings.push(
-        finding(
-          "privilege.no_safe_actions_remaining",
-          "critical",
-          "No grantable actions remain",
-          "Every requested action is outside GrantGuard's grantable scope, so the request is denied before approval or execution.",
-          "deny",
-        ),
-      );
-    }
+  if (!denied && actions.length === 0) {
+    denied = true;
+    score = 100;
+    findings.push(
+      finding(
+        "fields.no_safe_scope_remaining",
+        "critical",
+        "No releasable fields remain",
+        "Every requested field action is prohibited, so the request is denied before approval or sharing.",
+        "deny",
+      ),
+    );
   }
 
   let effectiveRole = actions.length ? minimumRoleForActions(actions) : request.requestedRole;
@@ -303,17 +342,17 @@ export function evaluatePolicy(input: PolicyInput): PolicyDecision {
     score += 15;
     findings.push(
       finding(
-        "least_privilege.role_reduced",
+        "minimization.tier_reduced",
         "high",
-        "Role reduced to minimum",
-        `The requested admin role was reduced to ${effectiveRole}, which is sufficient for the named actions.`,
+        "Release tier reduced",
+        `The requested ${request.requestedRole} tier was reduced to ${effectiveRole}, the minimum tier for the remaining fields.`,
         "constrain",
       ),
     );
   }
 
-  if (resource && !resource.allowedRoles.includes(effectiveRole)) {
-    const allowed = [...resource.allowedRoles].sort((a, b) => ROLE_RANK[b] - ROLE_RANK[a]);
+  if (dataset && !dataset.allowedRoles.includes(effectiveRole)) {
+    const allowed = [...dataset.allowedRoles].sort((a, b) => ROLE_RANK[b] - ROLE_RANK[a]);
     const requiredRank = ROLE_RANK[actions.length ? minimumRoleForActions(actions) : request.requestedRole];
     const compatible = allowed.find(
       (role) => ROLE_RANK[role] >= requiredRank && ROLE_RANK[role] <= ROLE_RANK[request.requestedRole],
@@ -323,10 +362,10 @@ export function evaluatePolicy(input: PolicyInput): PolicyDecision {
       score = 100;
       findings.push(
         finding(
-          "resource.role_not_allowed",
+          "dataset.tier_not_allowed",
           "critical",
-          "Role not permitted on resource",
-          "The resource catalog cannot satisfy the requested actions with an allowed role.",
+          "Release tier not allowed for dataset",
+          "The data catalog cannot satisfy the requested fields within an allowed release tier.",
           "deny",
         ),
       );
@@ -336,29 +375,32 @@ export function evaluatePolicy(input: PolicyInput): PolicyDecision {
   }
 
   const alreadyHasEquivalent = currentAccess.some(
-    (grant) => grant.status === "active" && ROLE_RANK[grant.role] >= ROLE_RANK[effectiveRole],
+    (grant) =>
+      grant.status === "active" &&
+      ROLE_RANK[grant.role] >= ROLE_RANK[effectiveRole] &&
+      actions.every((action) => grant.actions.includes(action)),
   );
   if (alreadyHasEquivalent) {
     findings.push(
       finding(
-        "access.duplicate_avoided",
+        "share.duplicate_avoided",
         "low",
-        "Existing access detected",
-        "The diff engine will avoid duplicating permissions that are already active.",
+        "Existing share detected",
+        "The exact release envelope is already active; execution will verify it instead of creating a duplicate share.",
         "permit",
       ),
     );
   }
 
-  const maxDurationHours = resource?.classification === "restricted" ? 2 : resource?.environment === "production" ? 4 : 24;
+  const maxDurationHours = dataset?.classification === "confidential" ? 8 : 24;
   if (request.durationHours > maxDurationHours) {
     score += 10;
     findings.push(
       finding(
         "expiry.duration_reduced",
         "medium",
-        "Duration reduced",
-        `Requested duration was capped at ${maxDurationHours} hours.`,
+        "Release window reduced",
+        `The requested window was capped at ${maxDurationHours} hours and will be recalled automatically.`,
         "constrain",
       ),
     );
@@ -371,8 +413,8 @@ export function evaluatePolicy(input: PolicyInput): PolicyDecision {
       finding(
         "approval.human_gate",
         risk,
-        "Human approval required",
-        "GrantGuard never applies an access change without an explicit named approver.",
+        "Human release approval required",
+        "ReleaseProof never creates an external share without a named human approving the exact recipient, dataset, fields, and expiry.",
         "constrain",
       ),
     );

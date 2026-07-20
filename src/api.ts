@@ -189,7 +189,7 @@ function normalizeRequest(value: unknown): AccessRequest | undefined {
         item.requesterEmail,
         item.user,
       ),
-      "Unknown requester",
+      "Unknown vendor recipient",
     ),
     requesterRole: stringValue(firstDefined(item.requesterRole, item.role, requesterRecord.role), undefined),
     resource: stringValue(
@@ -201,10 +201,10 @@ function normalizeRequest(value: unknown): AccessRequest | undefined {
         item.resourceId,
         item.target,
       ),
-      "Unspecified resource",
+      "Unspecified dataset",
     ),
     accessLevel: stringValue(firstDefined(item.accessLevel, item.permission, item.requestedAccess, item.requestedRole, item.access), "Unspecified"),
-    reason: stringValue(firstDefined(item.reason, item.justification, item.businessReason), "No reason supplied"),
+    reason: stringValue(firstDefined(item.reason, item.justification, item.businessReason), "No release purpose supplied"),
     duration: item.durationHours !== undefined
       ? `${numberValue(item.durationHours)} hours`
       : stringValue(firstDefined(item.duration, item.requestedDuration, item.ttl, item.expiresIn), "Not specified"),
@@ -243,9 +243,9 @@ function normalizePermissionDiff(value: unknown): PermissionChange[] {
     const rawAction = stringValue(firstDefined(wrapper.action, item.action, item.operation, item.change), "add").toLowerCase();
     const action = (["add", "remove", "keep", "deny"].includes(rawAction) ? rawAction : "add") as PermissionChange["action"];
     return {
-      id: stringValue(firstDefined(item.id, item.permissionId), `permission-${index}`),
+      id: stringValue(firstDefined(item.id, item.permissionId), `release-scope-${index}`),
       action,
-      permission: stringValue(firstDefined(item.permission, item.name, item.role, item.entitlement, typeof rawItem === "string" ? rawItem : undefined), "Permission"),
+      permission: stringValue(firstDefined(item.permission, item.name, item.role, item.entitlement, typeof rawItem === "string" ? rawItem : undefined), "Release scope"),
       scope: stringValue(firstDefined(item.scope, item.resource, item.target), undefined),
       from: stringValue(firstDefined(item.from, item.current), undefined),
       to: stringValue(firstDefined(item.to, item.proposed, item.value), undefined),
@@ -423,10 +423,13 @@ export function normalizeMetrics(value: unknown): MetricDatum[] {
   }
   const ignored = new Set(["generatedAt", "updatedAt", "timestamp", "title", "status"]);
   const labelOverrides: Record<string, string> = {
-    totalWorkflows: "Total Workflows",
-    completionRate: "Completion Rate",
+    totalWorkflows: "Total Release Runs",
+    completionRate: "Proven Release Rate",
+    approvalRate: "Owner Approval Rate",
+    rollbackRate: "Verified Recall Rate",
+    denialRate: "Policy Denial Rate",
     toolSuccessRate: "Tool Success Rate",
-    averageTimeToDecisionMs: "Decision Latency",
+    averageTimeToDecisionMs: "Release Decision Latency",
     averageToolLatencyMs: "Tool Latency",
   };
   const base = Object.entries(source)

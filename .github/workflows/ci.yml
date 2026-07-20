@@ -43,29 +43,29 @@ jobs:
         run: pnpm build
 
       - name: Build production container
-        run: docker build --tag grantguard:ci .
+        run: docker build --tag releaseproof:ci .
 
       - name: Smoke-test production container
         run: |
-          docker run --detach --name grantguard-ci --publish 8787:8787 \
+          docker run --detach --name releaseproof-ci --publish 8787:8787 \
             --env AUDIT_STORE=memory \
             --env DEMO_STEP_DELAY_MS=0 \
             --env WORKFLOW_CREATE_LIMIT_PER_MINUTE=100 \
-            grantguard:ci
+            releaseproof:ci
           for attempt in {1..30}; do
             if curl --fail --silent --show-error http://127.0.0.1:8787/api/health > health.json; then
               break
             fi
             if [ "$attempt" -eq 30 ]; then
-              docker logs grantguard-ci
+              docker logs releaseproof-ci
               exit 1
             fi
             sleep 1
           done
-          node -e "const h=require('./health.json'); if(h.status!=='ok'||h.service!=='grantguard-api') process.exit(1)"
+          node -e "const h=require('./health.json'); if(h.status!=='ok'||h.service!=='releaseproof-api') process.exit(1)"
           curl --fail --silent http://127.0.0.1:8787/non-api-deep-link | grep --quiet 'id="root"'
 
       - name: Clean up production container
         if: always()
         continue-on-error: true
-        run: docker rm --force grantguard-ci
+        run: docker rm --force releaseproof-ci

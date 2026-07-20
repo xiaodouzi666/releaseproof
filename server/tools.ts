@@ -12,146 +12,149 @@ import type {
 
 const DIRECTORY: DirectoryUser[] = [
   {
-    id: "usr_alice",
-    email: "alice@acme.example",
-    displayName: "Alice Chen",
-    department: "Site Reliability Engineering",
-    managerEmail: "marcus@acme.example",
-    employmentType: "employee",
+    id: "recipient_northstar_analyst",
+    email: "analyst@northstar.example",
+    displayName: "Northstar Campaign Analyst",
+    organization: "Northstar Processing",
+    relationship: "processor",
     active: true,
-    mfaEnrolled: true,
+    verified: true,
+    agreementRequired: true,
+    clearance: "confidential",
+  },
+  {
+    id: "recipient_northstar_research",
+    email: "research@northstar.example",
+    displayName: "Northstar Research Processor",
+    organization: "Northstar Processing",
+    relationship: "processor",
+    active: true,
+    verified: true,
+    agreementRequired: true,
     clearance: "restricted",
   },
   {
-    id: "usr_nina",
-    email: "nina.contractor@acme.example",
-    displayName: "Nina Patel",
-    department: "Finance Transformation",
-    managerEmail: "priya@acme.example",
-    employmentType: "contractor",
+    id: "recipient_atlas_insights",
+    email: "insights@atlas.example",
+    displayName: "Atlas Product Insights",
+    organization: "Atlas Analytics",
+    relationship: "partner",
     active: true,
-    mfaEnrolled: true,
-    clearance: "standard",
-  },
-  {
-    id: "usr_mateo",
-    email: "mateo@acme.example",
-    displayName: "Mateo Silva",
-    department: "Storefront Engineering",
-    managerEmail: "dana@acme.example",
-    employmentType: "employee",
-    active: true,
-    mfaEnrolled: true,
+    verified: true,
+    agreementRequired: true,
     clearance: "confidential",
   },
   {
-    id: "usr_former",
-    email: "former.employee@acme.example",
-    displayName: "Former Employee",
-    department: "Alumni",
-    managerEmail: "security@acme.example",
-    employmentType: "employee",
+    id: "recipient_retired_archive",
+    email: "archive@retired-vendor.example",
+    displayName: "Retired Vendor Archive",
+    organization: "Retired Vendor Ltd",
+    relationship: "contractor",
     active: false,
-    mfaEnrolled: false,
+    verified: true,
+    agreementRequired: true,
     clearance: "standard",
   },
   {
-    id: "usr_jordan",
-    email: "jordan@acme.example",
-    displayName: "Jordan Lee",
-    department: "Product Analytics",
-    managerEmail: "ava@acme.example",
-    employmentType: "employee",
+    id: "recipient_unknown_exporter",
+    email: "export@unknown-vendor.example",
+    displayName: "Pending Export Vendor",
+    organization: "Unknown Vendor",
+    relationship: "contractor",
     active: true,
-    mfaEnrolled: true,
-    clearance: "confidential",
+    verified: false,
+    agreementRequired: true,
+    clearance: "standard",
   },
 ];
 
 const RESOURCES: ResourceProfile[] = [
   {
-    id: "payments-prod",
-    name: "Payments Production",
-    environment: "production",
+    id: "campaign-performance",
+    name: "Campaign Performance",
+    environment: "analytics",
     classification: "confidential",
-    ownerEmail: "payments-owners@acme.example",
-    allowedRoles: ["viewer", "operator"],
-  },
-  {
-    id: "finance-ledger-prod",
-    name: "Finance Ledger Production",
-    environment: "production",
-    classification: "restricted",
-    ownerEmail: "finance-security@acme.example",
+    ownerEmail: "marketing-data@acme.example",
     allowedRoles: ["viewer", "contributor"],
+    containsDirectIdentifiers: true,
   },
   {
-    id: "storefront-staging",
-    name: "Storefront Staging",
-    environment: "staging",
+    id: "patient-outcomes-restricted",
+    name: "Patient Outcomes",
+    environment: "regulated",
+    classification: "restricted",
+    ownerEmail: "health-privacy@acme.example",
+    allowedRoles: ["viewer"],
+    containsDirectIdentifiers: true,
+  },
+  {
+    id: "product-telemetry",
+    name: "Product Telemetry",
+    environment: "analytics",
     classification: "internal",
-    ownerEmail: "storefront-owners@acme.example",
-    allowedRoles: ["viewer", "contributor", "operator"],
+    ownerEmail: "product-data@acme.example",
+    allowedRoles: ["viewer", "contributor"],
+    containsDirectIdentifiers: false,
   },
   {
-    id: "analytics-prod",
-    name: "Analytics Production",
-    environment: "production",
+    id: "support-contacts",
+    name: "Support Contact Profiles",
+    environment: "operational",
     classification: "confidential",
-    ownerEmail: "data-platform@acme.example",
-    allowedRoles: ["viewer", "operator"],
+    ownerEmail: "support-privacy@acme.example",
+    allowedRoles: ["viewer", "contributor"],
+    containsDirectIdentifiers: true,
   },
   {
-    id: "developer-sandbox",
-    name: "Developer Sandbox",
-    environment: "development",
-    classification: "internal",
-    ownerEmail: "developer-experience@acme.example",
-    allowedRoles: ["viewer", "contributor", "operator", "admin"],
+    id: "orders-raw-restricted",
+    name: "Raw Customer Orders",
+    environment: "regulated",
+    classification: "restricted",
+    ownerEmail: "commerce-privacy@acme.example",
+    allowedRoles: ["viewer"],
+    containsDirectIdentifiers: true,
   },
 ];
 
 const TICKETS: TicketEvidence[] = [
   {
-    ticketId: "INC-4821",
-    title: "Checkout production incident response",
-    status: "in_progress",
-    ownerEmail: "incident-command@acme.example",
+    ticketId: "DPA-203",
+    title: "Northstar campaign processing agreement",
+    status: "active",
+    ownerEmail: "privacy@acme.example",
+    recipientEmail: "analyst@northstar.example",
     referenceOnly: true,
   },
   {
-    ticketId: "FIN-992",
-    title: "External finance reconciliation",
-    status: "open",
-    ownerEmail: "finance-security@acme.example",
+    ticketId: "BAA-440",
+    title: "Northstar health research agreement",
+    status: "active",
+    ownerEmail: "health-privacy@acme.example",
+    recipientEmail: "research@northstar.example",
     referenceOnly: true,
   },
   {
-    ticketId: "DEV-193",
-    title: "Storefront search staging rollout",
-    status: "open",
-    ownerEmail: "storefront-owners@acme.example",
+    ticketId: "DSA-118",
+    title: "Atlas aggregate analytics agreement",
+    status: "active",
+    ownerEmail: "product-data@acme.example",
+    recipientEmail: "insights@atlas.example",
     referenceOnly: true,
   },
   {
-    ticketId: "OPS-771",
-    title: "Analytics pipeline recovery",
-    status: "closed",
-    ownerEmail: "data-platform@acme.example",
+    ticketId: "DSA-077",
+    title: "Retired vendor data sharing agreement",
+    status: "expired",
+    ownerEmail: "privacy@acme.example",
+    recipientEmail: "archive@retired-vendor.example",
     referenceOnly: true,
   },
   {
-    ticketId: "DATA-624",
-    title: "Q3 analytics planning review",
-    status: "open",
-    ownerEmail: "data-platform@acme.example",
-    referenceOnly: true,
-  },
-  {
-    ticketId: "SEC-902",
-    title: "Sandbox security exercise",
-    status: "in_progress",
-    ownerEmail: "security@acme.example",
+    ticketId: "DPA-999",
+    title: "Draft onboarding agreement",
+    status: "draft",
+    ownerEmail: "privacy@acme.example",
+    recipientEmail: "export@unknown-vendor.example",
     referenceOnly: true,
   },
 ];
@@ -163,6 +166,7 @@ function seededGrant(
   role: ExtractedAccessRequest["requestedRole"],
   actions: string[],
   now: Date,
+  durationHours = 24,
 ): AccessGrant {
   return {
     grantId,
@@ -171,7 +175,7 @@ function seededGrant(
     role,
     actions,
     createdAt: now.toISOString(),
-    expiresAt: new Date(now.getTime() + 48 * 3_600_000).toISOString(),
+    expiresAt: new Date(now.getTime() + durationHours * 3_600_000).toISOString(),
     status: "active",
     idempotencyKey: `seed:${grantId}`,
   };
@@ -191,12 +195,12 @@ export interface ApplyDesiredAccessResult {
 
 export class StaleGrantError extends Error {
   constructor(
-    operation: "apply" | "rollback",
+    operation: "create" | "recall",
     public readonly expectedGrantIds: string[],
     public readonly actualGrantIds: string[],
   ) {
     super(
-      `Stale ${operation} baseline: expected active grant(s) [${expectedGrantIds.join(", ") || "none"}], ` +
+      `Stale ${operation} baseline: expected active share(s) [${expectedGrantIds.join(", ") || "none"}], ` +
         `found [${actualGrantIds.join(", ") || "none"}]`,
     );
     this.name = "StaleGrantError";
@@ -205,7 +209,7 @@ export class StaleGrantError extends Error {
 
 export class ExpiredProposalError extends Error {
   constructor(public readonly expiresAt: string) {
-    super(`Reviewed access proposal expired at ${expiresAt}; no IAM mutation was applied`);
+    super(`Reviewed release proposal expired at ${expiresAt}; no external share was created`);
     this.name = "ExpiredProposalError";
   }
 }
@@ -226,8 +230,8 @@ export interface EffectiveStateTarget {
   grant: AccessGrant | null;
 }
 
-/** In-memory IAM adapter. It deliberately models only the sandbox, never real IAM. */
-export class IamSandbox {
+/** In-memory share adapter. It models only a reversible release sandbox, never a real data export. */
+export class ShareSandbox {
   private readonly grants = new Map<string, AccessGrant>();
   private readonly idempotency = new Map<string, string>();
   private readonly applications = new Map<string, { grantId: string; replacedGrants: AccessGrant[] }>();
@@ -236,13 +240,15 @@ export class IamSandbox {
   constructor(private readonly clock: () => Date = () => new Date()) {
     const now = this.clock();
     const seeds = [
-      seededGrant("gr_seed_jordan", "jordan@acme.example", "analytics-prod", "operator", [
-        "read",
-        "list",
-        "logs",
-        "restart",
-      ], now),
-      seededGrant("gr_seed_mateo", "mateo@acme.example", "storefront-staging", "viewer", ["read", "list"], now),
+      seededGrant(
+        "share_seed_atlas",
+        "insights@atlas.example",
+        "product-telemetry",
+        "viewer",
+        ["aggregate.read"],
+        now,
+        8,
+      ),
     ];
     for (const grant of seeds) {
       this.grants.set(grant.grantId, grant);
@@ -292,9 +298,9 @@ export class IamSandbox {
     }
 
     const actions = [...new Set(input.actions.map((action) => action.trim()))].filter(Boolean);
-    if (!actions.length) throw new Error("Exact desired access requires at least one explicit action");
+    if (!actions.length) throw new Error("Exact desired release requires at least one explicit field-level action");
     const expiresAtMs = new Date(input.expiresAt).getTime();
-    if (!Number.isFinite(expiresAtMs)) throw new Error("Exact desired access requires a valid expiry");
+    if (!Number.isFinite(expiresAtMs)) throw new Error("Exact desired release requires a valid expiry");
     const nowDate = this.clock();
     if (expiresAtMs <= nowDate.getTime() + 60_000) throw new ExpiredProposalError(input.expiresAt);
     const currentBaseline = this.effectiveCurrentWithoutMutation(input.subjectEmail, input.resourceId, nowDate);
@@ -303,7 +309,7 @@ export class IamSandbox {
     );
     if (this.canonicalBaseline(currentBaseline) !== this.canonicalBaseline(expectedBaseline)) {
       throw new StaleGrantError(
-        "apply",
+        "create",
         expectedBaseline.map((grant) => grant.grantId),
         currentBaseline.map((grant) => grant.grantId),
       );
@@ -342,7 +348,7 @@ export class IamSandbox {
   revoke(grantId: string): { grant: AccessGrant; replayed: boolean } {
     this.expireDueGrants();
     const grant = this.grants.get(grantId);
-    if (!grant) throw new Error(`Sandbox grant ${grantId} does not exist`);
+    if (!grant) throw new Error(`Sandbox share ${grantId} does not exist`);
     if (grant.status === "revoked") return { grant: structuredClone(grant), replayed: true };
     grant.status = "revoked";
     grant.revokedAt = this.clock().toISOString();
@@ -362,7 +368,7 @@ export class IamSandbox {
     const prior = this.rollbacks.get(input.idempotencyKey);
     if (prior) {
       const revokedGrant = this.grants.get(prior.revokedGrantId);
-      if (!revokedGrant) throw new Error(`Sandbox grant ${prior.revokedGrantId} does not exist`);
+      if (!revokedGrant) throw new Error(`Sandbox share ${prior.revokedGrantId} does not exist`);
       return {
         revokedGrant: structuredClone(revokedGrant),
         restoredGrants: prior.restoredGrantIds
@@ -374,7 +380,7 @@ export class IamSandbox {
     }
 
     const changedGrant = this.grants.get(input.grantId);
-    if (!changedGrant) throw new Error(`Sandbox grant ${input.grantId} does not exist`);
+    if (!changedGrant) throw new Error(`Sandbox share ${input.grantId} does not exist`);
     const restoreNow = this.clock();
     const baseline = input.baseline
       .filter(
@@ -388,7 +394,7 @@ export class IamSandbox {
           grant.resourceId !== changedGrant.resourceId,
       )
     ) {
-      throw new Error("Rollback baseline does not belong to the changed subject and resource");
+      throw new Error("Recall baseline does not belong to the changed recipient and dataset");
     }
 
     const current = this.effectiveCurrentWithoutMutation(
@@ -398,7 +404,7 @@ export class IamSandbox {
     );
     if (current.length !== 1 || current[0]!.grantId !== input.grantId) {
       throw new StaleGrantError(
-        "rollback",
+        "recall",
         [input.grantId],
         current.map((grant) => grant.grantId),
       );
@@ -437,7 +443,7 @@ export class IamSandbox {
     const prior = this.rollbacks.get(input.idempotencyKey);
     if (prior) {
       const revokedGrant = this.grants.get(prior.revokedGrantId);
-      if (!revokedGrant) throw new Error(`Sandbox grant ${prior.revokedGrantId} does not exist`);
+      if (!revokedGrant) throw new Error(`Sandbox share ${prior.revokedGrantId} does not exist`);
       return {
         revokedGrant: structuredClone(revokedGrant),
         restoredGrants: prior.restoredGrantIds
@@ -448,15 +454,15 @@ export class IamSandbox {
       };
     }
     const changedGrant = this.grants.get(input.grantId);
-    if (!changedGrant) throw new Error(`Sandbox grant ${input.grantId} does not exist`);
+    if (!changedGrant) throw new Error(`Sandbox share ${input.grantId} does not exist`);
     const now = this.clock();
     if (new Date(changedGrant.expiresAt).getTime() > now.getTime()) {
-      throw new Error(`Sandbox grant ${input.grantId} has not expired`);
+      throw new Error(`Sandbox share ${input.grantId} has not expired`);
     }
     const current = this.effectiveCurrentWithoutMutation(changedGrant.subjectEmail, changedGrant.resourceId, now);
     if (current.length) {
       throw new StaleGrantError(
-        "rollback",
+        "recall",
         [],
         current.map((grant) => grant.grantId),
       );
@@ -471,7 +477,7 @@ export class IamSandbox {
           grant.resourceId !== changedGrant.resourceId,
       )
     ) {
-      throw new Error("Expiry baseline does not belong to the changed subject and resource");
+      throw new Error("Expiry baseline does not belong to the changed recipient and dataset");
     }
     changedGrant.status = "revoked";
     changedGrant.revokedAt = now.toISOString();
@@ -528,8 +534,8 @@ export class IamSandbox {
       observedExpiresAt: observed?.expiresAt ?? null,
       activeGrantCount: active.length,
       details: verified
-        ? `Exact-state verification passed: ${active.length} active grant with matching role, actions, and expiry.`
-        : `Exact-state verification failed: expected ${input.expected ? "one" : "zero"} active grant, observed ${active.length}; role=${observed?.role ?? "none"}, expiry=${observed?.expiresAt ?? "none"}.`,
+        ? `Exact-state verification passed: ${active.length} active share with matching release tier, fields, and expiry.`
+        : `Exact-state verification failed: expected ${input.expected ? "one" : "zero"} active share, observed ${active.length}; tier=${observed?.role ?? "none"}, expiry=${observed?.expiresAt ?? "none"}.`,
     };
   }
 
@@ -538,14 +544,14 @@ export class IamSandbox {
     const seen = new Set<string>();
     for (const target of targets) {
       const key = `${target.subjectEmail.toLowerCase()}\u0000${target.resourceId}`;
-      if (seen.has(key)) throw new Error(`Duplicate effective-state target for ${target.subjectEmail}/${target.resourceId}`);
+      if (seen.has(key)) throw new Error(`Duplicate share-state target for ${target.subjectEmail}/${target.resourceId}`);
       seen.add(key);
       if (
         target.grant &&
         (target.grant.subjectEmail.toLowerCase() !== target.subjectEmail.toLowerCase() ||
           target.grant.resourceId !== target.resourceId)
       ) {
-        throw new Error("Reconciled grant does not belong to its target subject and resource");
+        throw new Error("Reconciled share does not belong to its target recipient and dataset");
       }
     }
 
@@ -569,11 +575,11 @@ export class IamSandbox {
 
   assertCurrentGrant(grantId: string): void {
     const grant = this.grants.get(grantId);
-    if (!grant) throw new StaleGrantError("rollback", [grantId], []);
+    if (!grant) throw new StaleGrantError("recall", [grantId], []);
     const current = this.effectiveCurrentWithoutMutation(grant.subjectEmail, grant.resourceId, this.clock());
     if (current.length !== 1 || current[0]!.grantId !== grantId) {
       throw new StaleGrantError(
-        "rollback",
+        "recall",
         [grantId],
         current.map((item) => item.grantId),
       );
@@ -617,25 +623,25 @@ export class IamSandbox {
   }
 }
 
-export const iamSandbox = new IamSandbox();
+export const shareSandbox = new ShareSandbox();
 
-export async function lookupDirectoryUser(email: string): Promise<DirectoryUser | null> {
+export async function lookupRecipient(email: string): Promise<DirectoryUser | null> {
   return structuredClone(DIRECTORY.find((user) => user.email.toLowerCase() === email.toLowerCase()) ?? null);
 }
 
-export async function lookupResource(resourceId: string): Promise<ResourceProfile | null> {
+export async function lookupDataset(resourceId: string): Promise<ResourceProfile | null> {
   return structuredClone(RESOURCES.find((resource) => resource.id === resourceId) ?? null);
 }
 
-export async function lookupTicket(ticketId: string): Promise<TicketEvidence | null> {
+export async function lookupAgreement(ticketId: string): Promise<TicketEvidence | null> {
   return structuredClone(TICKETS.find((ticket) => ticket.ticketId === ticketId) ?? null);
 }
 
-export async function getCurrentAccess(subjectEmail: string, resourceId: string): Promise<AccessGrant[]> {
-  return iamSandbox.current(subjectEmail, resourceId);
+export async function getCurrentShares(subjectEmail: string, resourceId: string): Promise<AccessGrant[]> {
+  return shareSandbox.current(subjectEmail, resourceId);
 }
 
-export function calculateAccessDiff(input: {
+export function calculateReleaseDiff(input: {
   request: ExtractedAccessRequest;
   decision: PolicyDecision;
   currentAccess: AccessGrant[];
@@ -659,7 +665,15 @@ export function calculateAccessDiff(input: {
   const removals = beforeActions.filter((action) => !afterActions.includes(action));
   const unchanged = afterActions.filter((action) => beforeActions.includes(action));
   const hours = Math.max(1, Math.min(request.durationHours, decision.maxDurationHours));
-  const expiresAt = new Date(now.getTime() + hours * 3_600_000).toISOString();
+  const proposedExpiresAt = new Date(now.getTime() + hours * 3_600_000).toISOString();
+  const exactExisting = active.find(
+    (grant) =>
+      grant.role === decision.effectiveRole &&
+      JSON.stringify([...new Set(grant.actions)].sort()) ===
+        JSON.stringify([...new Set(afterActions)].sort()) &&
+      Math.abs(new Date(grant.expiresAt).getTime() - new Date(proposedExpiresAt).getTime()) <= 5 * 60_000,
+  );
+  const expiresAt = exactExisting?.expiresAt ?? proposedExpiresAt;
 
   return {
     resourceId: request.resourceId,
@@ -669,11 +683,13 @@ export function calculateAccessDiff(input: {
     additions,
     removals,
     unchanged,
-    summary: `${strongest?.role ?? "no access"} to ${decision.effectiveRole}; ${additions.length} added, ${removals.length} removed; auto-expires in ${hours}h`,
+    summary: exactExisting
+      ? `Existing ${decision.effectiveRole} release already matches the requested fields; no duplicate share is needed.`
+      : `${strongest?.role ?? "no share"} to ${decision.effectiveRole}; ${additions.length} field scopes added, ${removals.length} removed; auto-recall in ${hours}h`,
   };
 }
 
-export async function grantAccess(input: {
+export async function createShare(input: {
   subjectEmail: string;
   resourceId: string;
   role: ExtractedAccessRequest["requestedRole"];
@@ -682,57 +698,57 @@ export async function grantAccess(input: {
   idempotencyKey: string;
   expectedBaseline: AccessGrant[];
 }): Promise<ApplyDesiredAccessResult> {
-  return iamSandbox.grant(input);
+  return shareSandbox.grant(input);
 }
 
-export async function verifyAccess(input: {
+export async function verifyShare(input: {
   subjectEmail: string;
   resourceId: string;
   expected: ExpectedAccessState | null;
 }): Promise<VerificationResult> {
-  return iamSandbox.verify(input);
+  return shareSandbox.verify(input);
 }
 
-export async function revokeAccess(grantId: string): Promise<{ grant: AccessGrant; replayed: boolean }> {
-  return iamSandbox.revoke(grantId);
+export async function recallShare(grantId: string): Promise<{ grant: AccessGrant; replayed: boolean }> {
+  return shareSandbox.revoke(grantId);
 }
 
-export async function restoreAccessBaseline(input: {
+export async function restoreShareBaseline(input: {
   grantId: string;
   baseline: AccessGrant[];
   idempotencyKey: string;
 }): Promise<RestoreBaselineResult> {
-  return iamSandbox.restoreBaseline(input);
+  return shareSandbox.restoreBaseline(input);
 }
 
-export async function restoreExpiredAccessBaseline(input: {
+export async function restoreExpiredShareBaseline(input: {
   grantId: string;
   baseline: AccessGrant[];
   idempotencyKey: string;
 }): Promise<RestoreBaselineResult> {
-  return iamSandbox.restoreExpiredBaseline(input);
+  return shareSandbox.restoreExpiredBaseline(input);
 }
 
-export function restoreSandboxGrant(grant: AccessGrant): void {
-  iamSandbox.restore(grant);
+export function restoreSandboxShare(grant: AccessGrant): void {
+  shareSandbox.restore(grant);
 }
 
-export function reconcileSandboxEffectiveStates(targets: EffectiveStateTarget[]): void {
-  iamSandbox.reconcileEffectiveStates(targets);
+export function reconcileSandboxShareStates(targets: EffectiveStateTarget[]): void {
+  shareSandbox.reconcileEffectiveStates(targets);
 }
 
-export function assertSandboxGrantIsCurrent(grantId: string): void {
-  iamSandbox.assertCurrentGrant(grantId);
+export function assertSandboxShareIsCurrent(grantId: string): void {
+  shareSandbox.assertCurrentGrant(grantId);
 }
 
-export function directoryFixture(): DirectoryUser[] {
+export function recipientFixture(): DirectoryUser[] {
   return structuredClone(DIRECTORY);
 }
 
-export function resourceFixture(): ResourceProfile[] {
+export function datasetFixture(): ResourceProfile[] {
   return structuredClone(RESOURCES);
 }
 
-export function ticketFixture(): TicketEvidence[] {
+export function agreementFixture(): TicketEvidence[] {
   return structuredClone(TICKETS);
 }

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title description">
-  <title id="title">GrantGuard control boundary architecture</title>
-  <desc id="description">Qwen extracts intent and plans read-only context tools. Deterministic policy constrains access. A human approves every write. Sandbox IAM executes and verifies with rollback and a hash-linked audit trail.</desc>
+  <title id="title">ReleaseProof proof-carrying data release architecture</title>
+  <desc id="description">Qwen interprets ambiguous vendor intent and plans read-only evidence. Deterministic policy minimizes the release manifest. A data owner approves it. A sandbox share is read back, proven, expired, or recalled with a hash-linked audit trail.</desc>
   <defs>
     <linearGradient id="background" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
       <stop stop-color="#071311"/>
@@ -56,32 +56,33 @@
 
   <g transform="translate(78 54)">
     <rect width="48" height="48" rx="14" fill="#62e6b6"/>
-    <path d="M14 24h20M19 15v18M29 15v18" stroke="#0a211b" stroke-width="4" stroke-linecap="round"/>
-    <text x="68" y="19" class="eyebrow">GRANTGUARD</text>
-    <text x="68" y="58" class="title">Human-gated least-privilege autopilot</text>
-    <text x="68" y="90" class="subtitle">Model capability where intent is ambiguous. Deterministic authority where access changes are dangerous.</text>
+    <ellipse cx="17" cy="16" rx="9" ry="3.5" fill="none" stroke="#0a211b" stroke-width="2.5"/>
+    <path d="M8 16v12c0 2 4 3.5 9 3.5 3 0 5-.5 7-1.3M8 22c0 2 4 3.5 9 3.5 3 0 5-.5 7-1.3M26 18h13l-4-4m4 4-4 4M38 32H26l4-4m-4 4 4 4" fill="none" stroke="#0a211b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="68" y="19" class="eyebrow">RELEASEPROOF</text>
+    <text x="68" y="58" class="title">Proof-carrying data release autopilot</text>
+    <text x="68" y="90" class="subtitle">Interpret the ask. Minimize the manifest. Let its owner decide. Prove what actually left.</text>
   </g>
 
   <g transform="translate(1240 58)">
     <rect width="130" height="34" rx="17" fill="#62e6b6"/>
     <text x="65" y="22" text-anchor="middle" class="pill">QWEN CLOUD</text>
     <rect x="142" width="126" height="34" rx="17" fill="#f4c95d"/>
-    <text x="205" y="22" text-anchor="middle" class="pill">HUMAN GATE</text>
+    <text x="205" y="22" text-anchor="middle" class="pill">OWNER GATE</text>
   </g>
 
   <!-- Stage cards -->
   <g filter="url(#shadow)">
     <g transform="translate(70 220)">
       <rect width="240" height="300" rx="22" fill="#121f1c" stroke="#314640"/>
-      <text x="26" y="36" class="step">01 · UNTRUSTED INPUT</text>
+      <text x="26" y="36" class="step">01 · VENDOR REQUEST</text>
       <circle cx="52" cy="90" r="25" fill="#263b35"/>
       <path d="M42 82h20M42 90h14M42 98h18" stroke="#9eb7b0" stroke-width="3" stroke-linecap="round"/>
-      <text x="26" y="139" class="cardTitle">Access ticket</text>
-      <text x="26" y="170" class="cardBody">Text or screenshot</text>
-      <text x="26" y="195" class="cardBody">may be incomplete, broad,</text>
-      <text x="26" y="220" class="cardBody">or prompt-injected.</text>
+      <text x="26" y="139" class="cardTitle">Release brief</text>
+      <text x="26" y="170" class="cardBody">Email, text, or screenshot</text>
+      <text x="26" y="195" class="cardBody">may omit fields, purpose,</text>
+      <text x="26" y="220" class="cardBody">or carry prompt injection.</text>
       <rect x="26" y="250" width="188" height="30" rx="15" fill="#2a201e" stroke="#764c46"/>
-      <text x="120" y="270" text-anchor="middle" class="mini" fill="#ef9e90">DATA, NOT AUTHORITY</text>
+      <text x="120" y="270" text-anchor="middle" class="mini" fill="#ef9e90">EVIDENCE, NOT AUTHORITY</text>
     </g>
 
     <g transform="translate(362 220)">
@@ -89,13 +90,13 @@
       <text x="26" y="36" class="step" fill="#80efc7">02 · QWEN CLOUD</text>
       <circle cx="52" cy="90" r="25" fill="#2b6656"/>
       <path d="M40 89c8-18 17-18 24 0M42 96h20" stroke="#8ff2ce" stroke-width="3" fill="none" stroke-linecap="round"/>
-      <text x="26" y="139" class="cardTitle">Understand &amp; plan</text>
+      <text x="26" y="139" class="cardTitle">Interpret &amp; plan</text>
       <text x="26" y="170" class="cardBody">Vision + structured JSON</text>
-      <text x="26" y="195" class="cardBody">extract typed intent.</text>
+      <text x="26" y="195" class="cardBody">extract typed release intent.</text>
       <text x="26" y="227" class="cardBody">Function calling proposes reads;</text>
       <text x="26" y="252" class="cardBody">server completes the baseline.</text>
       <rect x="26" y="270" width="238" height="30" rx="15" fill="#62e6b6"/>
-      <text x="145" y="290" text-anchor="middle" class="pill">NO WRITE TOOL EXISTS</text>
+      <text x="145" y="290" text-anchor="middle" class="pill">NO RELEASE TOOL EXISTS</text>
     </g>
 
     <g transform="translate(714 220)">
@@ -104,13 +105,13 @@
       <text x="26" y="83" class="cardTitle">Ground truth</text>
       <g transform="translate(26 110)">
         <rect width="198" height="42" rx="12" fill="#1d302b"/>
-        <circle cx="22" cy="21" r="7" fill="#62e6b6"/><text x="42" y="26" class="mini">Directory identity</text>
+        <circle cx="22" cy="21" r="7" fill="#62e6b6"/><text x="42" y="26" class="mini">Vendor registry</text>
         <rect y="54" width="198" height="42" rx="12" fill="#1d302b"/>
-        <circle cx="22" cy="75" r="7" fill="#62e6b6"/><text x="42" y="80" class="mini">Resource catalog</text>
+        <circle cx="22" cy="75" r="7" fill="#62e6b6"/><text x="42" y="80" class="mini">Data catalog</text>
         <rect y="108" width="198" height="42" rx="12" fill="#1d302b"/>
-        <circle cx="22" cy="129" r="7" fill="#62e6b6"/><text x="42" y="134" class="mini">Current access</text>
+        <circle cx="22" cy="129" r="7" fill="#62e6b6"/><text x="42" y="134" class="mini">Active shares</text>
       </g>
-      <text x="26" y="272" class="cardBody">+ Optional ticket evidence</text>
+      <text x="26" y="272" class="cardBody">+ Agreement evidence</text>
       <text x="26" y="292" class="cardBody">Args rebound to extraction.</text>
     </g>
 
@@ -119,23 +120,23 @@
       <text x="26" y="36" class="step" fill="#e6bf68">04 · POLICY ENGINE</text>
       <circle cx="52" cy="90" r="25" fill="#654923"/>
       <path d="M52 71l15 7v11c0 12-7 20-15 24-8-4-15-12-15-24V78z" fill="none" stroke="#f0c86b" stroke-width="3"/>
-      <text x="26" y="139" class="cardTitle">Fail closed</text>
-      <text x="26" y="170" class="cardBody">Identity · MFA · clearance</text>
-      <text x="26" y="195" class="cardBody">role · action · duration</text>
-      <text x="26" y="220" class="cardBody">classification · expiry</text>
+      <text x="26" y="139" class="cardTitle">Minimize or deny</text>
+      <text x="26" y="170" class="cardBody">vendor · agreement · class</text>
+      <text x="26" y="195" class="cardBody">fields · tier · status</text>
+      <text x="26" y="220" class="cardBody">duration · expiry</text>
       <rect x="26" y="250" width="90" height="30" rx="15" fill="#8b2f31"/><text x="71" y="270" text-anchor="middle" class="mini">DENY</text>
-      <rect x="126" y="250" width="98" height="30" rx="15" fill="#725728"/><text x="175" y="270" text-anchor="middle" class="mini">CONSTRAIN</text>
+      <rect x="126" y="250" width="98" height="30" rx="15" fill="#725728"/><text x="175" y="270" text-anchor="middle" class="mini">MINIMIZE</text>
     </g>
 
     <g transform="translate(1318 220)">
       <rect width="212" height="300" rx="22" fill="url(#approval)" stroke="#858b3a"/>
-      <text x="24" y="36" class="step" fill="#e3e87b">05 · HUMAN GATE</text>
+      <text x="24" y="36" class="step" fill="#e3e87b">05 · OWNER GATE</text>
       <circle cx="52" cy="90" r="25" fill="#555a28"/>
       <path d="M41 90l8 8 15-18" fill="none" stroke="#f0f48c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-      <text x="24" y="139" class="cardTitle">Explicit review</text>
-      <text x="24" y="170" class="cardBody">See before → after,</text>
-      <text x="24" y="195" class="cardBody">risk, policy evidence,</text>
-      <text x="24" y="220" class="cardBody">expiry, and rollback.</text>
+      <text x="24" y="139" class="cardTitle">Manifest review</text>
+      <text x="24" y="170" class="cardBody">See recipient + dataset,</text>
+      <text x="24" y="195" class="cardBody">tier, fields, evidence,</text>
+      <text x="24" y="220" class="cardBody">expiry, and recall path.</text>
       <rect x="24" y="250" width="164" height="30" rx="15" fill="#f4c95d"/>
       <text x="106" y="270" text-anchor="middle" class="pill">APPROVE / REJECT</text>
     </g>
@@ -150,17 +151,17 @@
   <!-- Write plane -->
   <g transform="translate(520 575)" filter="url(#shadow)">
     <rect width="250" height="150" rx="20" fill="url(#execute)" stroke="#3e759b"/>
-    <text x="24" y="34" class="step" fill="#82c9f2">06 · WRITE PLANE</text>
-    <text x="24" y="70" class="cardTitle">Sandbox IAM</text>
-    <text x="24" y="101" class="cardBody">Idempotent temporary grant</text>
-    <text x="24" y="126" class="cardBody">using the reviewed diff only.</text>
+    <text x="24" y="34" class="step" fill="#82c9f2">06 · RELEASE PLANE</text>
+    <text x="24" y="70" class="cardTitle">Share sandbox</text>
+    <text x="24" y="101" class="cardBody">Idempotent temporary release</text>
+    <text x="24" y="126" class="cardBody">using the approved manifest only.</text>
   </g>
   <g transform="translate(830 575)" filter="url(#shadow)">
     <rect width="300" height="150" rx="20" fill="url(#verify)" stroke="#67539b"/>
-    <text x="24" y="34" class="step" fill="#bcabf2">07 · OBSERVE &amp; RECOVER</text>
-    <text x="24" y="70" class="cardTitle">Verify → expire → rollback</text>
-    <text x="24" y="101" class="cardBody">Read-after-write success is required.</text>
-    <text x="24" y="126" class="cardBody">Mismatch triggers immediate revocation.</text>
+    <text x="24" y="34" class="step" fill="#bcabf2">07 · PROVE &amp; RECALL</text>
+    <text x="24" y="70" class="cardTitle">Prove → expire → recall</text>
+    <text x="24" y="101" class="cardBody">Read-after-release proof is required.</text>
+    <text x="24" y="126" class="cardBody">Any mismatch triggers immediate recall.</text>
   </g>
   <path d="M1424 520C1424 540 1400 548 1370 548H800V650H782" fill="none" stroke="#f4c95d" stroke-width="3" marker-end="url(#arrow)"/>
   <path d="M782 650H818" stroke="#6f8fa7" stroke-width="3" marker-end="url(#arrow)"/>
@@ -169,7 +170,7 @@
   <g transform="translate(130 786)">
     <rect width="1340" height="72" rx="20" fill="#111e1b" stroke="#324b44"/>
     <text x="28" y="29" class="step">HASH-LINKED · TAMPER-EVIDENT PLANE</text>
-    <text x="28" y="54" class="audit">Every model, tool, policy, approval, execution, verification, expiry, and rollback event commits to the previous SHA-256 hash.</text>
+    <text x="28" y="54" class="audit">Every model, tool, policy, owner decision, release, proof, expiry, and recall event commits to the previous SHA-256 hash.</text>
     <g transform="translate(1010 18)">
       <rect width="64" height="34" rx="10" fill="#1f342e"/><text x="32" y="22" text-anchor="middle" class="mini">H₁</text>
       <path d="M70 17h30" stroke="#64847b" stroke-width="2" marker-end="url(#arrow)"/>

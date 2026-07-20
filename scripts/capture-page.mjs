@@ -15,7 +15,7 @@ const height = Number.parseInt(heightArg, 10);
 const scrollY = Number.parseInt(scrollYArg, 10);
 const chromePath = process.env.CHROME_PATH ?? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 const port = 9300 + Math.floor(Math.random() * 500);
-const profilePath = path.join(os.tmpdir(), `grantguard-capture-${process.pid}-${Date.now()}`);
+const profilePath = path.join(os.tmpdir(), `releaseproof-capture-${process.pid}-${Date.now()}`);
 
 await mkdir(path.dirname(path.resolve(outputPath)), { recursive: true });
 

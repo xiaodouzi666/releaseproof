@@ -1,45 +1,45 @@
-# GrantGuard architecture
+# ReleaseProof architecture
 
-GrantGuard is a human-gated agent system for temporary, least-privilege access changes. Its architecture separates probabilistic interpretation from deterministic authorization and separates authorization from side effects.
+ReleaseProof is a proof-carrying data release autopilot for sharing a bounded dataset projection with an external recipient. It separates four concerns that must not collapse into a single model decision:
 
-## Design principle
+1. Qwen interprets the ambiguous request and plans evidence reads.
+2. Deterministic policy decides whether a safe release manifest exists.
+3. A data owner authorizes the exact effective manifest.
+4. A sandbox clean-room adapter publishes, observes, and recalls the share.
 
-```text
-Qwen proposes -> policy code constrains -> human authorizes -> sandbox IAM executes -> verifier observes
-```
+The product thesis is:
 
-No model response is itself an authorization. The model operates on an allow-listed planning surface; the deterministic policy engine owns hard constraints; and the write adapter is reachable only after a valid server-side approval transition.
-
-![GrantGuard control-flow architecture](../public/architecture.svg)
+> Every dataset release needs a recall path.
 
 ## System context
 
-```mermaid
+~~~mermaid
 flowchart TB
-    Requester[Requester or demo operator]
-    Approver[Human approver]
+    Requester[Requester]
+    Owner[Data owner]
 
-    subgraph Browser[Browser - untrusted client]
-      Workbench[GrantGuard workbench]
+    subgraph Browser[Browser — untrusted client]
+      Workbench[ReleaseProof workbench]
     end
 
-    subgraph Service[GrantGuard Node.js service - trusted application boundary]
+    subgraph Service[ReleaseProof Node.js service — trusted application boundary]
       API[Express API]
       Orchestrator[Workflow orchestrator]
-      Schema[Zod schema boundary]
-      ToolGate[Function allow-list and argument sanitizer]
-      Policy[Deterministic policy engine]
-      Context[Directory and resource tools]
-      IAM[Sandbox IAM adapter]
-      Verify[Read-after-write verifier]
+      Schema[Structured-intent schema]
+      ToolGate[Read-tool allow-list and argument rebinder]
+      Catalogs[Recipient, dataset, agreement, current-share catalogs]
+      Policy[Deterministic release policy]
+      Manifest[Effective release manifest and diff]
+      CleanRoom[Sandbox clean-room adapter]
+      Verify[Share and recall verifier]
       Audit[Hash-linked audit store]
-      Static[Vite static assets]
+      Static[Vite assets]
     end
 
-    Qwen[Alibaba Cloud Model Studio - Qwen]
+    Qwen[Qwen Cloud]
 
     Requester --> Workbench
-    Approver --> Workbench
+    Owner --> Workbench
     Workbench -->|HTTPS JSON| API
     API --> Orchestrator
     API --> Static
@@ -48,198 +48,246 @@ flowchart TB
     Schema --> Orchestrator
     Orchestrator -->|function-planning request| Qwen
     Qwen -->|proposed read calls| ToolGate
-    ToolGate -->|validated trusted calls| Orchestrator
-    Orchestrator --> Context
-    Orchestrator --> Policy
-    Policy -->|permit with gate| API
-    API -->|validated approval| IAM
-    IAM --> Verify
+    ToolGate --> Catalogs
+    Catalogs --> Policy
+    Policy --> Manifest
+    Manifest -->|exact proposal| Owner
+    Owner -->|approve or reject| API
+    API --> CleanRoom
+    CleanRoom --> Verify
     Orchestrator --> Audit
     Policy --> Audit
-    IAM --> Audit
+    API --> Audit
+    CleanRoom --> Audit
     Verify --> Audit
-```
+~~~
+
+The browser never receives the Qwen Cloud API key and cannot assert policy results, legal workflow state, release contents, verification success, or recall success.
 
 ## Responsibilities
 
-| Component | Responsibility | Explicitly does not do |
+| Component | Owns | Explicitly does not own |
 | --- | --- | --- |
-| React workbench | Collect request input, visualize plan/diff/traces, capture approval or rejection, request rollback | Hold a Model Studio secret; decide policy |
-| Express API | Validate requests, expose workflow transitions, serve production frontend, report non-secret health | Trust client-supplied workflow state |
-| Workflow orchestrator | Advance legal states, coordinate Qwen and tools, persist evidence | Override a policy denial |
-| Qwen adapter | Extract typed intent and propose directory, resource, current-access, and optional ticket-evidence functions | Execute tools, decide policy, produce the policy explanation, execute IAM writes, or approve itself |
-| Zod/tool boundary | Parse structured extraction, allow-list function names, validate arguments, replace identifiers with trusted extracted values, and add omitted mandatory reads | Repair unsafe access intent silently or dispatch model-supplied identifiers directly |
-| Context tools | Return fixture identity, current-access, resource, and reference-only ticket facts | Accept arbitrary function names or external URLs; treat a ticket as authorization |
-| Policy engine | Apply hard identity/resource/role/action/duration rules and compute outcome/risk | Delegate a hard authorization rule to a prompt |
-| Human gate | Record an actor-labeled approval/rejection and note (the prototype does not authenticate that label) | Change a denied plan into an allowed one |
-| Sandbox IAM | Apply/revoke a temporary simulated grant with idempotency | Modify a real Alibaba Cloud account |
-| Verifier | Read observed state after grant/revoke and compare with expectation | Treat a write response as proof of state |
-| Audit store | Append ordered, prior-hash-linked events | Provide immutable external anchoring |
+| React workbench | Request input, provider disclosure, manifest/diff/evidence display, owner decision, recall request | Policy, credentials, or authoritative workflow state |
+| Express API | Request validation, legal transitions, static app delivery, non-secret health/metrics | Trusting client-supplied release or verification state |
+| Workflow orchestrator | Qwen calls, sanitized evidence dispatch, policy handoff, persistence, state progression | Overriding a deterministic denial |
+| Qwen adapter | Multimodal/structured release-intent extraction and read-only function planning | Policy, approval, share creation, recall, or proof of provider state |
+| Schema/tool boundary | Strict parsing, function allow-list, argument rebinding, mandatory-read completion | Guessing unsafe missing values or dispatching arbitrary model arguments |
+| Context catalogs | Synthetic recipient/vendor, dataset, agreement, and current-share facts | Treating requester prose or a ticket reference as authority |
+| Policy engine | Recipient verification, dataset classification/tier rules, agreement status/recipient match, purpose presence, action minimization, and TTL caps | Natural-language interpretation, agreement-purpose interpretation, residency enforcement, or side effects |
+| Manifest/diff builder | Requested versus effective fields, release tier, destination, expiry, and current-state delta | Expanding scope beyond policy output |
+| Data-owner checkpoint | Approve or reject one exact effective manifest revision | Turning a denial into an approval |
+| Sandbox clean-room adapter | Idempotent synthetic share creation and recall | Publishing real customer data or enforcing production DLP |
+| Verifier | Compare expected and observed share state after create/recall | Treating a successful write response as proof |
+| Audit store | Ordered, prior-hash-linked evidence events | Immutable or externally anchored evidence |
 
 ## Request lifecycle
 
-```mermaid
+~~~mermaid
 sequenceDiagram
     autonumber
     actor R as Requester
-    actor H as Human approver
+    actor O as Data owner
     participant UI as Workbench
-    participant O as Orchestrator
+    participant W as Orchestrator
     participant Q as Qwen Cloud
-    participant T as Read-only tools
-    participant P as Policy engine
-    participant I as Sandbox IAM
+    participant T as Read-only catalogs
+    participant P as Release policy
+    participant C as Sandbox clean room
     participant V as Verifier
     participant A as Audit store
 
-    R->>UI: Submit prose and optional image
-    UI->>O: Create workflow
-    O->>Q: Extract JSON intent
-    Q-->>O: Structured intent
-    O->>O: Validate extraction schema
-    O->>Q: Request read-only context function plan
-    Q-->>O: Proposed directory/resource/access calls
-    O->>O: Allow-list, validate, sanitize, add mandatory reads
-    O->>T: Dispatch mandatory identity/resource/access reads + selected ticket lookup
-    T-->>O: Grounding facts
-    O->>P: Evaluate normalized request plus facts
-    P-->>O: Deny or constrained proposal
-    O->>A: Append model, tool, and policy evidence
+    R->>UI: Prose and optional agreement/ticket image
+    UI->>W: Create workflow
+    W->>Q: Extract recipient, dataset, purpose, fields, TTL
+    Q-->>W: Structured release intent
+    W->>W: Validate schema
+    W->>Q: Request read-only evidence plan
+    Q-->>W: Proposed lookup calls
+    W->>W: Allow-list, validate, rebind, add mandatory reads
+    W->>T: recipient.lookup
+    W->>T: dataset.lookup
+    W->>T: share.current
+    opt Valid agreement reference
+      W->>T: agreement.lookup
+    end
+    T-->>W: Grounded evidence
+    W->>P: Intent plus evidence
+    P-->>W: Deny or minimized manifest
+    W->>A: Model, tool, and policy receipts
 
-    alt deterministic deny
-      O-->>UI: Denied with findings
-    else approval required
-      O-->>UI: Proposed diff, expiry, evidence
-      H->>UI: Approve or reject
-      UI->>O: Server-side decision transition
-      alt rejected
-        O->>A: Append rejection
-        O-->>UI: Closed as rejected
-      else approved
-        O->>I: Grant with stable idempotency key
-        I-->>O: Sandbox write result
-        O->>V: Read observed grant
-        V-->>O: Match or mismatch
-        O->>A: Append approval, write, verification
-        O-->>UI: Completed or failed closed
+    alt Hard denial
+      W-->>UI: Denied; no release control
+    else Exact manifest can be reviewed
+      W-->>UI: Fields, recipient, dataset, expiry, diff, evidence
+      O->>UI: Approve or reject exact manifest
+      UI->>W: Server-side decision transition
+      alt Rejected
+        W->>A: Rejection receipt
+        W-->>UI: Closed without share
+      else Approved
+        W->>C: Idempotent share.grant
+        C-->>W: Write result
+        W->>V: share.verify
+        V-->>W: Exact match or mismatch
+        W->>A: Approval, release, observed-state receipts
+        W-->>UI: Completed only on exact match
       end
     end
 
-    opt rollback after completion
-      H->>UI: Request rollback
-      UI->>O: Roll back workflow
-      O->>I: Revoke grant idempotently
-      O->>V: Verify absence/revocation
-      O->>A: Append revoke and verification
-      O-->>UI: Rolled back or failed closed
+    opt Expiry or manual recall after completion
+      O->>UI: Recall release
+      UI->>W: Recall transition
+      W->>C: share.recall
+      W->>V: Verify inactive/absent share
+      W->>A: Recall and verification receipts
+      W-->>UI: Recalled only when observed
     end
-```
+~~~
 
-## State machine
+## Public tool vocabulary
 
-```mermaid
-stateDiagram-v2
-    [*] --> queued
-    queued --> extracting
-    extracting --> planning: schema-valid extracted intent
-    planning --> enriching_context: validate plan and dispatch context reads
-    enriching_context --> evaluating_policy
-    evaluating_policy --> denied: hard policy deny
-    evaluating_policy --> awaiting_approval: compute constrained diff
-    awaiting_approval --> rejected: human rejects
-    awaiting_approval --> approved: human approves
-    approved --> executing
-    executing --> verifying
-    verifying --> completed: observed equals expected
-    extracting --> failed: invalid model output
-    planning --> failed: function-planning failure
-    enriching_context --> failed: unknown context
-    evaluating_policy --> failed: policy or diff failure
-    executing --> failed: adapter error
-    verifying --> failed: mismatch
-    completed --> rolling_back
-    rolling_back --> rolled_back: revocation verified
-    rolling_back --> failed: revocation mismatch
-```
+Qwen can propose only the first four calls. The remaining calls are server-side traces and are never exposed as model tools.
 
-Terminal states are `denied`, `rejected`, `rolled_back`, and `failed`. `completed` is stable but may transition to rollback. State transitions are enforced on the server; a client cannot jump from `queued` to `executing`.
+| Trace | Plane | Purpose |
+| --- | --- | --- |
+| recipient.lookup | Model-visible read | Resolve the exact external recipient/vendor and verification state |
+| dataset.lookup | Model-visible read | Resolve dataset classification, owner, allowed release tiers, and direct-identifier flag |
+| share.current | Model-visible read | Inspect active synthetic releases for the same recipient/dataset |
+| agreement.lookup | Model-visible optional read | Retrieve reference-only agreement status, owner, and recipient identity |
+| policy.evaluate | Server-only decision | Apply deterministic release rules |
+| release.diff | Server-only calculation | Compare current share state with the effective manifest |
+| share.grant | Server-only write | Idempotently create a sandbox share |
+| share.verify | Server-only read-back | Compare observed release state with the approved manifest |
+| share.recall | Server-only write | Revoke the synthetic share |
+
+Agreement evidence is necessary where policy requires it but never sufficient by itself. An agreement-shaped identifier in prose cannot create a verified vendor or authorize prohibited fields.
 
 ## Data flow and minimization
 
-1. The API accepts request text and optionally an image representation within configured size limits.
-2. Qwen receives that untrusted content for structured intent extraction; the returned fields cross a Zod boundary. Enumerated roles, numeric durations, resource IDs, actions, confidence, and source are type-checked.
-3. The validated extraction is sent to a second Qwen function-calling step with `directory_lookup`, `resource_lookup`, `access_current`, and optional `ticket_lookup` definitions. Accepted calls are normalized to `directory.lookup`, `resource.lookup`, `access.current`, and `ticket.lookup` traces.
-4. The server ignores unknown/duplicate/malformed calls, replaces accepted arguments with validated extracted identifiers, appends any of the three mandatory grounding reads Qwen omitted, and discards `ticket.lookup` unless extraction contains a ticket ID.
-5. The orchestrator dispatches those actual reads. Their results and the normalized request, not secrets, enter deterministic policy evaluation.
-6. The policy engine emits human-readable findings, a bounded effective role/action set, maximum duration, risk, and outcome; the UI renders those deterministic facts and the computed diff.
-7. Only the constrained proposal reaches the human. Only the workflow ID plus approval identity/note returns to the server.
-8. The IAM adapter receives the effective proposal, expiry, and idempotency key. It never receives the original prompt.
-9. Audit events store operational evidence. A production system should redact/tokenize personal data and define retention before persistence.
+1. The API accepts bounded request text and an optional bounded image.
+2. Qwen receives the untrusted request and returns a narrow typed object containing recipient, dataset, release tier, requested field-actions, duration, purpose/justification, optional agreement reference, confidence, and source mode.
+3. The response crosses a schema boundary. Unknown release tiers/actions, malformed identifiers, invalid durations, and incomplete objects fail closed.
+4. The validated intent enters a separate function-planning call. The accepted vocabulary is recipient, dataset, current-share, and optional agreement lookup.
+5. The server ignores unknown, duplicate, and malformed calls; rebinds accepted identifiers to the validated recipient/dataset/agreement; and appends any mandatory read Qwen omitted.
+6. The orchestrator dispatches the reads. Tool receipts, not model assertions, provide vendor status, dataset rules, current release state, and agreement facts.
+7. Policy checks recipient eligibility, dataset classification/tier rules, agreement status and recipient match, a non-empty declared purpose, requested field-actions, and TTL. It removes direct identifiers and prohibited exports.
+8. A denied request ends. A safe request produces an effective manifest and a before/after diff.
+9. Approval targets that effective manifest revision. The adapter never receives the original prompt.
+10. The adapter creates a synthetic share with a stable idempotency key and expiry.
+11. Verification queries the bound recipient/dataset target and checks that exactly one active share has the expected field-actions, release tier, grant identity, and expiry.
+12. Recall reads the state again and succeeds only when the release is inactive or absent.
 
-## Safety invariants
+The public demo uses synthetic identifiers. A production system must minimize and tokenize personal data before model calls and persistence, define retention, and complete a cross-border/privacy review.
 
-These conditions must hold regardless of Qwen output:
+## Deterministic release invariants
 
-1. A `deny` decision has no path to `approved` or `executing`.
-2. A write requires a recorded human approval for the same workflow revision.
-3. The executed role, actions, and expiry equal the policy-constrained values, not the raw request.
-4. Unknown/inactive subjects and unknown resources fail closed.
-5. Disallowed roles/actions are removed or denied according to deterministic policy.
-6. Every grant has an expiry and an idempotency key.
-7. Completion requires read-after-write agreement.
-8. Rollback completion requires read-after-revoke agreement.
-9. Each audit event commits to its predecessor hash.
-10. Model/provider mode is disclosed per workflow and in health telemetry.
-11. Qwen-selected context functions are not merely displayed: after validation and sanitization, the orchestrator dispatches them before policy evaluation.
+These conditions hold regardless of Qwen output:
 
-The deterministic evaluator and unit/API integration tests collectively target these invariants; see [`evaluation.md`](evaluation.md).
+1. An unknown, inactive, or unverified recipient cannot receive a release.
+2. An unknown dataset cannot be released.
+3. Prohibited export actions such as raw export or consent override cannot reach the write adapter.
+4. The effective fields/actions are a subset of both the request and policy-authorized projection.
+5. A required agreement must be active and belong to the resolved recipient; it cannot authorize direct identifiers, raw export, or consent override.
+6. TTL is finite and does not exceed the policy cap.
+7. A denial has no transition to approval or execution.
+8. A write requires an approval for the same effective manifest revision.
+9. Repeated execution with the same idempotency key cannot create a second active share.
+10. Completion requires exact read-after-release agreement.
+11. Recall completion requires observed inactive/absent state.
+12. Every material transition is appended to the hash-linked audit chain.
+13. Provider mode remains visible per workflow and in health telemetry.
+
+## Workflow state machine
+
+The implementation retains generic execution-state names while the UI presents release-domain language.
+
+~~~mermaid
+stateDiagram-v2
+    [*] --> queued
+    queued --> extracting
+    extracting --> planning: valid release intent
+    planning --> enriching_context: sanitized read plan
+    enriching_context --> evaluating_policy
+    evaluating_policy --> denied: hard policy denial
+    evaluating_policy --> awaiting_approval: effective manifest
+    awaiting_approval --> rejected: owner rejects
+    awaiting_approval --> approved: owner approves manifest
+    approved --> executing: create sandbox share
+    executing --> verifying: read observed share
+    verifying --> completed: exact match
+    extracting --> failed
+    planning --> failed
+    enriching_context --> failed
+    evaluating_policy --> failed
+    executing --> failed
+    verifying --> failed
+    completed --> rolling_back: expiry or recall
+    rolling_back --> rolled_back: absence/revocation observed
+    rolling_back --> failed: recall mismatch
+~~~
+
+Terminal states are denied, rejected, rolled_back, and failed. Completed is stable but recallable.
 
 ## Live Qwen and recorded-demo modes
 
-```mermaid
+~~~mermaid
 flowchart LR
-    Start[Server startup] --> Key{DASHSCOPE_API_KEY present?}
+    Start[Server starts] --> Key{DASHSCOPE_API_KEY present?}
     Key -->|yes| Live[Live Qwen adapter]
-    Key -->|no| Demo[Deterministic extraction fixture]
-    Live --> Boundary[Same schema boundary]
-    Demo --> Boundary
-    Boundary --> Pipeline[Same dispatched reads, policy, approval, IAM, verification, audit]
-```
+    Key -->|no| Fixture[Deterministic release fixtures]
+    Live --> Boundary[Same schema and read-tool boundary]
+    Fixture --> Boundary
+    Boundary --> Pipeline[Same catalogs, policy, approval, sandbox release, verify, recall, audit]
+~~~
 
-The fixture replaces only probabilistic extraction and function selection; it emits the same three trusted baseline reads and an optional ticket lookup for ticket-bearing fixtures. It does not bypass dispatch, policy, or the approval gate. The `model.mode`, provider, model name, fallback flag, token/latency fields, and disclosure string make the distinction visible.
+Recorded-demo mode replaces only probabilistic extraction and function selection. It does not bypass release policy or verification. A live provider configuration is not itself proof of a completed Qwen call; each workflow receipt must show successful model calls.
 
 ## Deployment topology
 
-### Preferred: ECS / Simple Application Server
+### Preferred: Alibaba Cloud ECS or Simple Application Server
 
-```mermaid
+~~~mermaid
 flowchart LR
-    Internet[Public browser] -->|HTTPS 443| Nginx[Nginx on Alibaba Cloud ECS or SAS]
-    Nginx -->|HTTP 127.0.0.1:8787| Container[GrantGuard container]
-    Container -->|HTTPS| ModelStudio[Alibaba Cloud Model Studio]
-    Container --> Volume[(Single-instance audit volume)]
-```
+    Internet[Public judge browser] -->|HTTPS 443| Nginx
+    Nginx -->|HTTP 127.0.0.1:8787| Container[ReleaseProof container]
+    Container -->|HTTPS| Qwen[Qwen Cloud]
+    Container --> Volume[(Single-instance workflow and audit volume)]
+~~~
 
-One Node.js container serves both frontend and API, avoiding cross-origin credential and routing complexity. Nginx terminates TLS and forwards the original host/protocol. The service binds publicly inside its container but is published only to loopback by the production Compose file.
+One container serves frontend and API. Nginx terminates TLS and forwards only to the loopback-published application port. The demo store is suitable for one instance.
 
-### Non-deployable experiment: Function Compute custom container
+### Function Compute experiment
 
-The same image can technically start with `PORT=9000` as a Function Compute `custom-container`, but that does not make the current stateful workflow reliable there. Workflow creation returns before background stages finish; expiry uses process timers; memory is ephemeral; and concurrent requests are not guaranteed to reach the same instance. The checked-in manifest is therefore an architecture experiment only. It must not be used as the live app or deployment evidence without durable jobs, a transactional external store, and verified custom-domain routing.
+The included Function Compute custom-container manifest is not a submission deployment. Workflow creation acknowledges before background work finishes; expiry uses process timers; memory is ephemeral; and concurrent requests are not guaranteed to reach the same instance. A serverless release requires durable async jobs, a transactional external store, and a verified custom-domain path.
 
-## Failure handling
+## Failure behavior
 
 | Failure | Behavior |
 | --- | --- |
-| Primary Qwen timeout/unavailable | Attempt configured fallback once; record fallback metadata. If both fail, stop as `failed`. |
-| Invalid or out-of-schema JSON | Reject at schema boundary; no guessed repair enters authorization. |
-| Unknown/duplicate tool name or malformed arguments | Reject the proposed call. Missing mandatory context reads are appended from trusted extracted identifiers before dispatch; there is no dynamic dispatch. |
-| Missing directory/resource context | Fail closed or deterministic deny. |
-| Human rejection | Close as `rejected`; do not call IAM. |
-| Duplicate approval/execution request | State guard and idempotency key prevent a duplicate grant. |
-| Write succeeds but verification differs | Mark `failed`; do not report completion. Operator can inspect audit and roll back if an observed grant exists. |
-| Revoke verification differs | Mark `failed`; do not report rollback success. |
-| Audit persistence unavailable | Health becomes degraded; production policy should block writes. |
+| Primary Qwen timeout | Attempt the configured fallback once; record it; fail if both calls fail |
+| Invalid extraction JSON | Stop at schema boundary; do not guess a release |
+| Malformed/unknown tool call | Reject it; append trusted mandatory reads only |
+| Missing vendor/dataset/agreement facts | Fail closed or deterministic denial |
+| Owner rejection | Close without a share |
+| Repeated approval/execution | State guard and idempotency prevent duplicate publication |
+| Share write succeeds but observation differs | Mark failed; never show completed |
+| Recall response succeeds but share remains active | Mark failed; never show recalled |
+| Audit persistence is unhealthy | Health degrades; production policy should block writes |
+| Process restarts before expiry | Prototype limitation; production needs durable scheduling |
 
-## Scaling path
+## Production path
 
-The hackathon build intentionally optimizes for inspectability. A production version would replace the file store with a transactional database, use a durable workflow engine/scheduler for expiry, anchor audit digests externally, integrate enterprise IdP/IAM providers, authorize approvers via SSO and RBAC, protect mutations against CSRF/replay, and run multiple stateless API replicas behind a load balancer.
+The hackathon build optimizes for inspectability, not real-data handling. A production version requires:
+
+- authenticated requesters and authorized dataset owners;
+- provider-native clean-room or data-share integration;
+- a signed manifest bound to approval and adapter request;
+- transactional workflow/idempotency state;
+- durable scheduling for expiry and recall;
+- field-level lineage, consent, retention, and residency sources;
+- KMS-managed secrets and scoped service identities;
+- append-only externally anchored audit evidence;
+- DLP/classification validation independent of the model;
+- privacy, legal, security, and vendor-risk review; and
+- failure injection, reconciliation, backup, restore, and incident response.

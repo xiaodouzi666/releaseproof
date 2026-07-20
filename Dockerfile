@@ -22,29 +22,29 @@ RUN pnpm build \
 
 FROM node:20-alpine AS runtime
 
-LABEL org.opencontainers.image.title="GrantGuard" \
-      org.opencontainers.image.description="Human-gated least-privilege access autopilot powered by Qwen Cloud" \
+LABEL org.opencontainers.image.title="ReleaseProof" \
+      org.opencontainers.image.description="Proof-carrying data release autopilot powered by Qwen Cloud" \
       org.opencontainers.image.licenses="MIT"
 
 ENV NODE_ENV=production \
     PORT=8787 \
     AUDIT_STORE=file \
-    GRANTGUARD_DATA_FILE=/app/data/grantguard-store.json \
+    RELEASEPROOF_DATA_FILE=/app/data/releaseproof-store.json \
     DEPLOYMENT_TARGET=container
 
 WORKDIR /app
 
-RUN addgroup -S grantguard \
-    && adduser -S -G grantguard -h /app grantguard \
+RUN addgroup -S releaseproof \
+    && adduser -S -G releaseproof -h /app releaseproof \
     && mkdir -p /app/data \
-    && chown -R grantguard:grantguard /app
+    && chown -R releaseproof:releaseproof /app
 
-COPY --from=build --chown=grantguard:grantguard /app/package.json ./package.json
-COPY --from=build --chown=grantguard:grantguard /app/node_modules ./node_modules
-COPY --from=build --chown=grantguard:grantguard /app/dist ./dist
-COPY --from=build --chown=grantguard:grantguard /app/dist-server ./dist-server
+COPY --from=build --chown=releaseproof:releaseproof /app/package.json ./package.json
+COPY --from=build --chown=releaseproof:releaseproof /app/node_modules ./node_modules
+COPY --from=build --chown=releaseproof:releaseproof /app/dist ./dist
+COPY --from=build --chown=releaseproof:releaseproof /app/dist-server ./dist-server
 
-USER grantguard
+USER releaseproof
 
 EXPOSE 8787
 

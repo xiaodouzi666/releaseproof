@@ -1,16 +1,16 @@
 services:
-  grantguard:
+  releaseproof:
     build:
       context: .
       dockerfile: Dockerfile
-    image: grantguard:local
+    image: releaseproof:local
     init: true
     restart: unless-stopped
     environment:
       NODE_ENV: production
       PORT: "8787"
       AUDIT_STORE: ${AUDIT_STORE:-file}
-      GRANTGUARD_DATA_FILE: /app/data/grantguard-store.json
+      RELEASEPROOF_DATA_FILE: /app/data/releaseproof-store.json
       DEMO_STEP_DELAY_MS: ${DEMO_STEP_DELAY_MS:-420}
       DEPLOYMENT_TARGET: ${DEPLOYMENT_TARGET:-local-docker}
       WORKFLOW_CREATE_LIMIT_PER_MINUTE: ${WORKFLOW_CREATE_LIMIT_PER_MINUTE:-12}
@@ -20,9 +20,9 @@ services:
       QWEN_FALLBACK_MODEL: ${QWEN_FALLBACK_MODEL:-qwen3.6-flash}
       QWEN_MAX_CONCURRENCY: ${QWEN_MAX_CONCURRENCY:-2}
     ports:
-      - "127.0.0.1:${GRANTGUARD_PORT:-8787}:8787"
+      - "127.0.0.1:${RELEASEPROOF_PORT:-8787}:8787"
     volumes:
-      - grantguard-data:/app/data
+      - releaseproof-data:/app/data
     security_opt:
       - no-new-privileges:true
     cap_drop:
@@ -39,4 +39,4 @@ services:
       retries: 5
 
 volumes:
-  grantguard-data:
+  releaseproof-data:

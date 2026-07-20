@@ -1,21 +1,21 @@
 edition: 3.0.0
-name: grantguard-function-compute
+name: releaseproof-function-compute
 access: default
 validation: true
 
 vars:
   region: ${env('ALIBABA_CLOUD_REGION', 'ap-southeast-1')}
   acrNamespace: ${env('ACR_NAMESPACE')}
-  acrRepository: ${env('ACR_REPOSITORY', 'grantguard')}
-  imageTag: ${env('GRANTGUARD_IMAGE_TAG', 'latest')}
+  acrRepository: ${env('ACR_REPOSITORY', 'releaseproof')}
+  imageTag: ${env('RELEASEPROOF_IMAGE_TAG', 'latest')}
 
 resources:
-  grantguard_api:
+  releaseproof_api:
     component: fc3
     props:
       region: ${vars.region}
-      functionName: grantguard-api
-      description: Human-gated least-privilege access autopilot API powered by Qwen Cloud
+      functionName: releaseproof-api
+      description: Proof-carrying data release autopilot API powered by Qwen Cloud
       runtime: custom-container
       timeout: 120
       memorySize: 1024

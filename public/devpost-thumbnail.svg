@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1672" height="941" viewBox="0 0 1672 941" role="img" aria-labelledby="title desc">
+  <title id="title">ReleaseProof — proof-carrying data release autopilot</title>
+  <desc id="desc">ReleaseProof minimizes outbound datasets, pauses for owner approval, creates a temporary share, proves its actual manifest, and recalls drift.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1672" y2="941" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#06120f"/>
+      <stop offset="0.58" stop-color="#071814"/>
+      <stop offset="1" stop-color="#06100e"/>
+    </linearGradient>
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#b9f75b"/>
+      <stop offset="1" stop-color="#55e6d2"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#0e241d" stop-opacity="0.94"/>
+      <stop offset="1" stop-color="#091713" stop-opacity="0.98"/>
+    </linearGradient>
+    <radialGradient id="glow">
+      <stop stop-color="#55e6d2" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#55e6d2" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="34" height="34" patternUnits="userSpaceOnUse">
+      <path d="M34 0H0V34" fill="none" stroke="#7bc1ad" stroke-opacity="0.055" stroke-width="1"/>
+    </pattern>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="20" stdDeviation="24" flood-color="#000" flood-opacity="0.38"/>
+    </filter>
+    <filter id="softGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10z" fill="#53dfc4"/>
+    </marker>
+    <style>
+      .sans { font-family: Inter, "Segoe UI", Arial, sans-serif; }
+      .mono { font-family: "Cascadia Mono", Consolas, monospace; }
+      .muted { fill: #91aaa2; }
+      .soft { fill: #c7d8d2; }
+      .white { fill: #f2f8f5; }
+      .lime { fill: #b9f75b; }
+      .teal { fill: #55e6d2; }
+    </style>
+  </defs>
+
+  <rect width="1672" height="941" fill="url(#bg)"/>
+  <rect width="1672" height="941" fill="url(#grid)"/>
+  <circle cx="1060" cy="250" r="520" fill="url(#glow)"/>
+  <circle cx="120" cy="900" r="350" fill="#b9f75b" opacity="0.025"/>
+  <path d="M0 96H1672M792 0V941" stroke="#88b9aa" stroke-opacity="0.08"/>
+
+  <!-- Brand -->
+  <g transform="translate(82 70)">
+    <rect width="52" height="52" rx="15" fill="#10261e" stroke="#b9f75b" stroke-opacity="0.45"/>
+    <ellipse cx="21" cy="20" rx="10" ry="4" fill="none" stroke="url(#brand)" stroke-width="2.5"/>
+    <path d="M11 20v13c0 2 4 4 10 4 3 0 5-.4 7-1.2M11 27c0 2 4 4 10 4 3 0 5-.4 7-1.2M29 23h13l-4-4m4 4-4 4M41 36H29l4-4m-4 4 4 4" fill="none" stroke="url(#brand)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="68" y="24" class="sans white" font-size="23" font-weight="760">ReleaseProof</text>
+    <text x="68" y="47" class="mono muted" font-size="12" font-weight="700" letter-spacing="2.4">PROOF-CARRYING DATA RELEASE</text>
+  </g>
+  <g transform="translate(1290 73)">
+    <rect width="298" height="42" rx="21" fill="#0c211a" stroke="#55e6d2" stroke-opacity="0.3"/>
+    <circle cx="22" cy="21" r="5" fill="#55e6d2"/>
+    <text x="39" y="27" class="mono teal" font-size="13" font-weight="700" letter-spacing="1.2">QWEN CLOUD · TRACK 4</text>
+  </g>
+
+  <!-- Headline -->
+  <g transform="translate(82 228)">
+    <text class="sans white" font-size="76" font-weight="780" letter-spacing="-3">
+      <tspan x="0" y="0">Release the data.</tspan>
+      <tspan x="0" y="91" fill="url(#brand)">Not the liability.</tspan>
+    </text>
+    <text x="4" y="166" class="sans soft" font-size="27" font-weight="520">Every dataset release needs a recall path.</text>
+    <text x="4" y="212" class="sans muted" font-size="19">Qwen interprets the messy ask. Deterministic policy minimizes</text>
+    <text x="4" y="240" class="sans muted" font-size="19">the manifest. The data owner decides. Observed state proves truth.</text>
+  </g>
+
+  <g transform="translate(82 526)">
+    <g><rect width="198" height="42" rx="21" fill="#10271f" stroke="#5ce7c7" stroke-opacity="0.24"/><text x="99" y="27" text-anchor="middle" class="mono teal" font-size="12" font-weight="700" letter-spacing="1">FIELD MINIMIZATION</text></g>
+    <g transform="translate(214)"><rect width="166" height="42" rx="21" fill="#192317" stroke="#b9f75b" stroke-opacity="0.24"/><text x="83" y="27" text-anchor="middle" class="mono lime" font-size="12" font-weight="700" letter-spacing="1">OWNER GATE</text></g>
+    <g transform="translate(396)"><rect width="191" height="42" rx="21" fill="#10271f" stroke="#5ce7c7" stroke-opacity="0.24"/><text x="95.5" y="27" text-anchor="middle" class="mono teal" font-size="12" font-weight="700" letter-spacing="1">READ-BACK PROOF</text></g>
+  </g>
+
+  <g transform="translate(82 625)">
+    <path d="M0 0H600" stroke="#9ac9ba" stroke-opacity="0.14"/>
+    <text x="0" y="45" class="mono lime" font-size="13" font-weight="700" letter-spacing="1.5">WHY IT IS DIFFERENT</text>
+    <g transform="translate(0 78)">
+      <circle cx="10" cy="9" r="9" fill="#173128"/><path d="M6 9l3 3 6-7" fill="none" stroke="#b9f75b" stroke-width="2"/>
+      <text x="31" y="15" class="sans soft" font-size="18">Approval is not proof. The actual share is read back.</text>
+      <circle cx="10" cy="49" r="9" fill="#173128"/><path d="M6 49l3 3 6-7" fill="none" stroke="#b9f75b" stroke-width="2"/>
+      <text x="31" y="55" class="sans soft" font-size="18">Recipient, tier, fields, unique share, and expiry must match.</text>
+      <circle cx="10" cy="89" r="9" fill="#173128"/><path d="M6 89l3 3 6-7" fill="none" stroke="#b9f75b" stroke-width="2"/>
+      <text x="31" y="95" class="sans soft" font-size="18">Any drift triggers an idempotent, verified recall.</text>
+    </g>
+  </g>
+
+  <!-- Product proof panel -->
+  <g transform="translate(804 150)" filter="url(#shadow)">
+    <rect width="786" height="700" rx="30" fill="url(#panel)" stroke="#7edbc2" stroke-opacity="0.2"/>
+    <rect x="1" y="1" width="784" height="58" rx="29" fill="#10231d"/>
+    <circle cx="28" cy="29" r="5" fill="#4a655c"/><circle cx="46" cy="29" r="5" fill="#4a655c"/><circle cx="64" cy="29" r="5" fill="#4a655c"/>
+    <text x="392" y="35" text-anchor="middle" class="mono muted" font-size="12" font-weight="700" letter-spacing="2">RELEASE CONTROL / PROOF RUN</text>
+    <g transform="translate(38 85)">
+      <rect width="710" height="103" rx="18" fill="#10241e" stroke="#4a6f63" stroke-opacity="0.55"/>
+      <rect x="20" y="20" width="118" height="26" rx="13" fill="#16362c"/><text x="79" y="38" text-anchor="middle" class="mono teal" font-size="11" font-weight="700">VENDOR BRIEF</text>
+      <text x="20" y="73" class="sans white" font-size="20" font-weight="650">“Send BrightWave the full customer export for 30 days.”</text>
+      <rect x="555" y="18" width="135" height="30" rx="15" fill="#332918" stroke="#d6ad52" stroke-opacity="0.55"/>
+      <text x="622.5" y="38" text-anchor="middle" class="mono" fill="#efc765" font-size="11" font-weight="700">OVER-BROAD</text>
+    </g>
+
+    <!-- Five-stage path -->
+    <g transform="translate(48 246)">
+      <path d="M52 50H652" fill="none" stroke="#53dfc4" stroke-opacity="0.52" stroke-width="3" marker-end="url(#arrow)"/>
+      <g transform="translate(0)">
+        <circle cx="52" cy="50" r="42" fill="#14362d" stroke="#55e6d2" stroke-width="2"/>
+        <path d="M34 35h36M40 48h24M46 61h12" stroke="#63e8d2" stroke-width="3" stroke-linecap="round"/>
+        <text x="52" y="116" text-anchor="middle" class="sans soft" font-size="15" font-weight="700">INTERPRET</text>
+      </g>
+      <g transform="translate(145)">
+        <circle cx="52" cy="50" r="42" fill="#17352a" stroke="#b9f75b" stroke-width="2"/>
+        <path d="M31 32h42L59 49v18l-14 6V49z" fill="none" stroke="#b9f75b" stroke-width="3" stroke-linejoin="round"/>
+        <text x="52" y="116" text-anchor="middle" class="sans soft" font-size="15" font-weight="700">MINIMIZE</text>
+      </g>
+      <g transform="translate(290)">
+        <circle cx="52" cy="50" r="42" fill="#322d18" stroke="#efd26b" stroke-width="2"/>
+        <circle cx="52" cy="41" r="10" fill="none" stroke="#efd26b" stroke-width="3"/><path d="M34 70c3-12 10-17 18-17s15 5 18 17M61 30l7 7 12-14" fill="none" stroke="#efd26b" stroke-width="3" stroke-linecap="round"/>
+        <text x="52" y="116" text-anchor="middle" class="sans soft" font-size="15" font-weight="700">OWNER</text>
+      </g>
+      <g transform="translate(435)">
+        <circle cx="52" cy="50" r="42" fill="#142e38" stroke="#62c9f2" stroke-width="2"/>
+        <ellipse cx="45" cy="38" rx="17" ry="7" fill="none" stroke="#62c9f2" stroke-width="3"/><path d="M28 38v24c0 4 8 7 17 7 7 0 12-2 15-4M28 50c0 4 8 7 17 7M59 45h18l-5-5m5 5-5 5" fill="none" stroke="#62c9f2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="52" y="116" text-anchor="middle" class="sans soft" font-size="15" font-weight="700">SHARE</text>
+      </g>
+      <g transform="translate(580)">
+        <circle cx="52" cy="50" r="42" fill="#17352d" stroke="#55e6d2" stroke-width="2" filter="url(#softGlow)"/>
+        <circle cx="52" cy="50" r="22" fill="none" stroke="#55e6d2" stroke-width="3"/><path d="M41 51l8 8 16-18" fill="none" stroke="#b9f75b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="52" y="116" text-anchor="middle" class="sans soft" font-size="15" font-weight="700">PROVE</text>
+      </g>
+    </g>
+
+    <!-- Approved vs observed manifests -->
+    <g transform="translate(38 410)">
+      <rect width="342" height="174" rx="18" fill="#0d201a" stroke="#527267" stroke-opacity="0.58"/>
+      <text x="20" y="30" class="mono muted" font-size="11" font-weight="700" letter-spacing="1.3">OWNER-APPROVED MANIFEST</text>
+      <text x="20" y="68" class="sans white" font-size="18" font-weight="700">Northstar · campaign-performance</text>
+      <text x="20" y="102" class="mono teal" font-size="13">aggregate metrics · profiles</text>
+      <text x="20" y="132" class="mono muted" font-size="12">approved fields · 8h TTL</text>
+      <rect x="20" y="145" width="98" height="21" rx="10.5" fill="#253018"/><text x="69" y="160" text-anchor="middle" class="mono lime" font-size="10" font-weight="700">APPROVED</text>
+    </g>
+    <path d="M390 497H410" stroke="#53dfc4" stroke-width="2.5" marker-end="url(#arrow)"/>
+    <g transform="translate(424 410)">
+      <rect width="324" height="174" rx="18" fill="#10261f" stroke="#55e6d2" stroke-opacity="0.8"/>
+      <text x="20" y="30" class="mono teal" font-size="11" font-weight="700" letter-spacing="1.3">OBSERVED RELEASE</text>
+      <text x="20" y="68" class="sans white" font-size="17" font-weight="700">Recipient + tier + fields + TTL</text>
+      <text x="20" y="102" class="mono teal" font-size="13">match approved manifest</text>
+      <path d="M276 70l9 9 19-23" fill="none" stroke="#b9f75b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="20" y="137" width="176" height="28" rx="14" fill="#17392e"/><text x="108" y="156" text-anchor="middle" class="mono lime" font-size="11" font-weight="700">READ-BACK PROVEN</text>
+    </g>
+
+    <!-- Recall branch -->
+    <g transform="translate(38 612)">
+      <path d="M0 22H492" stroke="#d9b35f" stroke-opacity="0.45" stroke-width="2" stroke-dasharray="7 7"/>
+      <rect x="506" width="204" height="44" rx="22" fill="#302617" stroke="#d9b35f" stroke-opacity="0.75"/>
+      <path d="M526 22a10 10 0 1 1 4 8M526 22v-9l7 5" fill="none" stroke="#f0ca70" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="553" y="27" class="mono" fill="#f0ca70" font-size="12" font-weight="700" letter-spacing="1">DRIFT → RECALL</text>
+    </g>
+  </g>
+</svg>

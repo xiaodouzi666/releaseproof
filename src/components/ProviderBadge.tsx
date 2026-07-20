@@ -27,7 +27,7 @@ function providerPresentation(health?: HealthInfo, metadata?: WorkflowMetadata) 
       label: completedCalls ? "Qwen Cloud · Live" : "Qwen configured",
       detail: completedCalls
         ? [provider, model, `${metadata?.calls} call${metadata?.calls === 1 ? "" : "s"}`].filter(Boolean).join(" · ")
-        : [provider, model, "awaiting a successful workflow call"].filter(Boolean).join(" · ") || "Credentials configured",
+        : [provider, model, "awaiting a successful release run"].filter(Boolean).join(" · ") || "Credentials configured",
     };
   }
   if (mode) {
@@ -63,7 +63,7 @@ export function ProviderBadge({ health, metadata, loading, failed }: ProviderBad
         <WifiOff size={15} aria-hidden="true" />
         <span>
           <strong>Backend unavailable</strong>
-          <small>Workflow controls offline</small>
+          <small>Release controls offline</small>
         </span>
       </div>
     );
