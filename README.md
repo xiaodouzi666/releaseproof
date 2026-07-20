@@ -8,7 +8,7 @@ ReleaseProof turns an ambiguous request to share enterprise data with an externa
 
 Built for **Qwen Cloud Hackathon — Track 4: Autopilot Agent**.
 
-The submitted candidate is [`458d7ba55417fac18051156059b4802edeb9f199`](https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199). It is deployed on Alibaba Cloud Simple Application Server at [http://8.219.184.228](http://8.219.184.228), with a public [health endpoint](http://8.219.184.228/api/health), [deployment evidence](docs/deployment-proof.md), and [demo video](https://youtu.be/s64eo9D5PYc). The candidate passed **66/66 automated tests** and **16/16 deterministic policy cases**.
+The submitted candidate is [`760678a34983271b1fc72e859646126d0520eb5a`](https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a). It is deployed on Alibaba Cloud Simple Application Server at [http://8.219.184.228](http://8.219.184.228), with a public [health endpoint](http://8.219.184.228/api/health), [deployment evidence](docs/deployment-proof.md), and [demo video](https://youtu.be/s64eo9D5PYc). The candidate passed **68/68 automated tests** and **16/16 deterministic policy cases**.
 
 The public runtime is configured as `live-qwen` with Qwen Cloud (`qwen3.7-plus`), but Alibaba account KYC currently rejects inference requests with HTTP 403. The health response proves runtime configuration, not a successful model call; ReleaseProof therefore does **not** claim a successful live-Qwen inference or workflow. The included release adapter uses synthetic data and simulated vendors. ReleaseProof is not a production DLP, data clean room, consent platform, or legal-compliance system.
 
@@ -134,7 +134,7 @@ The browser and API ship as one Node.js container. Express serves the built Vite
 
 ## Honest recorded-demo mode
 
-ReleaseProof remains explorable without a paid key. If **DASHSCOPE_API_KEY** is absent, the server uses clearly labeled deterministic extraction and read-plan fixtures. The same sanitizer, context tools, policy, approval transition, sandbox release, verification, recall, metrics, and audit paths still run.
+ReleaseProof remains explorable without a paid key. Preset scenarios always use clearly labeled deterministic extraction and read-plan fixtures, including on a server configured for live Qwen; custom requests use the configured live client and fail closed if both models fail. If **DASHSCOPE_API_KEY** is absent, every workflow uses recorded-demo mode. The same sanitizer, context tools, policy, approval transition, sandbox release, verification, recall, metrics, and audit paths still run.
 
 Recorded-demo output is never represented as a live Qwen result. The UI and health response disclose the active provider mode. The submitted cloud runtime is configured for live Qwen, but its current KYC 403 response means the deterministic recorded-demo path remains the reproducible end-to-end workflow evidence.
 
