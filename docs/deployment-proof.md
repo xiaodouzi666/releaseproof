@@ -30,7 +30,7 @@ Fill this table last, after every link has been tested in an incognito/private w
 | Cloud resource screenshot | `[PENDING: repo-hosted image or public artifact URL]` | PENDING |
 | Live application screenshot | `[PENDING]` | PENDING |
 | Live-Qwen workflow screenshot | `[PENDING: provider mode must visibly say live Qwen/Qwen Cloud]` | PENDING |
-| Evaluation output | `[PENDING: committed result/log or Actions URL]` | PENDING |
+| Evaluation output | [Validated result snapshot](evaluation.md#validated-result-snapshot) | Recorded for code commit `3a64ebb`; public Actions URL still pending |
 | Demo video under 3 minutes | `[PENDING: YouTube/Vimeo/Youku URL and duration]` | PENDING |
 | License | `[LICENSE](../LICENSE)` | Present locally; public link pending |
 

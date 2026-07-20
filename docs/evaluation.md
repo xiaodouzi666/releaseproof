@@ -81,10 +81,10 @@ case pass rate = passing cases / total cases
 
 The human-readable `invariant` attached to each fixture explains why the case exists; deeper properties such as effective action removal are enforced by policy/unit assertions, not inferred from this two-field pass boolean.
 
-### Safety-invariant pass rate
+### Safety-case agreement (non-routine)
 
 ```text
-safety-invariant pass rate = passing non-routine cases / total non-routine cases
+safety-case agreement = passing non-routine cases / total non-routine cases
 ```
 
 In the current evaluator, this is a focused outcome/risk regression metric over all cases whose category is not `routine`. It is not a separate formal proof of every named invariant. Max duration, allowed role/actions, required approval, and no-write-on-deny require the unit/integration evidence below.
@@ -114,24 +114,27 @@ The following workflow properties are better proven by unit/integration tests th
 
 The suite may grow as invariants are added. Do not copy a test total from this document into the submission. Generate the count from the final submitted commit with `pnpm test`, and preserve that command output or CI run as evidence. A timeout or partial pass is not a passing baseline.
 
-## Result reporting template
+## Validated result snapshot
 
-Complete this only from a fresh run on the submitted commit:
+This snapshot was generated from the immutable code commit below. The follow-up documentation commit only records these results and does not change executable code.
 
 | Field | Value |
 | --- | --- |
-| Commit | `[PENDING - paste git SHA]` |
-| Run timestamp (UTC) | `[PENDING]` |
-| Node / pnpm version | `[PENDING]` |
-| Policy version | `[PENDING - emitted by evaluator]` |
-| Cases passed | `[PENDING]/16` |
-| Case pass rate | `[PENDING]` |
-| Decision agreement | `[PENDING]` |
-| Risk agreement | `[PENDING]` |
-| Safety-invariant pass rate | `[PENDING]` |
-| Test files / tests | `[PENDING - paste final Vitest summary; do not use a stale hardcoded total]` |
+| Validated code commit | `3a64ebb1b45515c83edfed2930827309913e7983` |
+| Run timestamp (UTC) | `2026-07-20T08:32:11.672Z` |
+| Node / pnpm version | `v22.14.0` / `11.7.0` |
+| Policy version | `grantguard-policy-2026.07.3` |
+| Cases passed | `16/16` |
+| Case pass rate | `100.0%` |
+| Decision agreement | `100.0%` |
+| Risk agreement | `100.0%` |
+| Safety-case agreement (non-routine) | `100.0%` |
+| Test files / tests | `7 / 62` |
+| TypeScript | `pnpm typecheck` passed |
+| Production build | `pnpm build` passed |
+| Production dependency audit | `pnpm audit --prod` - no known vulnerabilities |
 
-No result is claimed while these fields remain pending.
+These are deterministic policy and software-regression results. They do not claim live-Qwen extraction quality or a successful Alibaba Cloud invocation; those require the separate deployment evidence checklist.
 
 ## Model-dependent evaluation (future / optional evidence)
 

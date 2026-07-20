@@ -38,7 +38,7 @@ A user pastes an access request or supplies a ticket image. GrantGuard then:
 
 The model can help answer "what did this person probably mean?" It cannot answer "is this allowed?" by itself, approve the result, or invoke the write adapter.
 
-`[PENDING SCREENSHOT: awaiting-approval workbench with provider badge, risk, diff, and findings]`
+![Awaiting-approval workbench with provider badge, risk, and human gate](../public/screenshots/approval-gate.png)
 
 ## Finding the right boundary for Qwen
 
@@ -130,7 +130,7 @@ GrantGuard's deterministic policy checks facts that should not be negotiated in 
 
 The output is not just allow/deny. It contains explicit findings, requested versus effective scope, maximum duration, risk score/tier, and whether approval is required. That lets the UI show the operator exactly what software changed and why.
 
-`[PENDING SCREENSHOT: requested role/duration beside policy-effective diff]`
+![Verified constrained grant with the policy-effective diff](../public/screenshots/verified-grant.png)
 
 ## A write acknowledgement is not success
 
@@ -212,7 +212,7 @@ That distinction matters. Reproducibility and authenticity are both valuable, bu
 
 The evaluator reports exact outcome agreement, exact risk-tier agreement, case pass rate, and safety-invariant coverage. Unit/integration tests separately target state transition guards, idempotency, exact-state verification, rollback revision conflicts, restart recovery, audit-chain validation, and provider disclosure.
 
-Current submitted-commit result: `[PENDING: paste generated result, commit, and UTC timestamp]`
+Validated code-commit result: `16/16` deterministic cases and `62/62` automated tests passed on `3a64ebb1b45515c83edfed2930827309913e7983` at `2026-07-20T08:32:11.672Z`. See the [result snapshot](evaluation.md#validated-result-snapshot). This is not a live-Qwen quality claim.
 
 This is a focused regression suite, not statistical proof. A model-quality benchmark would require a separately labeled, consented corpus of multilingual prose and images.
 

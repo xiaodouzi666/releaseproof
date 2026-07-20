@@ -168,7 +168,7 @@ pnpm eval
 pnpm build
 ```
 
-`pnpm eval` runs a deterministic 16-case safety suite and reports per-case outcome/risk agreement plus safety-invariant coverage. It does not grade model prose and does not call a live model. This isolates the authorization boundary from model nondeterminism. No pass rate is claimed in this README; generate and retain the current output as evidence before submission.
+`pnpm eval` runs a deterministic 16-case safety suite and reports per-case outcome/risk agreement plus non-routine safety-case agreement. It does not grade model prose and does not call a live model. On validated code commit `3a64ebb1b45515c83edfed2930827309913e7983`, all 16 cases and all 62 tests passed; TypeScript, the production build, and the production dependency audit also passed. See the [validated result snapshot](docs/evaluation.md#validated-result-snapshot). These results do not claim live-Qwen quality.
 
 The methodology and expected cases are documented in [`docs/evaluation.md`](docs/evaluation.md).
 

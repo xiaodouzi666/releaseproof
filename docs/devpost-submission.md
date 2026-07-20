@@ -137,7 +137,7 @@ The interface is organized around evidence: normalized intent, context tools, po
 - Idempotent, temporary, reversible sandbox grants with read-after-write and read-after-revoke verification.
 - Per-workflow disclosure of live Qwen versus recorded-demo mode.
 - Hash-linked audit events that make the full agent/tool/control sequence inspectable.
-- A deterministic 16-case safety regression suite alongside conventional API/unit tests.
+- A deterministic 16-case safety regression suite plus 62 passing automated policy, adapter, API, persistence, Qwen-boundary, and frontend-normalization tests on the validated code commit.
 - One container deployed to Alibaba Cloud ECS/SAS; the repository also documents why its experimental Function Compute manifest is not a valid live path for this stateful release.
 
 ## What we learned
