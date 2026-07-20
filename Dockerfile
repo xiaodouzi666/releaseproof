@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM node:20-alpine AS build
+FROM node:22-alpine AS build
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ COPY src ./src
 RUN pnpm build \
     && pnpm prune --prod
 
-FROM node:20-alpine AS runtime
+FROM node:22-alpine AS runtime
 
 LABEL org.opencontainers.image.title="ReleaseProof" \
       org.opencontainers.image.description="Proof-carrying data release autopilot powered by Qwen Cloud" \

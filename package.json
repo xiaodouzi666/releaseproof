@@ -33,7 +33,7 @@
     "eval": "tsx scripts/run-evaluation.ts"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22.13"
   },
   "dependencies": {
     "clsx": "^2.1.1",
