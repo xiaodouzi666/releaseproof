@@ -82,6 +82,25 @@ describe("public request integrity", () => {
     expect(fetched.headers["cache-control"]).toBe("no-store");
   });
 
+  it("traces malformed JSON errors and prevents them from being cached", async () => {
+    const response = await request(app)
+      .post("/api/workflows")
+      .set("Content-Type", "application/json")
+      .set("X-Request-Id", "malformed-json-regression")
+      .send('{"scenarioId":')
+      .expect(400);
+
+    expect(response.headers["x-request-id"]).toBe("malformed-json-regression");
+    expect(response.headers["cache-control"]).toBe("no-store");
+    expect(response.body).toEqual({
+      error: {
+        code: "INVALID_JSON",
+        message: "Request body must be valid JSON",
+        requestId: "malformed-json-regression",
+      },
+    });
+  });
+
   it("requires JSON and an explicit approver on state-changing actions", async () => {
     const created = await request(app)
       .post("/api/workflows")

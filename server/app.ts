@@ -83,7 +83,6 @@ export async function createApp(service?: WorkflowService): Promise<express.Expr
       exposedHeaders: ["X-Request-Id", "Location"],
     }));
   }
-  app.use(express.json({ limit: "9mb", type: ["application/json", "application/*+json"] }));
   app.use((request: Request, response: Response, next: NextFunction) => {
     request.requestId = request.header("X-Request-Id")?.slice(0, 100) || randomUUID();
     response.setHeader("X-Request-Id", request.requestId);
@@ -96,6 +95,9 @@ export async function createApp(service?: WorkflowService): Promise<express.Expr
     response.setHeader("Cache-Control", "no-store");
     next();
   });
+  // Install request metadata before parsing so body-parser failures receive the
+  // same traceability and cache protections as every other API response.
+  app.use(express.json({ limit: "9mb", type: ["application/json", "application/*+json"] }));
 
   app.get("/api/health", (_request, response) => {
     const model = workflows.qwen.metadata();

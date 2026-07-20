@@ -107,6 +107,9 @@ describe("ReleaseProof HTTP workflow integration", () => {
         provider: "deterministic fixture",
         calls: 0,
       });
+      expect(created.body.model.disclosure).toContain("preset intentionally");
+      expect(created.body.model.disclosure).toContain("even when Qwen Cloud is configured");
+      expect(created.body.model.disclosure).not.toContain("no API key");
 
       const denied = await waitForStatus(liveConfiguredApp, String(created.body.id), ["denied"]);
       expect(denied.model).toMatchObject({
@@ -114,6 +117,7 @@ describe("ReleaseProof HTTP workflow integration", () => {
         provider: "deterministic fixture",
         calls: 0,
       });
+      expect(denied.model.disclosure).toBe(created.body.model.disclosure);
       expect(denied.decision?.findings.map((finding) => finding.id)).toContain(
         "dataset.restricted_external_release",
       );
@@ -124,6 +128,19 @@ describe("ReleaseProof HTTP workflow integration", () => {
         ]),
       );
       expect(openAiMock.create).not.toHaveBeenCalled();
+
+      const custom = await request(liveConfiguredApp)
+        .post("/api/workflows")
+        .send({
+          requestText:
+            "privacy@acme.example requests aggregate campaign-performance access for analyst@northstar.example for 4 hours.",
+        })
+        .expect(202);
+      expect(custom.body.model).toMatchObject({ mode: "live-qwen", provider: "Qwen Cloud" });
+      expect(custom.body.model.disclosure).toContain("Qwen Cloud is configured");
+      expect(custom.body.model.disclosure).not.toContain("Recorded preset mode");
+      await waitForStatus(liveConfiguredApp, String(custom.body.id), ["failed"]);
+      expect(openAiMock.create).toHaveBeenCalled();
     } finally {
       if (previousKey === undefined) delete process.env.DASHSCOPE_API_KEY;
       else process.env.DASHSCOPE_API_KEY = previousKey;

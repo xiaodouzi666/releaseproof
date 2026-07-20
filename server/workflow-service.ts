@@ -1138,6 +1138,8 @@ export class WorkflowService {
     // Presets are reproducible recorded demonstrations even when the service is
     // configured for live Qwen. Custom requests always retain the configured
     // client, whose primary/fallback failures fail the workflow closed.
-    return scenarioId ? new QwenClient("") : this.qwen;
+    return scenarioId
+      ? new QwenClient("", { recordedDemoReason: "preset-workflow" })
+      : this.qwen;
   }
 }

@@ -139,6 +139,8 @@ export interface PlanResult {
   stats: ModelCallStats;
 }
 
+type RecordedDemoReason = "api-key-unconfigured" | "preset-workflow";
+
 const directoryArgumentsSchema = z.object({ subjectEmail: z.string().email() }).strict();
 const resourceArgumentsSchema = z.object({ resourceId: z.string().min(2).max(100) }).strict();
 const accessArgumentsSchema = z
@@ -251,6 +253,7 @@ function deterministicExtraction(text: string, scenarioId?: string, hasImage = f
 
 export class QwenClient {
   private readonly client: OpenAI | null;
+  private readonly recordedDemoReason: RecordedDemoReason;
   private readonly maxConcurrentCalls = Math.max(
     1,
     Math.min(20, Number(process.env.QWEN_MAX_CONCURRENCY ?? 2) || 2),
@@ -259,8 +262,12 @@ export class QwenClient {
   private readonly callWaiters: Array<() => void> = [];
   readonly mode: "live-qwen" | "recorded-demo";
 
-  constructor(apiKey = process.env.DASHSCOPE_API_KEY) {
+  constructor(
+    apiKey = process.env.DASHSCOPE_API_KEY,
+    options: { recordedDemoReason?: RecordedDemoReason } = {},
+  ) {
     this.mode = apiKey ? "live-qwen" : "recorded-demo";
+    this.recordedDemoReason = options.recordedDemoReason ?? "api-key-unconfigured";
     this.client = apiKey
       ? new OpenAI({ apiKey, baseURL: BASE_URL, timeout: 20_000, maxRetries: 0 })
       : null;
@@ -280,7 +287,9 @@ export class QwenClient {
       latencyMs: 0,
       disclosure: live
         ? "Qwen Cloud is configured. Successful inference is evidenced per release by completed model calls and audit events; deterministic release policy remains the final authority."
-        : "Recorded demo mode: no API key is configured. Release extraction and read-plan selection use deterministic local fixtures; no live model call is claimed.",
+        : this.recordedDemoReason === "preset-workflow"
+          ? "Recorded preset mode: this preset intentionally uses deterministic local fixtures for reproducibility, even when Qwen Cloud is configured; no live model call is made or claimed."
+          : "Recorded demo mode: no API key is configured. Release extraction and read-plan selection use deterministic local fixtures; no live model call is claimed.",
     };
   }
 
