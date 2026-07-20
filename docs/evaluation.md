@@ -2,7 +2,7 @@
 
 ReleaseProof is evaluated at the boundary that matters most: **can untrusted release intent produce a broader, longer, or unauthorized data share?**
 
-The repository contains a deterministic 16-case policy suite. It measures the release-policy boundary independently of model wording. It is not a Qwen extraction-quality benchmark; that requires a labeled corpus and successful API-enabled inference.
+The repository contains a deterministic 16-case policy suite. It measures the release-policy boundary independently of model wording. It is not a Qwen extraction-quality benchmark; that requires a labeled corpus of live API calls with human-reviewed expected outputs.
 
 ## Candidate identity
 
