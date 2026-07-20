@@ -17,7 +17,7 @@ This is the final English record of the submitted Devpost copy. Public evidence 
 | Alibaba Cloud deployment proof code file (field 27543) | **https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts** — shows the official Qwen Cloud base URL and real API calls, as required by the organizer's Proof of Deployment 101 announcement |
 | Alibaba Cloud deployment infrastructure | **https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/deploy/ecs/docker-compose.prod.yml#L1-L25** |
 | Architecture diagram upload | **public/architecture.png** |
-| Alibaba Cloud deployment screenshot upload | **docs/assets/deployment/alibaba-cloud-runtime-current.jpg**; use **docs/assets/deployment/alibaba-cloud-resource.jpg** as supporting evidence |
+| Alibaba Cloud deployment screenshot upload | **docs/assets/deployment/alibaba-cloud-runtime-current.jpg** |
 | Blog post | Leave blank unless a public build story is published |
 | AI tools used | **Qwen Cloud integration for structured extraction and read-only planning (configured on the deployment; inference currently returns HTTP 403 `AccessDenied.Unpurchased` while account KYC/entitlement activation is pending); OpenAI Codex for development assistance.** |
 | Learning level | **Completed directly by the entrant in Devpost** |
@@ -154,9 +154,9 @@ Qwen implementation:
 
 https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts
 
-At submission time, the Alibaba-hosted runtime is configured for Qwen 3.7 Plus and discloses that configuration through its provider badge and health endpoint. However, an account-level Qwen Cloud KYC/entitlement activation gate currently prevents a successful live inference.
+At submission time, the Alibaba-hosted runtime is configured for Qwen 3.7 Plus and discloses that configuration through its provider badge and health endpoint. However, inference returns HTTP 403 `AccessDenied.Unpurchased` while account KYC/entitlement activation remains pending.
 
-We therefore do not present the configured health response as proof of a model call. The public 2:42 video is clearly labeled Recorded Demo. It substitutes deterministic fixtures only for Qwen extraction and read-plan generation; policy, owner approval, synthetic share creation, observed-state verification, recall, metrics, and audit continue through the same application paths.
+We therefore do not present the configured health response as proof of a model call. The public under-three-minute video is clearly labeled Recorded Demo. It substitutes deterministic fixtures only for Qwen extraction and read-plan generation; policy, owner approval, synthetic share creation, observed-state verification, recall, metrics, and audit continue through the same application paths.
 
 ## Challenges we ran into
 
@@ -261,6 +261,6 @@ The submitted Devpost project:
 - does not claim successful live-Qwen inference while HTTP 403 `AccessDenied.Unpurchased` remains unresolved;
 - includes the required Alibaba Cloud runtime screenshot;
 - keeps all demo data synthetic;
-- links a public 2:42 video, under the 3:00 limit;
+- links a public video under the 3:00 limit;
 - was checked with public app/repository/video/evidence links; and
 - must remain frozen with its repository revision, video, and linked evidence after the deadline.

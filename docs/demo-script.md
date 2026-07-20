@@ -1,6 +1,6 @@
 # ReleaseProof demo script — 2:42 edit target
 
-The published source cut runs **2:42**. Record the real product in one browser session and keep the final cut strictly below three minutes. The story is: **Every dataset release needs a recall path.** Use cuts only to remove waits, and never fabricate a result.
+The published source cut is **2:42**; YouTube Studio displays it as **2:43** after platform rounding. Both are safely below the strict three-minute limit. Record the real product in one browser session and keep the final cut strictly below three minutes. The story is: **Every dataset release needs a recall path.** Use cuts only to remove waits, and never fabricate a result.
 
 Use [`youtube-description.md`](youtube-description.md) for upload copy and signed-out QA.
 

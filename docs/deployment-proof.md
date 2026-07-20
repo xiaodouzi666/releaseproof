@@ -34,7 +34,6 @@ The deterministic recorded-demo path remains the reproducible end-to-end demonst
 | Deterministic release policy | [Candidate-pinned `server/policy.ts`](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/policy.ts) | 16/16 local cases |
 | Exact manifest owner checkpoint | [Candidate-pinned workflow service](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/workflow-service.ts) | Source and tests verified |
 | Idempotent share, verification, and recall | [Candidate-pinned tools](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/tools.ts) and [workflow service](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/workflow-service.ts) | Source and tests verified |
-| Alibaba Cloud resource | [Resource capture](assets/deployment/alibaba-cloud-resource.jpg) | Captured |
 | Running candidate container | [Current runtime capture](assets/deployment/alibaba-cloud-runtime-current.jpg) | Captured; candidate SHA, deployed repository head, and healthy service visible |
 | Public application | [Live app](http://8.219.184.228) and [public-app capture](assets/deployment/public-app.jpg) | Verified over HTTP |
 | Public health | [Health endpoint](http://8.219.184.228/api/health) | Verified HTTP 200 |
@@ -61,7 +60,7 @@ The plan is untrusted. The server allow-lists names, parses strict arguments, re
 
 Candidate-pinned source:
 
-- [Client, endpoint, model, and provider disclosure](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L254-L293)
+- [Endpoint and model constants](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L8-L10) and [client/provider disclosure](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L254-L293)
 - [Structured extraction](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L296-L339)
 - [Read-plan request](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L342-L427)
 - [Plan validation, argument rebinding, and mandatory reads](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L429-L466)
@@ -107,12 +106,6 @@ The verified response reports these stable fields:
 Again, this response establishes configuration and service identity only. The missing successful workflow receipt, combined with the observed 403 `AccessDenied.Unpurchased`, means no successful inference claim is made.
 
 ## Captured Alibaba Cloud evidence
-
-### Resource console
-
-[![Alibaba Cloud Simple Application Server resource](assets/deployment/alibaba-cloud-resource.jpg)](assets/deployment/alibaba-cloud-resource.jpg)
-
-The capture shows the Alibaba Cloud Simple Application Server product, Singapore region, running status, and public IP. Account and billing secrets are not shown.
 
 ### Candidate runtime
 

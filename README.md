@@ -16,7 +16,7 @@ Public evidence:
 
 - [Application](http://8.219.184.228) and [health](http://8.219.184.228/api/health)
 - [Public repository](https://github.com/xiaodouzi666/releaseproof) and [immutable candidate](https://github.com/xiaodouzi666/releaseproof/commit/7a6e503eb03849d19d663597e2993b093c201738)
-- [Alibaba Cloud resource](docs/assets/deployment/alibaba-cloud-resource.jpg), [current runtime](docs/assets/deployment/alibaba-cloud-runtime-current.jpg), and [public app](docs/assets/deployment/public-app.jpg) captures
+- [Current Alibaba Cloud runtime](docs/assets/deployment/alibaba-cloud-runtime-current.jpg) and [public app](docs/assets/deployment/public-app.jpg) captures
 - [Public demo video](https://youtu.be/s64eo9D5PYc)
 
 ## Why ReleaseProof
