@@ -1,26 +1,37 @@
 # ReleaseProof demo video
 
-`releaseproof-demo.mp4` is the upload-ready, English-narrated 1080p baseline edit. It is generated from synthetic product data and visibly claims only **Recorded Demo** fixtures.
+The public [2:42 dynamic demo](https://youtu.be/QkooIqjEFiY) is a real browser interaction with the ReleaseProof app. It selects a preset, starts a workflow, reviews the Requested-to-Effective minimization receipt, approves the exact manifest, observes release verification, opens audit evidence, demonstrates a hard deny, recalls the released share, verifies rollback, and opens the architecture view.
 
-## Rebuild
+All recipients, datasets, agreements, and share state in the recording are synthetic. The video visibly labels the run **Recorded Demo** and does not claim a successful live-Qwen invocation.
+
+## Rebuild the dynamic demo
+
+The dynamic build reuses the reviewed narration, cached English voice tracks, and procedural soundtrack from `scripts/generate-demo-video.py`. Start a local production build in recorded-demo mode:
 
 ~~~powershell
-python scripts/generate-demo-video.py
+pnpm build
+$env:PORT = "8791"
+$env:DASHSCOPE_API_KEY = ""
+pnpm start
 ~~~
 
-The project-local encoder is installed once with:
+In a second terminal, capture and assemble the real interaction:
+
+~~~powershell
+node scripts/capture-dynamic-demo.mjs http://127.0.0.1:8791
+python scripts/generate-dynamic-demo-video.py
+~~~
+
+The capture script drives headless Chrome and writes timestamped frames plus a manifest under `dynamic-frames/`. Set `CHROME_PATH` if Chrome is not installed at its default Windows location. The generator refuses to export unless the manifest proves a verified release, verified recall, hard-deny state, complete frame counts, and a total duration below three minutes.
+
+Generated frames, QA captures, build intermediates, and `releaseproof-demo-dynamic.mp4` are intentionally ignored by Git. The upload chapters remain reviewable in [`dynamic-chapters.txt`](dynamic-chapters.txt).
+
+## Baseline assets
+
+`releaseproof-demo.mp4` is the earlier tracked baseline edit. Its checked-in narration, source frames, and voice cache remain inputs to the reproducible dynamic generator. The project-local encoder can be installed with:
 
 ~~~powershell
 python -m pip install --target .tools/video imageio-ffmpeg==0.6.0
 ~~~
 
-The edit is designed for last-minute evidence swaps. Replace either of these files and rerun the same command:
-
-- `frames/01-hero.png` — opening/live deployment frame
-- `frames/02-intake.png` — request/intake or live-Qwen receipt frame
-
-If either optional frame is absent, the generator falls back to the checked-in product screenshot. Source selection, English narration, captions, timing, and claim language live in `scripts/generate-demo-video.py`.
-
-The reviewed English narration is cached under `voice/`, so swapping screenshots does not depend on the machine's speech voices. Delete a cached WAV only when intentionally regenerating that scene's narration.
-
-The quiet music bed is synthesized by the generator from simple tones; it contains no third-party recording. `chapters.txt` contains upload chapters. The YouTube title, description, and upload checklist live in [`../../youtube-description.md`](../../youtube-description.md).
+The quiet music bed is synthesized by the generator from simple tones and contains no third-party recording. The YouTube title, disclosure, description, and upload checklist live in [`../../youtube-description.md`](../../youtube-description.md).

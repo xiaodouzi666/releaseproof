@@ -8,7 +8,7 @@ This page records the evidence available for the ReleaseProof submission and the
 - Immutable application candidate: [`7a6e503eb03849d19d663597e2993b093c201738`](https://github.com/xiaodouzi666/releaseproof/commit/7a6e503eb03849d19d663597e2993b093c201738)
 - Alibaba Cloud application: [http://8.219.184.228](http://8.219.184.228)
 - Public health endpoint: [http://8.219.184.228/api/health](http://8.219.184.228/api/health)
-- Public demo video: [youtu.be/s64eo9D5PYc](https://youtu.be/s64eo9D5PYc)
+- Public dynamic demo video: [youtu.be/QkooIqjEFiY](https://youtu.be/QkooIqjEFiY)
 - Candidate validation: **69/69 automated tests** and **16/16 deterministic policy cases**, with typecheck, production build, and production dependency audit passing
 
 The application and health endpoint are currently served over HTTP; TLS is not claimed. The runtime is an Alibaba Cloud Simple Application Server deployment and truthfully reports `deploymentTarget: alibaba-sas`.
@@ -39,7 +39,7 @@ The deterministic recorded-demo path remains the reproducible end-to-end demonst
 | Public health | [Health endpoint](http://8.219.184.228/api/health) | Verified HTTP 200 |
 | Successful live-Qwen receipt | None | Not achieved; HTTP 403 `AccessDenied.Unpurchased` while KYC/entitlement activation is pending |
 | Test/evaluation output | [Validation record](evaluation.md#validated-releaseproof-candidate-snapshot) and [candidate evaluation source](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/evaluation.ts) | 69/69 tests; 16/16 cases |
-| Demo video | [Public YouTube video](https://youtu.be/s64eo9D5PYc) | Public link verified |
+| Demo video | [Public dynamic YouTube video](https://youtu.be/QkooIqjEFiY) | Public link verified |
 | Architecture and thumbnail | [Candidate architecture](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/public/architecture.png) and [candidate 3:2 thumbnail](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/public/devpost-thumbnail-3x2.png) | Candidate-pinned assets |
 
 ## What the implementation does with Qwen Cloud

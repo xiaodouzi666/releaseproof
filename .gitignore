@@ -11,5 +11,13 @@ coverage/
 Thumbs.db
 .tools/
 docs/assets/video/.build/
+docs/assets/video/.dynamic-build/
+docs/assets/video/dynamic-frames/
+docs/assets/video/dynamic-qa/
+docs/assets/video/dynamic-states/
+docs/assets/video/direct-wf.png
+docs/assets/video/releaseproof-demo-dynamic.mp4
+__pycache__/
+*.py[cod]
 .tools/
 .tmp-*.pid

@@ -59,7 +59,7 @@ ReleaseProof turns an ambiguous external data-sharing request into a minimized, 
 - Live application: http://8.219.184.228
 - Public source: https://github.com/xiaodouzi666/releaseproof
 - Submitted revision: https://github.com/xiaodouzi666/releaseproof/commit/7a6e503eb03849d19d663597e2993b093c201738
-- Demo video: https://youtu.be/s64eo9D5PYc
+- Demo video: https://youtu.be/QkooIqjEFiY
 - Qwen integration: https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts
 - Alibaba Cloud deployment code: https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/deploy/ecs/docker-compose.prod.yml#L1-L25
 - Alibaba Cloud deployment evidence: https://github.com/xiaodouzi666/releaseproof/blob/main/docs/deployment-proof.md
@@ -230,7 +230,7 @@ The next milestone is a read-only enterprise pilot:
 - Qwen integration: https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts
 - Alibaba deployment code: https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/deploy/ecs/docker-compose.prod.yml
 - Architecture: https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/public/architecture.png
-- Demo video: https://youtu.be/s64eo9D5PYc
+- Demo video: https://youtu.be/QkooIqjEFiY
 - License: MIT
 
 ## Built with

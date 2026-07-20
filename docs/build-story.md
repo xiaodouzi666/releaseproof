@@ -224,5 +224,5 @@ Every dataset release needs a recall path.
 
 - Try it: [http://8.219.184.228](http://8.219.184.228)
 - Source: [public repository](https://github.com/xiaodouzi666/releaseproof) and [immutable candidate](https://github.com/xiaodouzi666/releaseproof/commit/7a6e503eb03849d19d663597e2993b093c201738)
-- Demo: [public YouTube video](https://youtu.be/s64eo9D5PYc)
+- Demo: [public dynamic YouTube video](https://youtu.be/QkooIqjEFiY)
 - Architecture and evidence: [candidate architecture](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/public/architecture.png) and [deployment record](deployment-proof.md)

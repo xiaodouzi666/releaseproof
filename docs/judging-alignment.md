@@ -25,7 +25,7 @@ The live Devpost page currently pairs the first two criterion headings with desc
 | Public repository | [xiaodouzi666/releaseproof](https://github.com/xiaodouzi666/releaseproof) | Submitted and public |
 | Detectable OSI license at repository root | [`LICENSE`](../LICENSE), MIT | Submitted |
 | Qwen Cloud API source and base URL | [`server/qwen.ts`](../server/qwen.ts) at candidate `7a6e503eb03849d19d663597e2993b093c201738` | Submitted as a candidate-pinned link |
-| Public demo under three minutes | [YouTube](https://youtu.be/s64eo9D5PYc) | Submitted and public |
+| Public dynamic demo under three minutes | [YouTube](https://youtu.be/QkooIqjEFiY) | Submitted and public |
 | Architecture diagram | [`public/architecture.png`](../public/architecture.png) | Submitted and uploaded |
 | Track selected | Track 4: Autopilot Agent | Submitted |
 | Clear what / who / how description | Final Devpost story identifies enterprise data owners, the release-risk problem, the proof path, and the system architecture. | Submitted |
