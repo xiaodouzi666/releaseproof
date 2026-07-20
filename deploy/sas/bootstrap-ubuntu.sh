@@ -20,7 +20,10 @@ fi
 
 cpu_count="$(nproc)"
 memory_kib="$(awk '/^MemTotal:/ {print $2}' /proc/meminfo)"
-if (( cpu_count < 2 )) || (( memory_kib < 1700000 )); then
+# Alibaba's marketed 2 GiB SAS plan reports roughly 1.58 GiB through
+# /proc/meminfo after host/platform reservation. Keep enough headroom for the
+# build plus the swap file without rejecting that supported plan.
+if (( cpu_count < 2 )) || (( memory_kib < 1500000 )); then
   echo "This deployment requires at least 2 vCPU and approximately 2 GiB RAM; found ${cpu_count} vCPU and ${memory_kib} KiB." >&2
   exit 1
 fi

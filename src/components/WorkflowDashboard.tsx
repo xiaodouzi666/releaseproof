@@ -45,6 +45,7 @@ import {
   releaseLanguage,
   sentenceCase,
 } from "../format";
+import { buildMinimizationReceipt, buildRecallContract } from "../minimization";
 import type { PermissionChange, TimelineEvent, Workflow, WorkflowStatus } from "../types";
 
 interface WorkflowDashboardProps {
@@ -66,6 +67,12 @@ const asRecord = (value: unknown): AnyRecord =>
 
 const asString = (value: unknown, fallback = "—") =>
   typeof value === "string" && value ? value : typeof value === "number" ? String(value) : fallback;
+
+const asStringArray = (value: unknown): string[] =>
+  Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+
+const asNumber = (value: unknown): number | undefined =>
+  typeof value === "number" && Number.isFinite(value) ? value : undefined;
 
 const statusOrder: WorkflowStatus[] = [
   "received",
@@ -327,6 +334,65 @@ function DiffIcon({ action }: { action: PermissionChange["action"] }) {
   return <CheckCircle2 size={16} />;
 }
 
+function MinimizationReceiptView({ workflow }: { workflow: Workflow }) {
+  const raw = asRecord(workflow.raw);
+  const extracted = asRecord(raw.extractedRequest);
+  const decision = asRecord(raw.decision);
+  const receipt = buildMinimizationReceipt({
+    requestedRole: asString(extracted.requestedRole, "") || undefined,
+    effectiveRole: asString(decision.effectiveRole, "") || undefined,
+    requestedActions: asStringArray(extracted.requestedActions),
+    effectiveActions: asStringArray(decision.effectiveActions),
+    requestedDurationHours: asNumber(extracted.durationHours),
+    maxDurationHours: asNumber(decision.maxDurationHours),
+    findings: workflow.policyEvidence.map((finding) => ({
+      id: finding.id,
+      title: finding.policy,
+      detail: finding.explanation,
+      effect: finding.verdict,
+    })),
+  });
+  if (!receipt.fields.length) return null;
+
+  const ownerApproved = workflow.approval?.status === "approved" ||
+    ["approved", "executing", "verifying", "completed", "rolling_back", "rolled_back", "revoked"].includes(workflow.status);
+
+  return (
+    <div className="minimization-receipt" aria-label="Requested versus policy-effective field minimization receipt">
+      <div className="projection-overview">
+        <div>
+          <span>Requested</span>
+          <strong>{formatReleaseProfile(receipt.requestedRole)}</strong>
+          <small>{receipt.requestedDurationHours ? `${receipt.requestedDurationHours}h TTL` : "TTL pending"} · {receipt.fields.length} named fields</small>
+        </div>
+        <ChevronRight size={19} />
+        <div>
+          <span>{ownerApproved ? "Owner-approved effective" : "Effective · awaiting owner"}</span>
+          <strong>{formatReleaseProfile(receipt.effectiveRole)}</strong>
+          <small>{receipt.effectiveDurationHours ? `${receipt.effectiveDurationHours}h TTL` : "TTL pending"} · {receipt.retainedCount} retained</small>
+        </div>
+      </div>
+      <ul className="minimization-field-list">
+        {receipt.fields.map((field) => (
+          <li className={`minimization-field minimization-field--${field.outcome}`} key={field.action}>
+            <span className="minimization-field-icon">
+              {field.outcome === "retained" ? <Check size={14} /> : <CircleMinus size={14} />}
+            </span>
+            <span className="minimization-field-copy">
+              <strong>{formatReleaseAction(field.action)}</strong>
+              <small>{releaseLanguage(field.reason)}</small>
+            </span>
+            <span className="minimization-field-result">
+              <em>{field.outcome}</em>
+              <code>{field.reasonId}</code>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function PermissionDiffCard({ workflow }: { workflow: Workflow }) {
   const raw = asRecord(workflow.raw);
   const rawDiff = asRecord(raw.diff);
@@ -336,8 +402,12 @@ function PermissionDiffCard({ workflow }: { workflow: Workflow }) {
   return (
     <section className="console-card diff-card" aria-labelledby="diff-title">
       <div className="card-heading card-heading--rule">
-        <div><span className="card-kicker">Data minimization compiler</span><h3 id="diff-title">Release manifest diff</h3></div>
-        {changes.length ? <span className="diff-count">{changes.filter((item) => item.action === "add").length} include · {changes.filter((item) => item.action === "remove").length} exclude</span> : null}
+        <div><span className="card-kicker">Counterfactual minimization receipt</span><h3 id="diff-title">Requested → effective manifest</h3></div>
+      </div>
+      <MinimizationReceiptView workflow={workflow} />
+      <div className="provider-delta-heading">
+        <span><small>Provider state delta</small><strong>Current active → proposed share</strong></span>
+        {changes.length ? <em>{changes.filter((item) => item.action === "add").length} include · {changes.filter((item) => item.action === "remove").length} exclude</em> : null}
       </div>
       {Object.keys(rawDiff).length ? (
         <div className="diff-overview">
@@ -392,8 +462,45 @@ function PolicyCard({ workflow }: { workflow: Workflow }) {
       ) : (
         <div className="card-empty"><Scale size={22} /><span>Release-policy evidence is being assembled.</span></div>
       )}
-      <div className="policy-authority"><LockKeyhole size={14} /> Application policy has final authority. Model output cannot expand the release manifest.</div>
+      <div className="policy-authority">
+        <span className="model-authority-chip"><Bot size={13} /> Qwen: 4 read tools · 0 approve/release/recall tools</span>
+        <span><LockKeyhole size={14} /> Application policy has final authority. Model output cannot expand the release manifest.</span>
+      </div>
     </section>
+  );
+}
+
+function RecallContractSummary({ workflow }: { workflow: Workflow }) {
+  const raw = asRecord(workflow.raw);
+  const extracted = asRecord(raw.extractedRequest);
+  const resource = asRecord(raw.resource);
+  const diff = asRecord(raw.diff);
+  const after = asRecord(diff.after);
+  const currentAccess = Array.isArray(raw.currentAccess) ? raw.currentAccess.map(asRecord) : [];
+  const expiresAt = asString(after.expiresAt, "");
+  if (!Object.keys(diff).length) return null;
+
+  const contract = buildRecallContract({
+    recipient: asString(extracted.subjectEmail, "") || undefined,
+    dataset: asString(resource.name, asString(extracted.resourceId, "")) || undefined,
+    expiresAt: expiresAt ? formatDateTime(expiresAt) : undefined,
+    activeBaselineShares: currentAccess.filter((share) => asString(share.status, "active") === "active").length,
+  });
+
+  return (
+    <div className="recall-contract" aria-label="Pre-approval recall contract">
+      <div className="recall-contract-heading">
+        <span><TimerReset size={16} /></span>
+        <div><small>Pre-approval recall contract</small><strong>The exit path is part of this decision</strong></div>
+      </div>
+      <dl>
+        <div className="recall-contract-target"><dt>Bound target</dt><dd>{contract.target}</dd></div>
+        <div><dt>Trigger</dt><dd>{contract.trigger}</dd></div>
+        <div><dt>Baseline</dt><dd>{contract.baseline}</dd></div>
+        <div className="recall-contract-success"><dt>Success condition</dt><dd>{contract.successCondition}</dd></div>
+      </dl>
+      <p><Fingerprint size={13} /> {contract.verification}</p>
+    </div>
   );
 }
 
@@ -426,6 +533,8 @@ function ApprovalGate({ workflow, busy, error, onAction }: Pick<WorkflowDashboar
             ? "A hard release constraint stopped delivery. Owner approval cannot override a deterministic deny."
             : releaseLanguage(workflow.approval?.note || "The control plane will stop here until analysis reaches a reviewable release manifest.")}
       </p>
+
+      {!policyDenied && workflow.status !== "rejected" ? <RecallContractSummary workflow={workflow} /> : null}
 
       {waiting ? (
         <div className="approval-form">
