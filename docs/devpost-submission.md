@@ -12,6 +12,10 @@ GrantGuard
 
 Human-gated, least-privilege access autopilot powered by Qwen Cloud.
 
+## Thumbnail
+
+Upload [`public/devpost-thumbnail-3x2.png`](../public/devpost-thumbnail-3x2.png). It is a 1536x1024 (3:2) PNG, below Devpost's 5 MB limit, with no third-party logos or account information. The wider [`public/devpost-thumbnail.png`](../public/devpost-thumbnail.png) is the repository/social cover.
+
 ## Track
 
 Track 4 - Autopilot Agent
@@ -24,9 +28,9 @@ GrantGuard turns an ambiguous access ticket into a grounded, policy-bounded, tem
 
 - Live application: `[PENDING: public HTTPS URL]`
 - Source code: `[PENDING: public GitHub repository]`
-- Demo video (under 3 minutes): `[PENDING: YouTube, Vimeo, or Youku URL]`
+- Demo video (strictly under 3 minutes): `[PENDING: public YouTube URL; verify signed-out playback]`
 - Qwen integration permalink: `[PENDING: commit-pinned GitHub link]`
-- Alibaba Cloud deployment evidence: `[PENDING: public link to deployment-proof artifacts]`
+- Alibaba Cloud deployment evidence: `[PENDING: commit-pinned code link showing the Qwen Cloud base URL, plus the Devpost-uploaded Alibaba Cloud runtime screenshot]`
 
 ## Inspiration
 
@@ -138,7 +142,7 @@ The interface is organized around evidence: normalized intent, context tools, po
 - Per-workflow disclosure of live Qwen versus recorded-demo mode.
 - Hash-linked audit events that make the full agent/tool/control sequence inspectable.
 - A deterministic 16-case safety regression suite plus 62 passing automated policy, adapter, API, persistence, Qwen-boundary, and frontend-normalization tests on the validated code commit.
-- One container deployed to Alibaba Cloud ECS/SAS; the repository also documents why its experimental Function Compute manifest is not a valid live path for this stateful release.
+- A hardened one-container deployment path for Alibaba Cloud ECS/SAS; the repository also documents why its experimental Function Compute manifest is not a valid live path for this stateful release.
 
 ## What we learned
 
@@ -177,7 +181,8 @@ Before pasting this copy, replace every pending field and verify the following f
 - public source and MIT license;
 - commit-pinned Qwen API source link;
 - public Alibaba Cloud-hosted health endpoint and application;
-- screenshots showing Alibaba Cloud resource identity and running commit;
+- the required PNG/JPG/JPEG screenshot showing the Alibaba Cloud Workbench/instance runtime, plus repository-hosted resource and running-commit evidence;
 - live-Qwen workflow visibly labeled as live, not recorded-demo;
 - current test/evaluation output without invented pass rates;
-- public demo video under 3:00.
+- public YouTube demo strictly under 3:00 that plays while signed out;
+- no repository, video, live-app, or evidence-link changes after the submission deadline.

@@ -2,6 +2,8 @@
 
 **Human-gated, least-privilege access autopilot powered by Qwen Cloud.**
 
+<img src="public/devpost-thumbnail.png" alt="GrantGuard human-gated access autopilot cover" width="1200">
+
 GrantGuard turns an ambiguous access request into a bounded, reviewable, temporary access change. Qwen understands the request and plans the investigation; deterministic policy code owns the decision boundary; a human authorizes every privilege-creating write; and a sandbox IAM adapter makes the result verifiable and reversible. Revocation is pre-authorized by the approved expiry and may run automatically.
 
 > Built for **Qwen Cloud Hackathon - Track 4: Autopilot Agent**. Cloud deployment and live-model evidence are not claimed until the checklist in [`docs/deployment-proof.md`](docs/deployment-proof.md) is completed with public links and unredacted service identity (never secrets).

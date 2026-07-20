@@ -19,6 +19,7 @@ Fill this table last, after every link has been tested in an incognito/private w
 | Public source code | `[PENDING: GitHub repository URL]` | PENDING |
 | Immutable submitted revision | `[PENDING: commit permalink]` | PENDING |
 | Qwen integration source permalink | `[PENDING: permalink to exact server adapter lines]` | PENDING |
+| Qwen Cloud base-URL source permalink | `[PENDING: commit-pinned link visibly showing the Alibaba Cloud/Qwen Cloud base URL]` | PENDING |
 | Qwen structured-extraction permalink | `[PENDING: model + response_format request]` | PENDING |
 | Qwen function-planning permalink | `[PENDING: tools + tool_choice request]` | PENDING |
 | Tool validation/dispatch permalink | `[PENDING: allow-list, sanitize, mandatory completion, and orchestrator dispatch]` | PENDING |
@@ -27,11 +28,12 @@ Fill this table last, after every link has been tested in an incognito/private w
 | Idempotent execution + verification source | `[PENDING: IAM adapter/verifier lines]` | PENDING |
 | Alibaba Cloud deployed backend | `[PENDING: public HTTPS URL]` | PENDING |
 | Health endpoint | `[PENDING: public /api/health URL]` | PENDING |
+| Required Devpost Alibaba Cloud screenshot | `[PENDING: PNG/JPG/JPEG upload, at most 35 MB, showing Workbench/instance runtime]` | PENDING |
 | Cloud resource screenshot | `[PENDING: repo-hosted image or public artifact URL]` | PENDING |
 | Live application screenshot | `[PENDING]` | PENDING |
 | Live-Qwen workflow screenshot | `[PENDING: provider mode must visibly say live Qwen/Qwen Cloud]` | PENDING |
 | Evaluation output | [Validated result snapshot](evaluation.md#validated-result-snapshot) | Recorded for code commit `3a64ebb`; public Actions URL still pending |
-| Demo video under 3 minutes | `[PENDING: YouTube/Vimeo/Youku URL and duration]` | PENDING |
+| Demo video under 3 minutes | `[PENDING: public YouTube URL and duration strictly below 3:00]` | PENDING |
 | License | `[LICENSE](../LICENSE)` | Present locally; public link pending |
 
 ## What proves actual Qwen Cloud use
@@ -159,7 +161,7 @@ Use the application's actual returned schema in the submission. Do not fabricate
 
 ## What proves Alibaba Cloud deployment
 
-The preferred evidence target is an Alibaba Cloud ECS or Simple Application Server instance running the repository's container. A complete evidence set should make both resource ownership and runnable behavior legible.
+The preferred evidence target is an Alibaba Cloud ECS or Simple Application Server instance running the repository's container. A complete evidence set should make both resource ownership and runnable behavior legible. The Devpost form separately requires (1) a public repository code link that visibly shows the Qwen Cloud base URL and (2) a PNG/JPG/JPEG screenshot, at most 35 MB, showing proof that the project runs on Alibaba Cloud. The repository-hosted captures below support that required upload; they do not replace it.
 
 ### Screenshot A - Alibaba Cloud resource
 
@@ -280,9 +282,11 @@ After repository and video publication:
 - [ ] Permalinks use the submitted commit SHA.
 - [ ] Live demo loads without local-network dependencies.
 - [ ] Health endpoint contains no secrets or filesystem paths.
-- [ ] Demo video is public/unlisted as allowed by the competition and under 3:00.
+- [ ] Demo video is public on YouTube, strictly under 3:00, and plays while signed out.
 - [ ] Devpost description does not claim live Qwen for any recorded-demo footage.
 - [ ] Architecture image/diagram is legible at Devpost width.
+- [ ] The required Alibaba Cloud deployment screenshot is PNG/JPG/JPEG, no larger than 35 MB, and reveals no secret or unnecessary account/billing data.
+- [ ] The repository, video, deployed build, and evidence links will remain unchanged after the deadline.
 - [ ] All `PENDING`, `YOUR_DOMAIN`, `<owner>`, and `<workspace-id>` placeholders are removed from submitted/public-facing copy where they are meant to be final.
 
 Useful final search:

@@ -13,7 +13,6 @@ services:
       PORT: "8787"
       AUDIT_STORE: file
       GRANTGUARD_DATA_FILE: /app/data/grantguard-store.json
-      DEPLOYMENT_TARGET: alibaba-ecs
       WORKFLOW_CREATE_LIMIT_PER_MINUTE: ${WORKFLOW_CREATE_LIMIT_PER_MINUTE:-1}
     ports:
       - "127.0.0.1:8787:8787"

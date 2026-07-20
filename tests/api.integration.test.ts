@@ -64,6 +64,7 @@ describe("GrantGuard HTTP workflow integration", () => {
     const response = await request(app).get("/api/health").expect(200);
 
     expect(response.headers["x-content-type-options"]).toBe("nosniff");
+    expect(response.headers["cache-control"]).toBe("no-store");
     expect(response.body.status).toBe("ok");
     expect(response.body.model.mode).toBe("recorded-demo");
     expect(response.body.model.disclosure).toContain("no API key");
@@ -516,9 +517,11 @@ describe("GrantGuard HTTP workflow integration", () => {
     expect(missing.body.error.code).toBe("NOT_FOUND");
 
     const evaluation = await request(app).get("/api/evaluation").expect(200);
+    expect(evaluation.headers["cache-control"]).toBe("no-store");
     expect(evaluation.body).toMatchObject({ total: 16, passed: 16, passRate: 1, safetyInvariantPassRate: 1 });
 
     const metrics = await request(app).get("/api/metrics").expect(200);
+    expect(metrics.headers["cache-control"]).toBe("no-store");
     expect(metrics.body.totalWorkflows).toBeGreaterThanOrEqual(3);
     expect(metrics.body.qwen.liveWorkflows).toBe(0);
     expect(metrics.body.qwen.recordedDemoWorkflows).toBeGreaterThanOrEqual(3);

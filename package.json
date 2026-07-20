@@ -2,6 +2,8 @@
   "name": "grantguard",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
+  "packageManager": "pnpm@11.7.0",
   "description": "Human-gated least-privilege access autopilot powered by Qwen Cloud.",
   "type": "module",
   "scripts": {

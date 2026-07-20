@@ -4,7 +4,7 @@ This is the preferred GrantGuard deployment because it provides conventional bro
 
 ## 1. Provision safely
 
-Use an Alibaba Cloud ECS or Simple Application Server Linux instance with enough memory to build a Node.js container. Select a nearby region. Before creating anything, inspect the current price and free-tier eligibility in the account.
+Use an Alibaba Cloud ECS or Simple Application Server Linux instance with enough memory to build a Node.js container. For this multi-stage pnpm/Vite/TypeScript build, start with at least 2 vCPU and 2 GiB RAM unless a smaller size has been tested successfully. Prefer Singapore or another non-mainland region when no ICP filing is already available. Before creating anything, inspect the current price and free-tier eligibility in the account, confirm the paid checkout amount, and disable automatic renewal after purchase unless continued renewal is intentional. Keep the instance available through 2026-08-12 05:00 Beijing time for judging.
 
 Security group / firewall:
 
@@ -57,11 +57,12 @@ QWEN_MODEL=qwen3.7-plus
 QWEN_FALLBACK_MODEL=qwen3.6-flash
 PORT=8787
 AUDIT_STORE=file
-DEPLOYMENT_TARGET=alibaba-ecs
+# Use alibaba-ecs on ECS or alibaba-sas on Simple Application Server.
+DEPLOYMENT_TARGET=alibaba-sas
 WORKFLOW_CREATE_LIMIT_PER_MINUTE=1
 ```
 
-The Compose file overrides the correct store path and deployment label. Use a workspace-specific Model Studio base URL if provisioned; the key must belong to the same region/workspace.
+The Compose file overrides the correct store path and takes this deployment label from the required root `.env`. Use a workspace-specific Model Studio base URL if provisioned; the key must belong to the same region/workspace.
 
 The public judge URL is intentionally limited to one new workflow per minute by default. Each normal live workflow makes two model calls, so also set Model Studio quota/spend alerts and keep the deployment restricted to synthetic demo data.
 

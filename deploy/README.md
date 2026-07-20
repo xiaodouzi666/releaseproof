@@ -52,7 +52,7 @@ docker compose down --volumes
 
 ## Preferred Alibaba Cloud deployment
 
-Use [`ecs/README.md`](ecs/README.md) for the end-to-end ECS/Simple Application Server runbook. The production file differs from the local file by using a required root `.env`, a read-only filesystem, a persistent volume, log rotation, loopback-only publishing, and `DEPLOYMENT_TARGET=alibaba-ecs`.
+Use [`ecs/README.md`](ecs/README.md) for the end-to-end ECS/Simple Application Server runbook. The production file differs from the local file by using a required root `.env`, a read-only filesystem, a persistent volume, log rotation, loopback-only publishing, and a truthful deployment label supplied by that `.env` (`alibaba-ecs` for ECS or `alibaba-sas` for Simple Application Server).
 
 Basic command from the repository root on the instance:
 

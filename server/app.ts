@@ -92,6 +92,10 @@ export async function createApp(service?: WorkflowService): Promise<express.Expr
     response.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
     next();
   });
+  app.use("/api", (_request, response, next) => {
+    response.setHeader("Cache-Control", "no-store");
+    next();
+  });
 
   app.get("/api/health", (_request, response) => {
     const model = workflows.qwen.metadata();
@@ -117,11 +121,6 @@ export async function createApp(service?: WorkflowService): Promise<express.Expr
   app.get("/api/scenarios", (_request, response) => response.json(scenarios));
   app.get("/api/metrics", async (_request, response) => response.json(await workflows.metrics()));
   app.get("/api/evaluation", (_request, response) => response.json(runEvaluation()));
-
-  app.use("/api/workflows", (_request, response, next) => {
-    response.setHeader("Cache-Control", "no-store");
-    next();
-  });
 
   app.post("/api/workflows", requireJson, async (request, response) => {
     const parsed = createSchema.parse(request.body);
