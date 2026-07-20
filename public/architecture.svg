@@ -1,0 +1,183 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title description">
+  <title id="title">GrantGuard control boundary architecture</title>
+  <desc id="description">Qwen extracts intent and plans read-only context tools. Deterministic policy constrains access. A human approves every write. Sandbox IAM executes and verifies with rollback and a hash-linked audit trail.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#071311"/>
+      <stop offset="0.55" stop-color="#0b1715"/>
+      <stop offset="1" stop-color="#07100f"/>
+    </linearGradient>
+    <linearGradient id="qwen" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#1e4b43"/>
+      <stop offset="1" stop-color="#14342f"/>
+    </linearGradient>
+    <linearGradient id="policy" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#4a3518"/>
+      <stop offset="1" stop-color="#2f2515"/>
+    </linearGradient>
+    <linearGradient id="approval" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#3d4121"/>
+      <stop offset="1" stop-color="#292c19"/>
+    </linearGradient>
+    <linearGradient id="execute" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#19384e"/>
+      <stop offset="1" stop-color="#132a3a"/>
+    </linearGradient>
+    <linearGradient id="verify" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#30264c"/>
+      <stop offset="1" stop-color="#211c36"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#000" flood-opacity="0.28"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7b9c94"/>
+    </marker>
+    <marker id="arrowTeal" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,5 L0,10 z" fill="#55e6b1"/>
+    </marker>
+    <style>
+      .eyebrow { font: 700 18px Inter, Segoe UI, sans-serif; letter-spacing: 3px; text-transform: uppercase; fill: #68e8ba; }
+      .title { font: 700 44px Inter, Segoe UI, sans-serif; fill: #f2f7f5; }
+      .subtitle { font: 400 20px Inter, Segoe UI, sans-serif; fill: #94aca5; }
+      .cardTitle { font: 700 23px Inter, Segoe UI, sans-serif; fill: #f2f7f5; }
+      .cardBody { font: 400 16px Inter, Segoe UI, sans-serif; fill: #abc0ba; }
+      .step { font: 700 14px Inter, Segoe UI, sans-serif; letter-spacing: 1.7px; fill: #78968e; }
+      .pill { font: 700 14px Inter, Segoe UI, sans-serif; fill: #071311; }
+      .mini { font: 600 14px Inter, Segoe UI, sans-serif; fill: #c2d2ce; }
+      .audit { font: 600 15px Inter, Segoe UI, sans-serif; fill: #b9cbc6; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#background)"/>
+  <circle cx="1470" cy="-50" r="330" fill="#42dba7" opacity="0.055"/>
+  <circle cx="-40" cy="870" r="330" fill="#5e8cff" opacity="0.045"/>
+  <path d="M0 152H1600" stroke="#29403a" stroke-width="1"/>
+
+  <g transform="translate(78 54)">
+    <rect width="48" height="48" rx="14" fill="#62e6b6"/>
+    <path d="M14 24h20M19 15v18M29 15v18" stroke="#0a211b" stroke-width="4" stroke-linecap="round"/>
+    <text x="68" y="19" class="eyebrow">GRANTGUARD</text>
+    <text x="68" y="58" class="title">Human-gated least-privilege autopilot</text>
+    <text x="68" y="90" class="subtitle">Model capability where intent is ambiguous. Deterministic authority where access changes are dangerous.</text>
+  </g>
+
+  <g transform="translate(1240 58)">
+    <rect width="130" height="34" rx="17" fill="#62e6b6"/>
+    <text x="65" y="22" text-anchor="middle" class="pill">QWEN CLOUD</text>
+    <rect x="142" width="126" height="34" rx="17" fill="#f4c95d"/>
+    <text x="205" y="22" text-anchor="middle" class="pill">HUMAN GATE</text>
+  </g>
+
+  <!-- Stage cards -->
+  <g filter="url(#shadow)">
+    <g transform="translate(70 220)">
+      <rect width="240" height="300" rx="22" fill="#121f1c" stroke="#314640"/>
+      <text x="26" y="36" class="step">01 · UNTRUSTED INPUT</text>
+      <circle cx="52" cy="90" r="25" fill="#263b35"/>
+      <path d="M42 82h20M42 90h14M42 98h18" stroke="#9eb7b0" stroke-width="3" stroke-linecap="round"/>
+      <text x="26" y="139" class="cardTitle">Access ticket</text>
+      <text x="26" y="170" class="cardBody">Text or screenshot</text>
+      <text x="26" y="195" class="cardBody">may be incomplete, broad,</text>
+      <text x="26" y="220" class="cardBody">or prompt-injected.</text>
+      <rect x="26" y="250" width="188" height="30" rx="15" fill="#2a201e" stroke="#764c46"/>
+      <text x="120" y="270" text-anchor="middle" class="mini" fill="#ef9e90">DATA, NOT AUTHORITY</text>
+    </g>
+
+    <g transform="translate(362 220)">
+      <rect width="300" height="300" rx="22" fill="url(#qwen)" stroke="#3c8d75"/>
+      <text x="26" y="36" class="step" fill="#80efc7">02 · QWEN CLOUD</text>
+      <circle cx="52" cy="90" r="25" fill="#2b6656"/>
+      <path d="M40 89c8-18 17-18 24 0M42 96h20" stroke="#8ff2ce" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <text x="26" y="139" class="cardTitle">Understand &amp; plan</text>
+      <text x="26" y="170" class="cardBody">Vision + structured JSON</text>
+      <text x="26" y="195" class="cardBody">extract typed intent.</text>
+      <text x="26" y="227" class="cardBody">Function calling proposes reads;</text>
+      <text x="26" y="252" class="cardBody">server completes the baseline.</text>
+      <rect x="26" y="270" width="238" height="30" rx="15" fill="#62e6b6"/>
+      <text x="145" y="290" text-anchor="middle" class="pill">NO WRITE TOOL EXISTS</text>
+    </g>
+
+    <g transform="translate(714 220)">
+      <rect width="250" height="300" rx="22" fill="#14231f" stroke="#36534b"/>
+      <text x="26" y="36" class="step">03 · READ CONTEXT</text>
+      <text x="26" y="83" class="cardTitle">Ground truth</text>
+      <g transform="translate(26 110)">
+        <rect width="198" height="42" rx="12" fill="#1d302b"/>
+        <circle cx="22" cy="21" r="7" fill="#62e6b6"/><text x="42" y="26" class="mini">Directory identity</text>
+        <rect y="54" width="198" height="42" rx="12" fill="#1d302b"/>
+        <circle cx="22" cy="75" r="7" fill="#62e6b6"/><text x="42" y="80" class="mini">Resource catalog</text>
+        <rect y="108" width="198" height="42" rx="12" fill="#1d302b"/>
+        <circle cx="22" cy="129" r="7" fill="#62e6b6"/><text x="42" y="134" class="mini">Current access</text>
+      </g>
+      <text x="26" y="272" class="cardBody">+ Optional ticket evidence</text>
+      <text x="26" y="292" class="cardBody">Args rebound to extraction.</text>
+    </g>
+
+    <g transform="translate(1016 220)">
+      <rect width="250" height="300" rx="22" fill="url(#policy)" stroke="#8b6a31"/>
+      <text x="26" y="36" class="step" fill="#e6bf68">04 · POLICY ENGINE</text>
+      <circle cx="52" cy="90" r="25" fill="#654923"/>
+      <path d="M52 71l15 7v11c0 12-7 20-15 24-8-4-15-12-15-24V78z" fill="none" stroke="#f0c86b" stroke-width="3"/>
+      <text x="26" y="139" class="cardTitle">Fail closed</text>
+      <text x="26" y="170" class="cardBody">Identity · MFA · clearance</text>
+      <text x="26" y="195" class="cardBody">role · action · duration</text>
+      <text x="26" y="220" class="cardBody">classification · expiry</text>
+      <rect x="26" y="250" width="90" height="30" rx="15" fill="#8b2f31"/><text x="71" y="270" text-anchor="middle" class="mini">DENY</text>
+      <rect x="126" y="250" width="98" height="30" rx="15" fill="#725728"/><text x="175" y="270" text-anchor="middle" class="mini">CONSTRAIN</text>
+    </g>
+
+    <g transform="translate(1318 220)">
+      <rect width="212" height="300" rx="22" fill="url(#approval)" stroke="#858b3a"/>
+      <text x="24" y="36" class="step" fill="#e3e87b">05 · HUMAN GATE</text>
+      <circle cx="52" cy="90" r="25" fill="#555a28"/>
+      <path d="M41 90l8 8 15-18" fill="none" stroke="#f0f48c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="24" y="139" class="cardTitle">Explicit review</text>
+      <text x="24" y="170" class="cardBody">See before → after,</text>
+      <text x="24" y="195" class="cardBody">risk, policy evidence,</text>
+      <text x="24" y="220" class="cardBody">expiry, and rollback.</text>
+      <rect x="24" y="250" width="164" height="30" rx="15" fill="#f4c95d"/>
+      <text x="106" y="270" text-anchor="middle" class="pill">APPROVE / REJECT</text>
+    </g>
+  </g>
+
+  <!-- Main arrows -->
+  <path d="M310 370H350" stroke="#7b9c94" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M662 370H702" stroke="#55e6b1" stroke-width="3" marker-end="url(#arrowTeal)"/>
+  <path d="M964 370H1004" stroke="#7b9c94" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M1266 370H1306" stroke="#7b9c94" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- Write plane -->
+  <g transform="translate(520 575)" filter="url(#shadow)">
+    <rect width="250" height="150" rx="20" fill="url(#execute)" stroke="#3e759b"/>
+    <text x="24" y="34" class="step" fill="#82c9f2">06 · WRITE PLANE</text>
+    <text x="24" y="70" class="cardTitle">Sandbox IAM</text>
+    <text x="24" y="101" class="cardBody">Idempotent temporary grant</text>
+    <text x="24" y="126" class="cardBody">using the reviewed diff only.</text>
+  </g>
+  <g transform="translate(830 575)" filter="url(#shadow)">
+    <rect width="300" height="150" rx="20" fill="url(#verify)" stroke="#67539b"/>
+    <text x="24" y="34" class="step" fill="#bcabf2">07 · OBSERVE &amp; RECOVER</text>
+    <text x="24" y="70" class="cardTitle">Verify → expire → rollback</text>
+    <text x="24" y="101" class="cardBody">Read-after-write success is required.</text>
+    <text x="24" y="126" class="cardBody">Mismatch triggers immediate revocation.</text>
+  </g>
+  <path d="M1424 520C1424 540 1400 548 1370 548H800V650H782" fill="none" stroke="#f4c95d" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M782 650H818" stroke="#6f8fa7" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- Audit plane -->
+  <g transform="translate(130 786)">
+    <rect width="1340" height="72" rx="20" fill="#111e1b" stroke="#324b44"/>
+    <text x="28" y="29" class="step">HASH-LINKED · TAMPER-EVIDENT PLANE</text>
+    <text x="28" y="54" class="audit">Every model, tool, policy, approval, execution, verification, expiry, and rollback event commits to the previous SHA-256 hash.</text>
+    <g transform="translate(1010 18)">
+      <rect width="64" height="34" rx="10" fill="#1f342e"/><text x="32" y="22" text-anchor="middle" class="mini">H₁</text>
+      <path d="M70 17h30" stroke="#64847b" stroke-width="2" marker-end="url(#arrow)"/>
+      <rect x="106" width="64" height="34" rx="10" fill="#1f342e"/><text x="138" y="22" text-anchor="middle" class="mini">H₂</text>
+      <path d="M176 17h30" stroke="#64847b" stroke-width="2" marker-end="url(#arrow)"/>
+      <rect x="212" width="64" height="34" rx="10" fill="#1f342e"/><text x="244" y="22" text-anchor="middle" class="mini">Hₙ</text>
+    </g>
+  </g>
+
+  <path d="M645 725V772M980 725V772M1141 520V772M512 520V772" stroke="#314d46" stroke-width="2" stroke-dasharray="6 7"/>
+</svg>

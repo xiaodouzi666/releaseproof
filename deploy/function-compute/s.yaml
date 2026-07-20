@@ -1,0 +1,60 @@
+edition: 3.0.0
+name: grantguard-function-compute
+access: default
+validation: true
+
+vars:
+  region: ${env('ALIBABA_CLOUD_REGION', 'ap-southeast-1')}
+  acrNamespace: ${env('ACR_NAMESPACE')}
+  acrRepository: ${env('ACR_REPOSITORY', 'grantguard')}
+  imageTag: ${env('GRANTGUARD_IMAGE_TAG', 'latest')}
+
+resources:
+  grantguard_api:
+    component: fc3
+    props:
+      region: ${vars.region}
+      functionName: grantguard-api
+      description: Human-gated least-privilege access autopilot API powered by Qwen Cloud
+      runtime: custom-container
+      timeout: 120
+      memorySize: 1024
+      cpu: 0.5
+      diskSize: 512
+      instanceConcurrency: 4
+      internetAccess: true
+      disableInjectCredentials: All
+      environmentVariables:
+        NODE_ENV: production
+        PORT: "9000"
+        AUDIT_STORE: memory
+        DEPLOYMENT_TARGET: alibaba-function-compute
+        DEMO_STEP_DELAY_MS: "0"
+        WORKFLOW_CREATE_LIMIT_PER_MINUTE: ${env('WORKFLOW_CREATE_LIMIT_PER_MINUTE', '6')}
+        DASHSCOPE_API_KEY: ${env('DASHSCOPE_API_KEY')}
+        QWEN_BASE_URL: ${env('QWEN_BASE_URL', 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1')}
+        QWEN_MODEL: ${env('QWEN_MODEL', 'qwen3.7-plus')}
+        QWEN_FALLBACK_MODEL: ${env('QWEN_FALLBACK_MODEL', 'qwen3.6-flash')}
+        QWEN_MAX_CONCURRENCY: ${env('QWEN_MAX_CONCURRENCY', '2')}
+      customContainerConfig:
+        image: registry.${vars.region}.aliyuncs.com/${vars.acrNamespace}/${vars.acrRepository}:${vars.imageTag}
+        port: 9000
+        healthCheckConfig:
+          httpGetUrl: /api/health
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+          successThreshold: 1
+      triggers:
+        - triggerName: public-http
+          triggerType: http
+          qualifier: LATEST
+          triggerConfig:
+            authType: anonymous
+            disableURLInternet: false
+            methods:
+              - GET
+              - POST
+              - HEAD
+              - OPTIONS

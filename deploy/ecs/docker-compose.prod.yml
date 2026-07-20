@@ -1,0 +1,47 @@
+services:
+  grantguard:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    image: grantguard:${GRANTGUARD_IMAGE_TAG:-latest}
+    init: true
+    restart: unless-stopped
+    env_file:
+      - ../../.env
+    environment:
+      NODE_ENV: production
+      PORT: "8787"
+      AUDIT_STORE: file
+      GRANTGUARD_DATA_FILE: /app/data/grantguard-store.json
+      DEPLOYMENT_TARGET: alibaba-ecs
+      WORKFLOW_CREATE_LIMIT_PER_MINUTE: ${WORKFLOW_CREATE_LIMIT_PER_MINUTE:-1}
+    ports:
+      - "127.0.0.1:8787:8787"
+    volumes:
+      - grantguard-data:/app/data
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:8787/api/health').then(r => { if (!r.ok) process.exit(1) }).catch(() => process.exit(1))"
+      interval: 15s
+      timeout: 5s
+      start_period: 20s
+      retries: 5
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+    stop_grace_period: 20s
+
+volumes:
+  grantguard-data:
