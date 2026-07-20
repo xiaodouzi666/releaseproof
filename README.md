@@ -15,8 +15,8 @@ The public runtime is configured as `live-qwen` with Qwen Cloud (`qwen3.7-plus`)
 Public evidence:
 
 - [Application](http://8.219.184.228) and [health](http://8.219.184.228/api/health)
-- [Public repository](https://github.com/xiaodouzi666/releaseproof) and [immutable candidate](https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199)
-- [Alibaba Cloud resource](docs/assets/deployment/alibaba-cloud-resource.jpg), [runtime](docs/assets/deployment/alibaba-cloud-runtime.jpg), and [public app](docs/assets/deployment/public-app.jpg) captures
+- [Public repository](https://github.com/xiaodouzi666/releaseproof) and [immutable candidate](https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a)
+- [Alibaba Cloud resource](docs/assets/deployment/alibaba-cloud-resource.jpg), [current runtime](docs/assets/deployment/alibaba-cloud-runtime-current.png), and [public app](docs/assets/deployment/public-app.jpg) captures
 - [Public demo video](https://youtu.be/s64eo9D5PYc)
 
 ## Why ReleaseProof
@@ -218,7 +218,7 @@ pnpm build
 
 The deterministic evaluation focuses on release-policy invariants such as vendor verification, field minimization, agreement validity, TTL caps, no release after denial, idempotency, exact-state verification, and verified recall. Do not copy historical test totals into a submission; record results from the final submitted commit. See [docs/evaluation.md](docs/evaluation.md).
 
-Fresh validation of candidate [`458d7ba55417fac18051156059b4802edeb9f199`](https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199) passed typecheck, production build, production dependency audit, **66/66 tests**, and **16/16 deterministic evaluation cases**.
+Fresh validation of candidate [`760678a34983271b1fc72e859646126d0520eb5a`](https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a) passed typecheck, production build, production dependency audit, **68/68 tests**, and **16/16 deterministic evaluation cases**.
 
 ## Deployment
 

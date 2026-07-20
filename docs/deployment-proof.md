@@ -5,11 +5,11 @@ This page records the evidence available for the ReleaseProof submission and the
 ## Verified release status
 
 - Public repository: [github.com/xiaodouzi666/releaseproof](https://github.com/xiaodouzi666/releaseproof)
-- Immutable application candidate: [`458d7ba55417fac18051156059b4802edeb9f199`](https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199)
+- Immutable application candidate: [`760678a34983271b1fc72e859646126d0520eb5a`](https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a)
 - Alibaba Cloud application: [http://8.219.184.228](http://8.219.184.228)
 - Public health endpoint: [http://8.219.184.228/api/health](http://8.219.184.228/api/health)
 - Public demo video: [youtu.be/s64eo9D5PYc](https://youtu.be/s64eo9D5PYc)
-- Candidate validation: **66/66 automated tests** and **16/16 deterministic policy cases**, with typecheck, production build, and production dependency audit passing
+- Candidate validation: **68/68 automated tests** and **16/16 deterministic policy cases**, with typecheck, production build, and production dependency audit passing
 
 The application and health endpoint are currently served over HTTP; TLS is not claimed. The runtime is an Alibaba Cloud Simple Application Server deployment and truthfully reports `deploymentTarget: alibaba-sas`.
 
@@ -26,22 +26,22 @@ The deterministic recorded-demo path remains the reproducible end-to-end demonst
 | Requirement | Evidence | Status |
 | --- | --- | --- |
 | Public source code | [Repository](https://github.com/xiaodouzi666/releaseproof) | Verified public |
-| OSI license | [Candidate-pinned MIT license](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/LICENSE) | Verified |
-| Immutable application revision | [Candidate commit](https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199) | Verified public |
-| Qwen client and base URL | [Candidate-pinned `server/qwen.ts`](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts) | Implementation verified; successful call not claimed |
-| Structured extraction schema/request | [`server/qwen.ts` schema](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts#L12-L23) and [request](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts#L287-L330) | Source verified |
-| Read-only planning and sanitization | [Planning request](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts#L345-L417), [validation/rebinding](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts#L420-L457), and [dispatch](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/workflow-service.ts#L482-L528) | Source verified |
-| Deterministic release policy | [Candidate-pinned `server/policy.ts`](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/policy.ts) | 16/16 local cases |
-| Exact manifest owner checkpoint | [Candidate-pinned workflow service](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/workflow-service.ts) | Source and tests verified |
-| Idempotent share, verification, and recall | [Candidate-pinned tools](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/tools.ts) and [workflow service](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/workflow-service.ts) | Source and tests verified |
+| OSI license | [Candidate-pinned MIT license](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/LICENSE) | Verified |
+| Immutable application revision | [Candidate commit](https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a) | Verified public |
+| Qwen client and base URL | [Candidate-pinned `server/qwen.ts`](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts) | Implementation verified; successful call not claimed |
+| Structured extraction schema/request | [`server/qwen.ts` schema](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts#L12-L23) and [request](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts#L287-L330) | Source verified |
+| Read-only planning and sanitization | [Planning request](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts#L345-L417), [validation/rebinding](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts#L420-L457), and [dispatch](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/workflow-service.ts#L482-L528) | Source verified |
+| Deterministic release policy | [Candidate-pinned `server/policy.ts`](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/policy.ts) | 16/16 local cases |
+| Exact manifest owner checkpoint | [Candidate-pinned workflow service](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/workflow-service.ts) | Source and tests verified |
+| Idempotent share, verification, and recall | [Candidate-pinned tools](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/tools.ts) and [workflow service](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/workflow-service.ts) | Source and tests verified |
 | Alibaba Cloud resource | [Resource capture](assets/deployment/alibaba-cloud-resource.jpg) | Captured |
-| Running candidate container | [Runtime capture](assets/deployment/alibaba-cloud-runtime.jpg) | Captured; SHA and healthy service visible |
+| Running candidate container | [Current runtime capture](assets/deployment/alibaba-cloud-runtime-current.png) | Captured; candidate SHA, deployed documentation head, and healthy service visible |
 | Public application | [Live app](http://8.219.184.228) and [public-app capture](assets/deployment/public-app.jpg) | Verified over HTTP |
 | Public health | [Health endpoint](http://8.219.184.228/api/health) | Verified HTTP 200 |
 | Successful live-Qwen receipt | None | Not achieved; Alibaba account KYC HTTP 403 |
-| Test/evaluation output | [Validation record](evaluation.md#validated-releaseproof-candidate-snapshot) and [candidate evaluation source](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/evaluation.ts) | 66/66 tests; 16/16 cases |
+| Test/evaluation output | [Validation record](evaluation.md#validated-releaseproof-candidate-snapshot) and [candidate evaluation source](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/evaluation.ts) | 68/68 tests; 16/16 cases |
 | Demo video | [Public YouTube video](https://youtu.be/s64eo9D5PYc) | Public link verified |
-| Architecture and thumbnail | [Candidate architecture](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/public/architecture.png) and [candidate 3:2 thumbnail](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/public/devpost-thumbnail-3x2.png) | Candidate-pinned assets |
+| Architecture and thumbnail | [Candidate architecture](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/public/architecture.png) and [candidate 3:2 thumbnail](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/public/devpost-thumbnail-3x2.png) | Candidate-pinned assets |
 
 ## What the implementation does with Qwen Cloud
 
@@ -61,13 +61,13 @@ The plan is untrusted. The server allow-lists names, parses strict arguments, re
 
 Candidate-pinned source:
 
-- [Client, endpoint, model, and provider disclosure](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts#L252-L284)
-- [Structured extraction](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts#L287-L330)
-- [Read-plan request](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts#L345-L417)
-- [Plan validation, argument rebinding, and mandatory reads](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts#L420-L457)
-- [Tool dispatch](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/workflow-service.ts#L482-L528)
-- [Deterministic policy](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/policy.ts)
-- [Share, verification, and recall adapter](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/tools.ts)
+- [Client, endpoint, model, and provider disclosure](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts#L252-L284)
+- [Structured extraction](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts#L287-L330)
+- [Read-plan request](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts#L345-L417)
+- [Plan validation, argument rebinding, and mandatory reads](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts#L420-L457)
+- [Tool dispatch](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/workflow-service.ts#L482-L528)
+- [Deterministic policy](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/policy.ts)
+- [Share, verification, and recall adapter](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/tools.ts)
 
 Official references:
 
@@ -116,9 +116,9 @@ The capture shows the Alibaba Cloud Simple Application Server product, Singapore
 
 ### Candidate runtime
 
-[![ReleaseProof candidate running on Alibaba Cloud](assets/deployment/alibaba-cloud-runtime.jpg)](assets/deployment/alibaba-cloud-runtime.jpg)
+[![ReleaseProof candidate running on Alibaba Cloud](assets/deployment/alibaba-cloud-runtime-current.png)](assets/deployment/alibaba-cloud-runtime-current.png)
 
-The capture binds commit `458d7ba55417fac18051156059b4802edeb9f199` to the healthy container and public URL. It also shows the non-secret health result, including `alibaba-sas`, `live-qwen`, Qwen Cloud, and `qwen3.7-plus`.
+The capture shows executable candidate `760678a34983271b1fc72e859646126d0520eb5a`, deployed documentation head `4daf962f8d8475c62bda9b4e8bb2fb51d10fc6b0`, the public URL, and a healthy container. It also shows the non-secret health result, including `alibaba-sas`, `live-qwen`, Qwen Cloud, `qwen3.7-plus`, and healthy file persistence.
 
 ### Public application
 
@@ -131,7 +131,7 @@ No successful Qwen monitoring capture or completed live-Qwen workflow receipt is
 ## Reproduce candidate validation
 
 ~~~bash
-git checkout 458d7ba55417fac18051156059b4802edeb9f199
+git checkout 760678a34983271b1fc72e859646126d0520eb5a
 pnpm install --frozen-lockfile
 pnpm typecheck
 pnpm test
@@ -141,7 +141,7 @@ pnpm build
 curl --fail --silent http://8.219.184.228/api/health
 ~~~
 
-The July 20, 2026 candidate run passed typecheck, 8/8 test files and 66/66 tests, 16/16 deterministic evaluation cases, production dependency audit with no known vulnerabilities, and production build. See [evaluation.md](evaluation.md) for scope and limitations.
+The July 20, 2026 candidate run passed typecheck, 8/8 test files and 68/68 tests, 16/16 deterministic evaluation cases, production dependency audit with no known vulnerabilities, and production build. See [evaluation.md](evaluation.md) for scope and limitations.
 
 ## Publication QA
 

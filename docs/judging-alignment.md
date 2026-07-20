@@ -10,7 +10,7 @@ ReleaseProof targets **Track 4: Autopilot Agent**. It turns an ambiguous externa
 
 | Criterion | Weight | ReleaseProof evidence |
 | --- | ---: | --- |
-| Technical Depth & Engineering | 30% | Two-stage Qwen integration, strict Zod schemas, allow-listed read tools, argument rebinding, mandatory evidence completion, an explicit server-side state machine, deterministic policy, idempotent writes, file persistence, read-after-write verification, targeted recall, prior-hash audit events, Docker/Nginx packaging, 66 automated tests, and a 16-case safety evaluation. |
+| Technical Depth & Engineering | 30% | Two-stage Qwen integration, strict Zod schemas, allow-listed read tools, argument rebinding, mandatory evidence completion, an explicit server-side state machine, deterministic policy, idempotent writes, file persistence, read-after-write verification, targeted recall, prior-hash audit events, Docker/Nginx packaging, 68 automated tests, and a 16-case safety evaluation. |
 | Innovation & AI Creativity | 30% | The hero contract is **Requested -> Owner-approved effective -> Observed**. A counterfactual minimization receipt explains each retained or removed field-action. A pre-approval Recall Contract binds target, trigger, baseline, success condition, and read-after-recall proof. Qwen has four read tools and zero approval, release, recall, or policy-override tools. |
 | Problem Value & Impact | 25% | Enterprise data owners need to release the smallest useful external projection without losing an exit path. ReleaseProof converts that risk into an executable, inspectable release contract and provides a credible path toward vendor, contract, catalog, lineage, consent, and provider-native clean-room integrations. |
 | Presentation & Documentation | 15% | A public 2:42 demo, 3:2 thumbnail, current full-page owner review, focused [Recall Contract](../public/screenshots/recall-contract.jpg) and [minimization receipt](../public/screenshots/minimization-receipt.jpg) captures, architecture diagram, public Alibaba Cloud deployment, testing instructions, immutable candidate links, deployment evidence, security notes, and a concise Devpost story expose the key logic without hiding fixture boundaries. |
@@ -21,10 +21,10 @@ The live Devpost page currently pairs the first two criterion headings with desc
 
 | Requirement | Evidence | Status |
 | --- | --- | --- |
-| Alibaba Cloud backend screenshot | [`alibaba-cloud-runtime.jpg`](assets/deployment/alibaba-cloud-runtime.jpg) shows Workbench, commit `458d7ba...`, `alibaba-sas`, configured `live-qwen`, healthy file store, and a healthy container. | Ready and uploaded to the Devpost draft |
+| Alibaba Cloud backend screenshot | [`alibaba-cloud-runtime-current.png`](assets/deployment/alibaba-cloud-runtime-current.png) shows Workbench, executable candidate `760678a...`, deployed head `4daf962...`, `alibaba-sas`, configured `live-qwen`, healthy file store, and a healthy container. | Ready for the final Devpost upload |
 | Public repository | [xiaodouzi666/releaseproof](https://github.com/xiaodouzi666/releaseproof) | Ready |
 | Detectable OSI license at repository root | [`LICENSE`](../LICENSE), MIT | Ready |
-| Qwen Cloud API source and base URL | [`server/qwen.ts`](../server/qwen.ts) at candidate `458d7ba55417fac18051156059b4802edeb9f199` | Ready |
+| Qwen Cloud API source and base URL | [`server/qwen.ts`](../server/qwen.ts) at candidate `760678a34983271b1fc72e859646126d0520eb5a` | Ready |
 | Public demo under three minutes | [YouTube, 2:43](https://youtu.be/s64eo9D5PYc) | Ready |
 | Architecture diagram | [`public/architecture.png`](../public/architecture.png) | Ready and uploaded to the Devpost draft |
 | Track selected | Track 4: Autopilot Agent | Ready |

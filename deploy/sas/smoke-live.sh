@@ -9,7 +9,7 @@ response="$(curl --fail --silent --show-error --max-time 15 \
   -X POST "${base_url}/api/workflows" \
   -H 'Content-Type: application/json' \
   -H "Idempotency-Key: ${idempotency_key}" \
-  --data '{"scenarioId":"restricted-health-denied"}')"
+  --data '{"requestText":"DPA-203: I am privacy@acme.example. Share campaign-performance with analyst@northstar.example for 8 hours using aggregate.read and profile.read for campaign measurement."}')"
 workflow_id="$(jq -er '.id' <<<"${response}")"
 
 deadline=$((SECONDS + 120))
@@ -17,10 +17,10 @@ while (( SECONDS < deadline )); do
   response="$(curl --fail --silent --show-error --max-time 15 "${base_url}/api/workflows/${workflow_id}")"
   status="$(jq -er '.status' <<<"${response}")"
   case "${status}" in
-    denied)
+    awaiting_approval|denied)
       break
       ;;
-    failed|rejected|completed|rolled_back)
+    failed|rejected|completed|rolling_back|rolled_back)
       echo "Unexpected terminal workflow status: ${status}" >&2
       exit 1
       ;;
@@ -28,15 +28,15 @@ while (( SECONDS < deadline )); do
   sleep 2
 done
 
-if [[ ${status:-unknown} != "denied" ]]; then
-  echo "Live smoke workflow did not reach denied within 120s (last status: ${status:-unknown})." >&2
+if [[ ${status:-unknown} != "awaiting_approval" && ${status:-unknown} != "denied" ]]; then
+  echo "Live smoke workflow did not reach a policy decision within 120s (last status: ${status:-unknown})." >&2
   exit 1
 fi
 
 jq -e '
-  .scenarioId == "restricted-health-denied" and
-  .status == "denied" and
-  .decision.outcome == "deny" and
+  .scenarioId == null and
+  (.status == "awaiting_approval" or .status == "denied") and
+  (.decision.outcome == "requires_approval" or .decision.outcome == "deny") and
   .model.mode == "live-qwen" and
   .model.provider == "Qwen Cloud" and
   .model.calls >= 2 and

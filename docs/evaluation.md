@@ -7,9 +7,9 @@ The repository contains a deterministic 16-case policy suite. It measures the re
 ## Candidate identity
 
 - Public repository: [github.com/xiaodouzi666/releaseproof](https://github.com/xiaodouzi666/releaseproof)
-- Validated release candidate: [`458d7ba55417fac18051156059b4802edeb9f199`](https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199)
-- Executable evaluation definitions: [candidate-pinned `server/evaluation.ts`](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/evaluation.ts)
-- Deterministic policy: [candidate-pinned `server/policy.ts`](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/policy.ts)
+- Validated release candidate: [`760678a34983271b1fc72e859646126d0520eb5a`](https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a)
+- Executable evaluation definitions: [candidate-pinned `server/evaluation.ts`](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/evaluation.ts)
+- Deterministic policy: [candidate-pinned `server/policy.ts`](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/policy.ts)
 - Public deployment: [application](http://8.219.184.228) and [health](http://8.219.184.228/api/health) on Alibaba Cloud Simple Application Server
 
 The repository, immutable candidate, and Alibaba Cloud runtime are verified. The deployment reports a configured `live-qwen` client using Qwen Cloud and `qwen3.7-plus`, but successful inference is not established: calls currently fail with Alibaba account KYC HTTP 403. Health is configuration evidence only.
@@ -27,7 +27,7 @@ The repository, immutable candidate, and Alibaba Cloud runtime are verified. The
 ## Reproduce the evidence
 
 ~~~bash
-git checkout 458d7ba55417fac18051156059b4802edeb9f199
+git checkout 760678a34983271b1fc72e859646126d0520eb5a
 pnpm install --frozen-lockfile
 pnpm eval
 pnpm test
@@ -77,27 +77,27 @@ These are regression metrics, not a formal proof. Stateful safety properties are
 
 | Invariant | Candidate-pinned executable evidence |
 | --- | --- |
-| A denial cannot write | [Workflow policy veto](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/workflow-service.ts) and [integration tests](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/tests/api.integration.test.ts) |
-| Approval gates the server-held effective manifest | [Approval and execution re-read](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/workflow-service.ts) |
-| Retrying creation produces one share | [Idempotent grant adapter](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/tools.ts) |
-| Completion requires exact observed state | [Exact-state verifier](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/tools.ts) and [workflow read-back](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/workflow-service.ts) |
-| Recall affects only the workflow share and requires inactive/absent read-back | [Recall orchestration](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/workflow-service.ts) |
-| Audit mutation or reordering is detectable | [Audit evidence test](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/tests/api-normalization.test.ts) |
-| Provider mode is disclosed | [Provider disclosure](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts) and [health response](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/app.ts) |
-| A Qwen key never reaches browser code or API output | [Server-only Qwen construction](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts) and [public request integrity tests](https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/tests/request-integrity.test.ts) |
+| A denial cannot write | [Workflow policy veto](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/workflow-service.ts) and [integration tests](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/tests/api.integration.test.ts) |
+| Approval gates the server-held effective manifest | [Approval and execution re-read](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/workflow-service.ts) |
+| Retrying creation produces one share | [Idempotent grant adapter](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/tools.ts) |
+| Completion requires exact observed state | [Exact-state verifier](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/tools.ts) and [workflow read-back](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/workflow-service.ts) |
+| Recall affects only the workflow share and requires inactive/absent read-back | [Recall orchestration](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/workflow-service.ts) |
+| Audit mutation or reordering is detectable | [Audit evidence test](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/tests/api-normalization.test.ts) |
+| Provider mode is disclosed | [Provider disclosure](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts) and [health response](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/app.ts) |
+| A Qwen key never reaches browser code or API output | [Server-only Qwen construction](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts) and [public request integrity tests](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/tests/request-integrity.test.ts) |
 
 ## Validated ReleaseProof candidate snapshot
 
-The commands were freshly run locally against candidate `458d7ba55417fac18051156059b4802edeb9f199`. Documentation and evidence files being prepared after that commit do not change the executable candidate.
+The commands were freshly run locally against candidate `760678a34983271b1fc72e859646126d0520eb5a`. Documentation and evidence files being prepared after that commit do not change the executable candidate.
 
 | Field | Value |
 | --- | --- |
-| Validated commit | [`458d7ba55417fac18051156059b4802edeb9f199`](https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199) |
+| Validated commit | [`760678a34983271b1fc72e859646126d0520eb5a`](https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a) |
 | Evaluation timestamp (UTC) | `2026-07-20T16:10:12.892Z` |
 | Node / pnpm | `v22.14.0` / `11.7.0` |
 | Policy version | `releaseproof-policy-2026.07.1` |
 | Deterministic cases | `16/16` (`100.0%`) |
-| Test files / tests | `8/8` / `66/66` |
+| Test files / tests | `8/8` / `68/68` |
 | TypeScript | `pnpm typecheck` passed |
 | Production build | `pnpm build` passed |
 | Production dependency audit | `pnpm audit --prod` — no known vulnerabilities |

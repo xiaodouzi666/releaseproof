@@ -20,15 +20,15 @@ Health: http://8.219.184.228/api/health
 
 Public source: https://github.com/xiaodouzi666/releaseproof
 
-Submitted revision: https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199
+Submitted revision: https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a
 
-Qwen Cloud integration: https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts
+Qwen Cloud integration: https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts
 
 Alibaba Cloud deployment proof: https://github.com/xiaodouzi666/releaseproof/blob/main/docs/deployment-proof.md
 
-Architecture: https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/public/architecture.png
+Architecture: https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/public/architecture.png
 
-License: MIT — https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/LICENSE
+License: MIT — https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/LICENSE
 
 Qwen performs structured release-intent extraction and read-only evidence planning over recipient, dataset, current-share, and agreement lookups. Deterministic policy minimizes field-actions and TTL or denies the request. A data owner approves the exact effective manifest. A Sandbox clean-room adapter creates the synthetic share idempotently, reads it back, and supports verified recall.
 
@@ -36,7 +36,7 @@ This demo uses synthetic recipients, datasets, agreements, and share state. It d
 
 The Alibaba Cloud runtime is configured as `live-qwen` with Qwen Cloud and `qwen3.7-plus`, but successful inference is not claimed: Alibaba account KYC currently rejects model requests with HTTP 403. The health response proves configuration only. The visible provider badge identifies the mode, and any deterministic recorded-demo fixtures remain explicitly labeled.
 
-Candidate validation: 66/66 automated tests and 16/16 deterministic release-policy cases passed. These results measure software and policy behavior, not live-model quality.
+Candidate validation: 68/68 automated tests and 16/16 deterministic release-policy cases passed. These results measure software and policy behavior, not live-model quality.
 
 ## Upload settings
 

@@ -8,7 +8,7 @@ The public build must use only synthetic recipients, datasets, agreements, and s
 
 ## Submitted deployment status
 
-- Candidate revision: [`458d7ba55417fac18051156059b4802edeb9f199`](https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199)
+- Candidate revision: [`760678a34983271b1fc72e859646126d0520eb5a`](https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a)
 - Public application: [http://8.219.184.228](http://8.219.184.228)
 - Public health check: [http://8.219.184.228/api/health](http://8.219.184.228/api/health)
 - Runtime evidence: [Alibaba Cloud resource](../../docs/assets/deployment/alibaba-cloud-resource.jpg) and [container/runtime](../../docs/assets/deployment/alibaba-cloud-runtime.jpg)
@@ -56,7 +56,7 @@ sudo mkdir -p /opt/releaseproof
 sudo chown "$USER":"$USER" /opt/releaseproof
 git clone https://github.com/xiaodouzi666/releaseproof.git /opt/releaseproof
 cd /opt/releaseproof
-git checkout 458d7ba55417fac18051156059b4802edeb9f199
+git checkout 760678a34983271b1fc72e859646126d0520eb5a
 git rev-parse HEAD
 ~~~
 

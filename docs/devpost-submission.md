@@ -14,10 +14,10 @@ This is the final English submission working copy. Public evidence fields are fi
 | If the project existed before May 26, explain what changed | **Not applicable — ReleaseProof development began on July 20, 2026, during the submission period.** |
 | Track | **Track 4 — Autopilot Agent** |
 | Public source repository | **https://github.com/xiaodouzi666/releaseproof** |
-| Alibaba Cloud deployment proof code file (field 27543) | **https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts** — shows the official Qwen Cloud base URL and real API calls, as required by the organizer's Proof of Deployment 101 announcement |
-| Alibaba Cloud deployment infrastructure | **https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/deploy/ecs/docker-compose.prod.yml#L1-L25** |
+| Alibaba Cloud deployment proof code file (field 27543) | **https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts** — shows the official Qwen Cloud base URL and real API calls, as required by the organizer's Proof of Deployment 101 announcement |
+| Alibaba Cloud deployment infrastructure | **https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/deploy/ecs/docker-compose.prod.yml#L1-L25** |
 | Architecture diagram upload | **public/architecture.png** |
-| Alibaba Cloud deployment screenshot upload | **docs/assets/deployment/alibaba-cloud-runtime.jpg**; use **docs/assets/deployment/alibaba-cloud-resource.jpg** as supporting evidence |
+| Alibaba Cloud deployment screenshot upload | **docs/assets/deployment/alibaba-cloud-runtime-current.png**; use **docs/assets/deployment/alibaba-cloud-resource.jpg** as supporting evidence |
 | Blog post | Leave blank unless a public build story is published |
 | AI tools used | **Qwen Cloud integration for structured extraction and read-only planning (configured on the deployment; successful calls currently blocked by Alibaba account KYC HTTP 403); OpenAI Codex for development assistance.** |
 | Learning level | **ENTRANT INPUT REQUIRED — select the entrant's actual level** |
@@ -58,10 +58,10 @@ ReleaseProof turns an ambiguous external data-sharing request into a minimized, 
 
 - Live application: http://8.219.184.228
 - Public source: https://github.com/xiaodouzi666/releaseproof
-- Submitted revision: https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199
+- Submitted revision: https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a
 - Demo video: https://youtu.be/s64eo9D5PYc
-- Qwen integration: https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts
-- Alibaba Cloud deployment code: https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/deploy/ecs/docker-compose.prod.yml#L1-L25
+- Qwen integration: https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts
+- Alibaba Cloud deployment code: https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/deploy/ecs/docker-compose.prod.yml#L1-L25
 - Alibaba Cloud deployment evidence: https://github.com/xiaodouzi666/releaseproof/blob/main/docs/deployment-proof.md
 - Health endpoint: http://8.219.184.228/api/health
 
@@ -139,7 +139,7 @@ http://8.219.184.228
 
 The deployed revision is:
 
-https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199
+https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a
 
 ## How Qwen Cloud is used
 
@@ -152,7 +152,7 @@ The server rejects malformed or unknown calls, rebinds arguments to validated id
 
 Qwen implementation:
 
-https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts
+https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts
 
 At submission time, the Alibaba-hosted runtime is configured for Qwen 3.7 Plus and discloses that configuration through its provider badge and health endpoint. However, an account-level Qwen Cloud KYC/entitlement activation gate currently prevents a successful live inference.
 
@@ -190,7 +190,7 @@ The Qwen KYC/entitlement gate remained unresolved while preparing the submission
 - A prior-hash-linked audit trail.
 - Explicit live-Qwen versus Recorded Demo disclosure.
 - A public Alibaba Cloud deployment of the submitted revision.
-- 66/66 automated tests and 16/16 deterministic policy evaluation cases passing on the submitted revision.
+- 68/68 automated tests and 16/16 deterministic policy evaluation cases passing on the submitted revision.
 
 ## What is real and what is simulated
 
@@ -226,10 +226,10 @@ The next milestone is a read-only enterprise pilot:
 
 - Public app: http://8.219.184.228
 - Public source: https://github.com/xiaodouzi666/releaseproof
-- Submitted revision: https://github.com/xiaodouzi666/releaseproof/commit/458d7ba55417fac18051156059b4802edeb9f199
-- Qwen integration: https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/server/qwen.ts
-- Alibaba deployment code: https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/deploy/ecs/docker-compose.prod.yml
-- Architecture: https://github.com/xiaodouzi666/releaseproof/blob/458d7ba55417fac18051156059b4802edeb9f199/public/architecture.png
+- Submitted revision: https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a
+- Qwen integration: https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts
+- Alibaba deployment code: https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/deploy/ecs/docker-compose.prod.yml
+- Architecture: https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/public/architecture.png
 - Demo video: https://youtu.be/s64eo9D5PYc
 - License: MIT
 
