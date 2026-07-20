@@ -16,17 +16,17 @@ Built for the Global AI Hackathon Series with Qwen Cloud — Track 4: Autopilot 
 
 Live app: [PENDING: public application URL]
 
-Public source: [PENDING: public GitHub repository]
+Public source: https://github.com/xiaodouzi666/releaseproof
 
 Submitted revision: [PENDING: immutable commit URL]
 
-Qwen Cloud integration: [PENDING: commit-pinned adapter URL]
+Qwen Cloud integration: https://github.com/xiaodouzi666/releaseproof/blob/main/server/qwen.ts
 
 Alibaba Cloud deployment proof: [PENDING: public evidence URL]
 
-Architecture: [PENDING: commit-pinned ReleaseProof architecture URL]
+Architecture: https://github.com/xiaodouzi666/releaseproof/blob/main/public/architecture.png
 
-License: MIT — [PENDING: public LICENSE URL]
+License: MIT — https://github.com/xiaodouzi666/releaseproof/blob/main/LICENSE
 
 Qwen performs structured release-intent extraction and read-only evidence planning over recipient, dataset, current-share, and agreement lookups. Deterministic policy minimizes field-actions and TTL or denies the request. A data owner approves the exact effective manifest. A Sandbox clean-room adapter creates the synthetic share idempotently, reads it back, and supports verified recall.
 

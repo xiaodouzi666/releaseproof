@@ -1,4 +1,6 @@
-# Alibaba Cloud ECS / Simple Application Server runbook
+# Alibaba Cloud VM operational notes
+
+For the submission's exact Ubuntu 22.04/24.04, 2 vCPU / 2 GiB Alibaba Cloud Simple Application Server path, use the automated [SAS runbook](../sas/README.md). The SAS scripts are authoritative for environment-file location, Compose invocation, health checks, and evidence capture. This document retains the detailed TLS, backup, update, and cleanup notes.
 
 This is the preferred ReleaseProof deployment because it provides a stable process, persistent single-instance volume, conventional HTTPS behavior, and clear competition evidence.
 
@@ -43,7 +45,7 @@ Docker-group membership is effectively root access. Add a deployment user only w
 ~~~bash
 sudo mkdir -p /opt/releaseproof
 sudo chown "$USER":"$USER" /opt/releaseproof
-git clone PENDING_PUBLIC_REPOSITORY_URL /opt/releaseproof
+git clone https://github.com/xiaodouzi666/releaseproof.git /opt/releaseproof
 cd /opt/releaseproof
 git checkout PENDING_SUBMITTED_COMMIT_SHA
 git rev-parse HEAD
@@ -54,8 +56,9 @@ Replace both pending values. A pinned submitted commit makes the runtime reprodu
 ## 4. Configure server-only environment
 
 ~~~bash
-cp .env.example .env
-chmod 600 .env
+sudo install -d -o root -g root -m 0700 /etc/releaseproof
+sudo install -o root -g root -m 0600 deploy/sas/releaseproof.env.example /etc/releaseproof/releaseproof.env
+sudoedit /etc/releaseproof/releaseproof.env
 ~~~
 
 Edit the file outside any recording. At minimum:
@@ -65,15 +68,10 @@ DASHSCOPE_API_KEY=REDACTED_VALUE_SET_ON_HOST_ONLY
 QWEN_BASE_URL=https://dashscope-intl.aliyuncs.com/compatible-mode/v1
 QWEN_MODEL=qwen3.7-plus
 QWEN_FALLBACK_MODEL=qwen3.6-flash
-PORT=8787
-AUDIT_STORE=file
-RELEASEPROOF_DATA_FILE=/app/data/releaseproof-store.json
-# Use alibaba-ecs on ECS or alibaba-sas on Simple Application Server.
-DEPLOYMENT_TARGET=alibaba-sas
 WORKFLOW_CREATE_LIMIT_PER_MINUTE=1
 ~~~
 
-Production Compose enforces the container store path and reads the truthful deployment label from this required root environment file. Use a workspace-specific Qwen Cloud domain only when the key belongs to the same region/workspace.
+Production Compose enforces the port, persistent store path, and immutable truthful `alibaba-sas` deployment label. The environment file supplies only the server-side Qwen settings and runtime limits. Use a workspace-specific Qwen Cloud domain only when the key belongs to the same region/workspace.
 
 The public judge URL is intentionally limited to one new workflow per minute by default. A normal live workflow makes two logical model calls, so also configure Qwen Cloud quota/spend controls.
 
@@ -84,17 +82,14 @@ Never print or capture the environment file. Expanded Compose configuration can 
 From **/opt/releaseproof**:
 
 ~~~bash
-docker compose -f deploy/ecs/docker-compose.prod.yml config --quiet
-docker compose -f deploy/ecs/docker-compose.prod.yml build --pull
-docker compose -f deploy/ecs/docker-compose.prod.yml up -d
-docker compose -f deploy/ecs/docker-compose.prod.yml ps
-curl --fail --silent http://127.0.0.1:8787/api/health
+sudo bash deploy/sas/deploy.sh
 ~~~
 
 The **releaseproof** service should become healthy. Inspect only bounded logs:
 
 ~~~bash
-docker compose -f deploy/ecs/docker-compose.prod.yml logs --tail=100 releaseproof
+sudo docker compose --project-name releaseproof --env-file /etc/releaseproof/releaseproof.env \
+  -f deploy/ecs/docker-compose.prod.yml logs --tail=100 releaseproof
 ~~~
 
 Do not publish logs until they have been checked for request data, vendor/dataset identifiers, and credentials.
@@ -161,10 +156,7 @@ Use [docs/deployment-proof.md](../../docs/deployment-proof.md) for capture requi
 cd /opt/releaseproof
 git fetch --all --prune
 git checkout NEW_REVIEWED_COMMIT_SHA
-docker compose -f deploy/ecs/docker-compose.prod.yml build --pull
-docker compose -f deploy/ecs/docker-compose.prod.yml up -d --remove-orphans
-docker compose -f deploy/ecs/docker-compose.prod.yml ps
-curl --fail --silent http://127.0.0.1:8787/api/health
+sudo bash deploy/sas/deploy.sh
 ~~~
 
 The named **releaseproof-data** volume survives container replacement. Back it up before any schema-changing update. This prototype has no migration framework.
@@ -176,7 +168,8 @@ For a hackathon demo, retaining the exact synthetic workflow snapshot may be use
 To prepare for an intentional reset:
 
 ~~~bash
-docker compose -f deploy/ecs/docker-compose.prod.yml down
+sudo docker compose --project-name releaseproof --env-file /etc/releaseproof/releaseproof.env \
+  -f deploy/ecs/docker-compose.prod.yml down
 docker volume ls
 ~~~
 
@@ -187,8 +180,7 @@ Do not delete a volume until its exact resolved name and backup status are verif
 ~~~bash
 cd /opt/releaseproof
 git checkout PREVIOUS_KNOWN_GOOD_COMMIT_SHA
-docker compose -f deploy/ecs/docker-compose.prod.yml up --build -d --remove-orphans
-curl --fail --silent http://127.0.0.1:8787/api/health
+sudo bash deploy/sas/deploy.sh
 ~~~
 
 Application-revision rollback is separate from ReleaseProof's synthetic data-share recall feature.

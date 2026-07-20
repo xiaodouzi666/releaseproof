@@ -1,0 +1,10 @@
+ReleaseProof demo chapters
+
+0:00 Every dataset release needs a recall path.
+0:18 A messy brief becomes a typed intent.
+0:38 Raw request in. Smallest safe manifest out.
+0:59 The owner approves the exact effective manifest.
+1:21 A proof packet, not a chat transcript.
+1:42 Unverified vendor. No approval. No write path.
+2:03 Expiry is not enough.
+2:22 Interpret with Qwen. Authorize with policy and people. Prove with reality.

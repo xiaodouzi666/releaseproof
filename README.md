@@ -4,7 +4,7 @@
 
 > Every dataset release needs a recall path.
 
-ReleaseProof turns an ambiguous request to share enterprise data with an external vendor into a minimized, expiring, reviewable release manifest. Qwen extracts the intended recipient, dataset, purpose, fields, and TTL, then plans the evidence it needs. Deterministic policy constrains or rejects the release. A data owner approves the exact manifest. A sandbox clean-room adapter creates the share idempotently, reads it back, and can recall it manually or at expiry. A hash-linked audit trail carries the proof of every step.
+ReleaseProof turns an ambiguous request to share enterprise data with an external vendor into a minimized, expiring, reviewable release manifest. In live mode, Qwen extracts the intended recipient, dataset, purpose, fields, and TTL, then plans the evidence it needs; recorded-demo mode substitutes clearly labeled deterministic fixtures. Deterministic policy constrains or rejects the release. A data owner approves the exact manifest. A sandbox clean-room adapter creates the share idempotently, reads it back, and can recall it manually or at expiry. A hash-linked audit trail carries the proof of every step.
 
 Built for **Qwen Cloud Hackathon — Track 4: Autopilot Agent**.
 
@@ -32,8 +32,8 @@ Most release tooling focuses on publishing. ReleaseProof treats recallability an
 ## What it does
 
 1. A requester supplies prose and, optionally, a ticket or agreement image.
-2. Qwen emits a typed release intent: recipient, dataset, purpose, requested fields, TTL, and optional agreement reference.
-3. Qwen proposes only read-only context calls: vendor, dataset, current-release, and agreement lookups.
+2. In live mode, Qwen emits a typed release intent: recipient, dataset, purpose, requested fields, TTL, and optional agreement reference.
+3. Qwen proposes only read-only context calls: vendor, dataset, current-release, and agreement lookups. Recorded-demo mode replaces steps 2–3 with disclosed deterministic fixtures so the rest of the workflow remains locally testable.
 4. The server allow-lists those functions, validates and rebinds their arguments, completes the mandatory evidence baseline, and dispatches the reads.
 5. Deterministic policy rejects unknown or unverified vendors, prohibited data classes, and requests that cannot be made safe. Otherwise it removes unnecessary fields and caps TTL.
 6. A data owner reviews the exact effective manifest, policy findings, expiry, evidence receipts, and before/after release diff.
@@ -138,6 +138,8 @@ PORT=8787 pnpm start
 ~~~
 
 Open http://localhost:8787 and verify http://localhost:8787/api/health.
+
+Public source: [github.com/xiaodouzi666/releaseproof](https://github.com/xiaodouzi666/releaseproof)
 
 ### Environment variables
 

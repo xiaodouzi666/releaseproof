@@ -6,7 +6,7 @@ ReleaseProof builds as one Node.js container. Express serves the Vite frontend a
 
 | Target | Persistence | Public behavior | Recommendation |
 | --- | --- | --- | --- |
-| Alibaba Cloud ECS / Simple Application Server | Named Docker volume on one VM | Conventional HTTPS site behind Nginx | **Preferred submission deployment** |
+| Alibaba Cloud Simple Application Server (Ubuntu 22.04/24.04) | Named Docker volume on one VM | Conventional site behind Nginx | **Preferred submission deployment** |
 | Alibaba Cloud Function Compute custom container | Ephemeral memory in the provided manifest | Background jobs and cross-request state are unreliable for this design | **Architecture experiment only** |
 | Local Docker Compose | Named local volume | Loopback only | Development and rehearsal |
 
@@ -52,7 +52,7 @@ docker compose down --volumes
 
 ## Preferred Alibaba Cloud deployment
 
-Use [ecs/README.md](ecs/README.md) for the complete ECS/Simple Application Server runbook. Production Compose adds:
+Use [sas/README.md](sas/README.md) for the repeatable Ubuntu Simple Application Server runbook. It covers host bootstrap, root-only secret installation, exact-revision deployment, strict health assertions, a real-Qwen smoke test, Nginx, evidence collection, and boot recovery. Production Compose adds:
 
 - required root environment file;
 - read-only container filesystem;
@@ -60,18 +60,18 @@ Use [ecs/README.md](ecs/README.md) for the complete ECS/Simple Application Serve
 - log rotation;
 - loopback-only port publishing;
 - process capability drop and no-new-privileges; and
-- a truthful deployment label set to **alibaba-ecs** or **alibaba-sas**.
+- the immutable truthful deployment label **alibaba-sas**.
 
 From the repository root on the instance:
 
 ~~~bash
-docker compose -f deploy/ecs/docker-compose.prod.yml config --quiet
-docker compose -f deploy/ecs/docker-compose.prod.yml up --build -d
-docker compose -f deploy/ecs/docker-compose.prod.yml ps
-curl --fail http://127.0.0.1:8787/api/health
+sudo bash deploy/sas/deploy.sh
+sudo bash deploy/sas/install-http-proxy.sh
+sudo bash deploy/sas/smoke-live.sh http://127.0.0.1:8787
+sudo bash deploy/sas/collect-evidence.sh http://PUBLIC_IPV4
 ~~~
 
-Do not publish expanded Compose output because it can contain the resolved API key. A screenshot may show Compose process status and the non-secret health response.
+Do not publish expanded Compose output because it can contain the resolved API key. The evidence collector deliberately captures only whitelisted container properties and non-secret health output.
 
 ## Function Compute experiment
 

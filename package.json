@@ -5,6 +5,21 @@
   "license": "MIT",
   "packageManager": "pnpm@11.7.0",
   "description": "Proof-carrying data release autopilot powered by Qwen Cloud.",
+  "homepage": "https://github.com/xiaodouzi666/releaseproof#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiaodouzi666/releaseproof.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xiaodouzi666/releaseproof/issues"
+  },
+  "keywords": [
+    "qwen-cloud",
+    "autopilot-agent",
+    "data-release",
+    "human-in-the-loop",
+    "audit-trail"
+  ],
   "type": "module",
   "scripts": {
     "dev": "concurrently -k \"pnpm dev:web\" \"pnpm dev:api\"",

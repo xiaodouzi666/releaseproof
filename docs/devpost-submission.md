@@ -1,8 +1,31 @@
 # Devpost submission copy
 
-This is ready-to-paste English editorial copy. Replace every bracketed **PENDING** value with verified public evidence from the submitted commit. Do not publish placeholders or claims that are not visible in the final build.
+This is the final English submission working copy. The narrative sections are ready to paste. Replace every bracketed **PENDING** value with verified public evidence or an explicit legal answer before final submission. Do not publish placeholders or claims that are not visible in the final build.
 
-**Project status:** New project — confirm this selection in the actual Devpost form before submission.
+## Required Devpost fields
+
+| Devpost field | Value to enter |
+| --- | --- |
+| Submitter type | **[PENDING: Individual, Team, or Organization]** |
+| Organization name | Leave blank unless submitter type is Organization |
+| Country of residence | **[PENDING: exact country of residence]** |
+| New or existing project | **New** |
+| Project start date (MM-DD-YY) | **07-20-26** |
+| If the project existed before May 26, explain what changed | **Not applicable — ReleaseProof development began on July 20, 2026, during the submission period.** |
+| Track | **Track 4 — Autopilot Agent** |
+| Public source repository | **https://github.com/xiaodouzi666/releaseproof** |
+| Code file showing Qwen Cloud use/base URL | **https://github.com/xiaodouzi666/releaseproof/blob/main/server/qwen.ts** |
+| Architecture diagram upload | **public/architecture.png** |
+| Alibaba Cloud deployment screenshot upload | **[PENDING: final PNG/JPG/JPEG captured from the deployed Alibaba Cloud resource]** |
+| Blog post | Leave blank unless a public build story is published |
+| AI tools used | **Qwen Cloud for the application's live structured extraction and read-only function planning; OpenAI Codex for development assistance.** |
+| Learning level | **[PENDING: select the entrant's actual level]** |
+| Age confirmation | **Check — entrant has confirmed being of legal age in their place of residence.** |
+| Eligible-country confirmation | **Check — entrant has confirmed eligibility; verify that the country selected above is allowed before submitting.** |
+| Sponsor/affiliate/government-employee confirmation | **[PENDING: entrant must personally confirm the statement before checking]** |
+| Testing instructions (optional) | Use the ready-to-paste text under **Testing instructions** below |
+
+Do not infer the remaining entrant answers. The submitter type, exact country, learning level, and sponsor/affiliate/government-employment confirmation must come from the entrant.
 
 ## Project name
 
@@ -33,11 +56,15 @@ ReleaseProof turns an ambiguous external data-sharing request into a minimized, 
 ## Try it out
 
 - Live application: [PENDING: public HTTPS URL]
-- Public source: [PENDING: public GitHub repository]
+- Public source: https://github.com/xiaodouzi666/releaseproof
 - Submitted revision: [PENDING: immutable commit permalink]
 - Demo video, strictly under 3 minutes: [PENDING: public YouTube URL]
-- Qwen integration: [PENDING: commit-pinned source permalink]
+- Qwen integration: https://github.com/xiaodouzi666/releaseproof/blob/main/server/qwen.ts
 - Alibaba Cloud deployment evidence: [PENDING: public evidence link plus required Devpost screenshot]
+
+## Testing instructions
+
+Open the public app and first read the provider badge: it distinguishes a completed live-Qwen workflow from the deterministic Recorded Demo mode. Select **Campaign vendor — minimized**, create the request, inspect the recipient/dataset/agreement receipts and requested-versus-effective manifest, approve as the data owner, wait for observed-state verification, and use **Recall now** to verify revocation. Then run **Restricted health — denied** to see a fail-closed path with no approval or release action. All displayed vendors, datasets, agreements, and share records are synthetic.
 
 ## Inspiration
 
@@ -54,8 +81,8 @@ Most release workflows optimize for getting data out. We built ReleaseProof arou
 ReleaseProof is an operator workbench for controlled external data releases:
 
 1. A requester pastes free-form text or supplies a ticket/agreement image.
-2. Qwen extracts a typed intent containing recipient, dataset, purpose, requested fields/actions, TTL, and an optional agreement reference.
-3. Qwen proposes a read-only evidence plan over recipient, dataset, current-share, and optional agreement lookup.
+2. In live mode, Qwen extracts a typed intent containing recipient, dataset, purpose, requested fields/actions, TTL, and an optional agreement reference.
+3. Qwen then proposes a read-only evidence plan over recipient, dataset, current-share, and optional agreement lookup. Recorded Demo mode substitutes disclosed deterministic fixtures for these two model steps.
 4. The server allow-lists those functions, validates and rebinds their arguments, adds mandatory reads that Qwen omitted, and dispatches the plan.
 5. Deterministic policy evaluates recipient status, dataset classification and allowed tiers, agreement status/recipient match, purpose presence, field-actions, current state, and TTL.
 6. Unsafe requests are denied before a write. Safe requests become an effective release manifest with unnecessary fields removed and duration capped.
@@ -77,7 +104,7 @@ The preferred deployment is Docker Compose on Alibaba Cloud ECS or Simple Applic
 
 ## How Qwen Cloud is used
 
-Qwen Cloud is used for the parts that genuinely require language and visual understanding:
+When the deployment has a working Qwen Cloud entitlement, Qwen is used for the parts that genuinely require language and visual understanding:
 
 - **Multimodal release-intent extraction:** interpret request prose and an optional ticket/agreement image.
 - **Structured output:** emit a machine-validated object for recipient, dataset, release tier, field-actions, TTL, purpose, agreement reference, confidence, and source mode.
@@ -89,7 +116,7 @@ Qwen never receives a share-create, recall, approval, or policy-override tool. A
 
 A normal live workflow makes two logical OpenAI-compatible Chat Completions requests to the Qwen Cloud endpoint: structured extraction followed by read-plan generation. The primary model is Qwen 3.7 Plus with Qwen 3.6 Flash as the configurable fallback.
 
-Live API source: [PENDING: commit-pinned link]
+Live-enabled API source: https://github.com/xiaodouzi666/releaseproof/blob/main/server/qwen.ts
 
 Live workflow evidence: [PENDING: public evidence link]
 
@@ -164,9 +191,9 @@ Recorded-demo mode replaces only Qwen extraction/planning with labeled determini
 - Verified recall based on observed inactive/absent state.
 - A proof packet and prior-hash-linked event chain that make every control inspectable.
 - Explicit live-Qwen versus recorded-demo disclosure.
-- A one-container Alibaba Cloud deployment path and documented production gaps.
+- A one-container Alibaba Cloud deployment configuration and documented production gaps.
 
-Final test/evaluation result: [PENDING: paste output from the submitted commit; do not reuse pre-pivot counts]
+Local ReleaseProof candidate validation on July 20, 2026: **62/62 automated tests passed and 16/16 deterministic release-policy evaluation cases passed**. These results do not claim a live-Qwen model-quality evaluation. Re-run the commands on the final submitted commit and update this sentence if the result changes.
 
 ## What we learned
 
@@ -197,7 +224,7 @@ The next milestone is a read-only enterprise pilot:
 - Qwen Cloud
 - Qwen 3.7 Plus
 - Qwen 3.6 Flash fallback
-- Alibaba Cloud ECS or Simple Application Server
+- Alibaba Cloud Simple Application Server (deployment target; final runtime evidence pending)
 - TypeScript
 - React
 - Vite

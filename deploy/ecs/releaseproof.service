@@ -3,13 +3,15 @@ Description=ReleaseProof Docker Compose application
 Requires=docker.service
 After=docker.service network-online.target
 Wants=network-online.target
+ConditionPathExists=/etc/releaseproof/releaseproof.env
 
 [Service]
 Type=oneshot
 RemainAfterExit=yes
 WorkingDirectory=/opt/releaseproof
-ExecStart=/usr/bin/docker compose -f deploy/ecs/docker-compose.prod.yml up -d --remove-orphans
-ExecStop=/usr/bin/docker compose -f deploy/ecs/docker-compose.prod.yml down
+ExecStartPre=/usr/bin/docker compose --project-name releaseproof --env-file /etc/releaseproof/releaseproof.env -f deploy/ecs/docker-compose.prod.yml config --quiet
+ExecStart=/usr/bin/docker compose --project-name releaseproof --env-file /etc/releaseproof/releaseproof.env -f deploy/ecs/docker-compose.prod.yml up -d --remove-orphans
+ExecStop=/usr/bin/docker compose --project-name releaseproof --env-file /etc/releaseproof/releaseproof.env -f deploy/ecs/docker-compose.prod.yml down
 TimeoutStartSec=0
 TimeoutStopSec=60
 
