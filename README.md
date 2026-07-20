@@ -42,6 +42,15 @@ Most release tooling focuses on publishing. ReleaseProof treats recallability an
 9. Expiry or an operator-initiated recall removes the share and verifies that it is no longer active.
 10. Every model, tool, policy, approval, release, verification, and recall event is appended to a prior-hash-linked audit chain.
 
+<details>
+<summary>Recorded-demo owner checkpoint — desktop and mobile</summary>
+
+![ReleaseProof data-owner approval on desktop](public/screenshots/owner-approval-full.png)
+
+![ReleaseProof data-owner approval on mobile](public/screenshots/mobile-owner-approval.png)
+
+</details>
+
 ## The proof carried by a release
 
 A ReleaseProof manifest is more than a generated summary. Its evidence packet binds:
