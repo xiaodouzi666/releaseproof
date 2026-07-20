@@ -88,7 +88,7 @@ These are regression metrics, not a formal proof. The fixture invariant explains
 
 ## Validated ReleaseProof candidate snapshot
 
-The commands below passed locally against candidate content at `f46d4eb61cebe4d2830aae162225b645c84eb734`. The only later working-tree changes are these evidence-document edits; no source, fixture, test, dependency, or build configuration changed. This is source-pinned local verification, not CI or public-hosting evidence.
+The commands below passed locally against candidate content at `f46d4eb61cebe4d2830aae162225b645c84eb734`. Later commits change only evidence documentation, README presentation, and static screenshots; no application source, fixture, test, dependency, or build configuration changed. This is source-pinned local verification, not CI or public-hosting evidence.
 
 | Field | Value |
 | --- | --- |
