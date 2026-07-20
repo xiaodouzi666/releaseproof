@@ -60,7 +60,7 @@ The returned plan is not trusted execution. The server rejects unknown/malformed
 
 Qwen never receives a share-create, recall, approval, or policy-override tool. A model answer can suggest what evidence to retrieve; it cannot establish that a vendor is verified or that a release is allowed.
 
-Source evidence: [candidate-pinned Qwen adapter](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts)
+Source evidence: [candidate-pinned Qwen adapter](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts)
 
 Deployment and Qwen evidence: [verified evidence record](deployment-proof.md). The Alibaba Cloud runtime is configured as `live-qwen` with `qwen3.7-plus`, but Alibaba account KYC currently rejects inference requests with HTTP 403. Configuration is verified; a successful live-Qwen workflow is not claimed.
 
@@ -147,7 +147,7 @@ When no Qwen Cloud key is configured:
 - extraction and function selection come from deterministic release fixtures;
 - the same sanitization, catalog, policy, owner, share, verification, recall, metrics, and audit code still runs.
 
-When a valid key is present, workflow metadata records live provider/model, fallback use, calls, latency, and token fields. A configured key is not proof by itself; the evidence package must show a completed live workflow.
+Preset scenarios remain forced to `recorded-demo` even when the server has a valid key. Only custom requests use the configured live client; their workflow metadata records provider/model, fallback use, calls, latency, and token fields. A configured key is not proof by itself; the evidence package must show a completed custom live workflow.
 
 ## Evaluating release safety
 
@@ -166,7 +166,7 @@ The deterministic evaluator and automated tests target release-policy and workfl
 - recall verification; and
 - provider/audit disclosure.
 
-Final submitted result: candidate [`760678a34983271b1fc72e859646126d0520eb5a`](https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a) passed **68/68 automated tests**, **16/16 deterministic policy cases**, typecheck, production build, and the production dependency audit.
+Final submitted result: candidate [`7a6e503eb03849d19d663597e2993b093c201738`](https://github.com/xiaodouzi666/releaseproof/commit/7a6e503eb03849d19d663597e2993b093c201738) passed **69/69 automated tests**, **16/16 deterministic policy cases**, typecheck, production build, and the production dependency audit.
 
 Historical results from the previous product framing are not evidence for this pivot and must not be reused.
 
@@ -223,6 +223,6 @@ Every dataset release needs a recall path.
 **ReleaseProof** was built for Qwen Cloud Hackathon, Track 4 — Autopilot Agent.
 
 - Try it: [http://8.219.184.228](http://8.219.184.228)
-- Source: [public repository](https://github.com/xiaodouzi666/releaseproof) and [immutable candidate](https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a)
+- Source: [public repository](https://github.com/xiaodouzi666/releaseproof) and [immutable candidate](https://github.com/xiaodouzi666/releaseproof/commit/7a6e503eb03849d19d663597e2993b093c201738)
 - Demo: [public YouTube video](https://youtu.be/s64eo9D5PYc)
-- Architecture and evidence: [candidate architecture](https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/public/architecture.png) and [deployment record](deployment-proof.md)
+- Architecture and evidence: [candidate architecture](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/public/architecture.png) and [deployment record](deployment-proof.md)

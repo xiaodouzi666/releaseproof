@@ -1,32 +1,32 @@
 # Devpost submission copy
 
-This is the final English submission working copy. Public evidence fields are filled with the verified candidate, deployment, and video links. Four entrant-specific answers remain explicitly marked for personal completion; do not infer them or publish claims that are not visible in the final build.
+This is the final English record of the submitted Devpost copy. Public evidence fields use the verified candidate, deployment, and video links. Entrant-specific declarations were completed directly by the entrant in Devpost; this document records their completion without inventing undisclosed personal details.
 
-## Required Devpost fields
+## Submitted Devpost fields
 
-| Devpost field | Value to enter |
+| Devpost field | Submitted value or record |
 | --- | --- |
-| Submitter type | **ENTRANT INPUT REQUIRED — Individual, Team, or Organization** |
+| Submitter type | **Completed directly by the entrant in Devpost** |
 | Organization name | Leave blank unless submitter type is Organization |
-| Country of residence | **ENTRANT INPUT REQUIRED — exact country of residence** |
+| Country of residence | **Netherlands — entered by the entrant** |
 | New or existing project | **New** |
 | Project start date (MM-DD-YY) | **07-20-26** |
 | If the project existed before May 26, explain what changed | **Not applicable — ReleaseProof development began on July 20, 2026, during the submission period.** |
 | Track | **Track 4 — Autopilot Agent** |
 | Public source repository | **https://github.com/xiaodouzi666/releaseproof** |
-| Alibaba Cloud deployment proof code file (field 27543) | **https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts** — shows the official Qwen Cloud base URL and real API calls, as required by the organizer's Proof of Deployment 101 announcement |
-| Alibaba Cloud deployment infrastructure | **https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/deploy/ecs/docker-compose.prod.yml#L1-L25** |
+| Alibaba Cloud deployment proof code file (field 27543) | **https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts** — shows the official Qwen Cloud base URL and real API calls, as required by the organizer's Proof of Deployment 101 announcement |
+| Alibaba Cloud deployment infrastructure | **https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/deploy/ecs/docker-compose.prod.yml#L1-L25** |
 | Architecture diagram upload | **public/architecture.png** |
 | Alibaba Cloud deployment screenshot upload | **docs/assets/deployment/alibaba-cloud-runtime-current.png**; use **docs/assets/deployment/alibaba-cloud-resource.jpg** as supporting evidence |
 | Blog post | Leave blank unless a public build story is published |
 | AI tools used | **Qwen Cloud integration for structured extraction and read-only planning (configured on the deployment; successful calls currently blocked by Alibaba account KYC HTTP 403); OpenAI Codex for development assistance.** |
-| Learning level | **ENTRANT INPUT REQUIRED — select the entrant's actual level** |
-| Age confirmation | **Check — entrant has confirmed being of legal age in their place of residence.** |
-| Eligible-country confirmation | **Check — entrant has confirmed eligibility; verify that the country selected above is allowed before submitting.** |
-| Sponsor/affiliate/government-employee confirmation | **ENTRANT INPUT REQUIRED — entrant must personally confirm the statement before checking** |
-| Testing instructions (optional) | Use the ready-to-paste text under **Testing instructions** below |
+| Learning level | **Completed directly by the entrant in Devpost** |
+| Age confirmation | **Completed directly by the entrant in Devpost** |
+| Eligible-country confirmation | **Completed directly by the entrant in Devpost** |
+| Sponsor/affiliate/government-employee confirmation | **Completed directly by the entrant in Devpost** |
+| Testing instructions (optional) | **Submitted using the text under Testing instructions below** |
 
-Do not infer the remaining entrant answers. The submitter type, exact country, learning level, and sponsor/affiliate/government-employment confirmation must come from the entrant.
+The submitter type, learning level, and sponsor/affiliate/government-employment response remain intentionally undisclosed here; Devpost contains the entrant's own answers.
 
 ## Project name
 
@@ -38,9 +38,9 @@ Every dataset release needs a recall path.
 
 ## Thumbnail
 
-Upload a final 3:2 ReleaseProof thumbnail in PNG/JPG/JPEG format under Devpost's size limit.
+The submitted project uses the final 3:2 ReleaseProof PNG thumbnail under Devpost's size limit.
 
-[ReleaseProof 3:2 thumbnail](../public/devpost-thumbnail-3x2.png) — upload the PNG, not the SVG source.
+[ReleaseProof 3:2 thumbnail](../public/devpost-thumbnail-3x2.png) — the PNG, not the SVG source, was submitted.
 
 Do not upload the previous access-control artwork.
 
@@ -58,10 +58,10 @@ ReleaseProof turns an ambiguous external data-sharing request into a minimized, 
 
 - Live application: http://8.219.184.228
 - Public source: https://github.com/xiaodouzi666/releaseproof
-- Submitted revision: https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a
+- Submitted revision: https://github.com/xiaodouzi666/releaseproof/commit/7a6e503eb03849d19d663597e2993b093c201738
 - Demo video: https://youtu.be/s64eo9D5PYc
-- Qwen integration: https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts
-- Alibaba Cloud deployment code: https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/deploy/ecs/docker-compose.prod.yml#L1-L25
+- Qwen integration: https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts
+- Alibaba Cloud deployment code: https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/deploy/ecs/docker-compose.prod.yml#L1-L25
 - Alibaba Cloud deployment evidence: https://github.com/xiaodouzi666/releaseproof/blob/main/docs/deployment-proof.md
 - Health endpoint: http://8.219.184.228/api/health
 
@@ -139,7 +139,7 @@ http://8.219.184.228
 
 The deployed revision is:
 
-https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a
+https://github.com/xiaodouzi666/releaseproof/commit/7a6e503eb03849d19d663597e2993b093c201738
 
 ## How Qwen Cloud is used
 
@@ -152,11 +152,11 @@ The server rejects malformed or unknown calls, rebinds arguments to validated id
 
 Qwen implementation:
 
-https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts
+https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts
 
 At submission time, the Alibaba-hosted runtime is configured for Qwen 3.7 Plus and discloses that configuration through its provider badge and health endpoint. However, an account-level Qwen Cloud KYC/entitlement activation gate currently prevents a successful live inference.
 
-We therefore do not present the configured health response as proof of a model call. The public 2:42 video is clearly labeled Recorded Demo. It substitutes deterministic fixtures only for Qwen extraction and read-plan generation; policy, owner approval, synthetic share creation, observed-state verification, recall, metrics, and audit continue through the same application paths.
+We therefore do not present the configured health response as proof of a model call. The public 2:43 video is clearly labeled Recorded Demo. It substitutes deterministic fixtures only for Qwen extraction and read-plan generation; policy, owner approval, synthetic share creation, observed-state verification, recall, metrics, and audit continue through the same application paths.
 
 ## Challenges we ran into
 
@@ -190,7 +190,7 @@ The Qwen KYC/entitlement gate remained unresolved while preparing the submission
 - A prior-hash-linked audit trail.
 - Explicit live-Qwen versus Recorded Demo disclosure.
 - A public Alibaba Cloud deployment of the submitted revision.
-- 68/68 automated tests and 16/16 deterministic policy evaluation cases passing on the submitted revision.
+- 69/69 automated tests and 16/16 deterministic policy evaluation cases passing on the submitted revision.
 
 ## What is real and what is simulated
 
@@ -226,10 +226,10 @@ The next milestone is a read-only enterprise pilot:
 
 - Public app: http://8.219.184.228
 - Public source: https://github.com/xiaodouzi666/releaseproof
-- Submitted revision: https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a
-- Qwen integration: https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/server/qwen.ts
-- Alibaba deployment code: https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/deploy/ecs/docker-compose.prod.yml
-- Architecture: https://github.com/xiaodouzi666/releaseproof/blob/760678a34983271b1fc72e859646126d0520eb5a/public/architecture.png
+- Submitted revision: https://github.com/xiaodouzi666/releaseproof/commit/7a6e503eb03849d19d663597e2993b093c201738
+- Qwen integration: https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts
+- Alibaba deployment code: https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/deploy/ecs/docker-compose.prod.yml
+- Architecture: https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/public/architecture.png
 - Demo video: https://youtu.be/s64eo9D5PYc
 - License: MIT
 
@@ -249,18 +249,18 @@ The next milestone is a read-only enterprise pilot:
 - Docker and Docker Compose
 - Nginx
 
-## Submission evidence reminder
+## Submission evidence record
 
-Before pasting this copy:
+The submitted Devpost project:
 
-- complete the four **ENTRANT INPUT REQUIRED** answers personally;
-- use the final ReleaseProof thumbnail and architecture image;
-- verify the public repository, MIT license, and immutable commit links;
-- enter the candidate-pinned Qwen Cloud API source permalink (`server/qwen.ts`) for submission field 27543, matching the organizer's Proof of Deployment 101 guidance;
-- keep the candidate-pinned Docker Compose deployment link separately available in the Story and deployment documentation;
-- do not claim successful live-Qwen inference while the KYC 403 remains unresolved;
-- provide the required Alibaba Cloud runtime screenshot;
-- keep all demo data synthetic;
-- publish a public video strictly under 3:00 and test it signed out;
-- open every app/repository/video/evidence link in an incognito window; and
-- do not change the submission, repository revision, video, or linked evidence after the deadline.
+- contains the entrant's personally completed eligibility/profile declarations;
+- uses the final ReleaseProof thumbnail and architecture image;
+- links the public repository, MIT license, and immutable candidate;
+- includes the candidate-pinned Qwen Cloud API source permalink (`server/qwen.ts`) for submission field 27543, matching the organizer's Proof of Deployment 101 guidance;
+- keeps the candidate-pinned Docker Compose deployment link separately available in the Story and deployment documentation;
+- does not claim successful live-Qwen inference while the KYC 403 remains unresolved;
+- includes the required Alibaba Cloud runtime screenshot;
+- keeps all demo data synthetic;
+- links a public 2:43 video, under the 3:00 limit;
+- was checked with public app/repository/video/evidence links; and
+- must remain frozen with its repository revision, video, and linked evidence after the deadline.

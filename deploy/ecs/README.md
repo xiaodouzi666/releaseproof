@@ -8,10 +8,10 @@ The public build must use only synthetic recipients, datasets, agreements, and s
 
 ## Submitted deployment status
 
-- Candidate revision: [`760678a34983271b1fc72e859646126d0520eb5a`](https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a)
+- Candidate revision: [`7a6e503eb03849d19d663597e2993b093c201738`](https://github.com/xiaodouzi666/releaseproof/commit/7a6e503eb03849d19d663597e2993b093c201738)
 - Public application: [http://8.219.184.228](http://8.219.184.228)
 - Public health check: [http://8.219.184.228/api/health](http://8.219.184.228/api/health)
-- Runtime evidence: [Alibaba Cloud resource](../../docs/assets/deployment/alibaba-cloud-resource.jpg) and [container/runtime](../../docs/assets/deployment/alibaba-cloud-runtime.jpg)
+- Runtime evidence: [Alibaba Cloud resource](../../docs/assets/deployment/alibaba-cloud-resource.jpg) and [current container/runtime](../../docs/assets/deployment/alibaba-cloud-runtime-current.png)
 
 The submitted endpoint currently uses HTTP; TLS is not claimed. The runtime reports `deploymentTarget: alibaba-sas` and a configured `live-qwen` Qwen Cloud client using `qwen3.7-plus`. Successful inference is not claimed: Alibaba account KYC currently rejects model requests with HTTP 403, so health proves configuration only.
 
@@ -56,7 +56,7 @@ sudo mkdir -p /opt/releaseproof
 sudo chown "$USER":"$USER" /opt/releaseproof
 git clone https://github.com/xiaodouzi666/releaseproof.git /opt/releaseproof
 cd /opt/releaseproof
-git checkout 760678a34983271b1fc72e859646126d0520eb5a
+git checkout 7a6e503eb03849d19d663597e2993b093c201738
 git rev-parse HEAD
 ~~~
 

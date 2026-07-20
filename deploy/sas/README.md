@@ -60,7 +60,7 @@ The deployment fails closed if the key is missing, duplicated, placeholder-shape
 - model mode/provider are `live-qwen` / `Qwen Cloud`; and
 - the persistent file store is healthy.
 
-Health proves runtime configuration, not a successful inference. The next smoke test proves real Qwen calls.
+Health proves runtime configuration, not a successful inference. Once the Qwen account is entitled to inference, the next smoke test proves real Qwen calls; an entitlement or KYC 403 fails the test closed.
 
 ## 4. Add the public HTTP entry point
 
@@ -76,9 +76,9 @@ The script removes Ubuntu's default Nginx site, installs `nginx-http.conf`, vali
 
 HTTP is provided only so an IP address can be tested immediately. For a durable public deployment, point a domain at the server, use the TLS template at `deploy/ecs/nginx.conf`, obtain an ACME certificate, run `sudo nginx -t`, and reload Nginx. Do not claim HTTPS until the public certificate path has been verified.
 
-## 5. Prove a real Qwen inference
+## 5. Prove real Qwen inference
 
-This intentionally creates one synthetic restricted-data workflow and consumes Qwen tokens. It never approves or releases data:
+This intentionally creates one custom synthetic campaign workflow and consumes Qwen tokens. It has no preset `scenarioId`, so a live-key server must use Qwen rather than recorded fixtures. The smoke test stops at the policy decision and never approves or releases data:
 
 ~~~bash
 cd /opt/releaseproof
@@ -86,7 +86,7 @@ sudo bash deploy/sas/smoke-live.sh http://127.0.0.1:8787 | sudo tee /tmp/release
 sudo jq . /tmp/releaseproof-live-qwen.json
 ~~~
 
-The script waits for a deterministic denial and requires at least two completed live Qwen calls plus two hash-linked Qwen audit events. A 403, invalid output, local-fixture fallback, timeout, or unexpected terminal state fails the command.
+The script accepts either a safe `awaiting_approval` decision or a deterministic `denied` decision, and requires at least two completed live Qwen calls plus two hash-linked Qwen audit events. A 403, invalid output, recorded-fixture fallback, timeout, workflow error, or unexpected terminal state fails the command.
 
 ## 6. Collect non-secret evidence
 

@@ -8,14 +8,14 @@ ReleaseProof turns an ambiguous request to share enterprise data with an externa
 
 Built for **Qwen Cloud Hackathon — Track 4: Autopilot Agent**.
 
-The submitted candidate is [`760678a34983271b1fc72e859646126d0520eb5a`](https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a). It is deployed on Alibaba Cloud Simple Application Server at [http://8.219.184.228](http://8.219.184.228), with a public [health endpoint](http://8.219.184.228/api/health), [deployment evidence](docs/deployment-proof.md), and [demo video](https://youtu.be/s64eo9D5PYc). The candidate passed **68/68 automated tests** and **16/16 deterministic policy cases**.
+The submitted candidate is [`7a6e503eb03849d19d663597e2993b093c201738`](https://github.com/xiaodouzi666/releaseproof/commit/7a6e503eb03849d19d663597e2993b093c201738). It is deployed on Alibaba Cloud Simple Application Server at [http://8.219.184.228](http://8.219.184.228), with a public [health endpoint](http://8.219.184.228/api/health), [deployment evidence](docs/deployment-proof.md), and [demo video](https://youtu.be/s64eo9D5PYc). The candidate passed **69/69 automated tests** and **16/16 deterministic policy cases**.
 
 The public runtime is configured as `live-qwen` with Qwen Cloud (`qwen3.7-plus`), but Alibaba account KYC currently rejects inference requests with HTTP 403. The health response proves runtime configuration, not a successful model call; ReleaseProof therefore does **not** claim a successful live-Qwen inference or workflow. The included release adapter uses synthetic data and simulated vendors. ReleaseProof is not a production DLP, data clean room, consent platform, or legal-compliance system.
 
 Public evidence:
 
 - [Application](http://8.219.184.228) and [health](http://8.219.184.228/api/health)
-- [Public repository](https://github.com/xiaodouzi666/releaseproof) and [immutable candidate](https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a)
+- [Public repository](https://github.com/xiaodouzi666/releaseproof) and [immutable candidate](https://github.com/xiaodouzi666/releaseproof/commit/7a6e503eb03849d19d663597e2993b093c201738)
 - [Alibaba Cloud resource](docs/assets/deployment/alibaba-cloud-resource.jpg), [current runtime](docs/assets/deployment/alibaba-cloud-runtime-current.png), and [public app](docs/assets/deployment/public-app.jpg) captures
 - [Public demo video](https://youtu.be/s64eo9D5PYc)
 
@@ -218,7 +218,7 @@ pnpm build
 
 The deterministic evaluation focuses on release-policy invariants such as vendor verification, field minimization, agreement validity, TTL caps, no release after denial, idempotency, exact-state verification, and verified recall. Do not copy historical test totals into a submission; record results from the final submitted commit. See [docs/evaluation.md](docs/evaluation.md).
 
-Fresh validation of candidate [`760678a34983271b1fc72e859646126d0520eb5a`](https://github.com/xiaodouzi666/releaseproof/commit/760678a34983271b1fc72e859646126d0520eb5a) passed typecheck, production build, production dependency audit, **68/68 tests**, and **16/16 deterministic evaluation cases**.
+Fresh validation of candidate [`7a6e503eb03849d19d663597e2993b093c201738`](https://github.com/xiaodouzi666/releaseproof/commit/7a6e503eb03849d19d663597e2993b093c201738) passed typecheck, production build, production dependency audit, **69/69 tests**, and **16/16 deterministic evaluation cases**.
 
 ## Deployment
 

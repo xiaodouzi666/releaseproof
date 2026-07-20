@@ -233,15 +233,17 @@ Terminal states are denied, rejected, rolled_back, and failed. Completed is stab
 
 ~~~mermaid
 flowchart LR
-    Start[Server starts] --> Key{DASHSCOPE_API_KEY present?}
+    Start[Workflow request] --> Preset{Preset scenario?}
+    Preset -->|yes| Fixture[Deterministic release fixtures]
+    Preset -->|no: custom request| Key{DASHSCOPE_API_KEY present?}
     Key -->|yes| Live[Live Qwen adapter]
-    Key -->|no| Fixture[Deterministic release fixtures]
+    Key -->|no| Fixture
     Live --> Boundary[Same schema and read-tool boundary]
     Fixture --> Boundary
     Boundary --> Pipeline[Same catalogs, policy, approval, sandbox release, verify, recall, audit]
 ~~~
 
-Recorded-demo mode replaces only probabilistic extraction and function selection. It does not bypass release policy or verification. A live provider configuration is not itself proof of a completed Qwen call; each workflow receipt must show successful model calls.
+Preset scenarios are always forced to `recorded-demo`, even when the server has a live Qwen key, so their known fixture output remains reproducible and cannot be mistaken for inference. A custom request uses the configured live client, or recorded fixtures only when no key is configured. Recorded-demo mode replaces only probabilistic extraction and function selection; it does not bypass release policy or verification. A server-level live provider configuration is not itself proof of a completed Qwen call; each custom workflow receipt must show successful model calls.
 
 ## Deployment topology
 

@@ -1,6 +1,6 @@
-# ReleaseProof demo script — 2:42 target
+# ReleaseProof demo script — 2:42 edit target
 
-Record the real product in one browser session and keep the final cut strictly below three minutes. The story is: **Every dataset release needs a recall path.** Use cuts only to remove waits, and never fabricate a result.
+The published video runs **2:43**; the timestamp marks below are the 2:42 editorial target used during recording. Record the real product in one browser session and keep the final cut strictly below three minutes. The story is: **Every dataset release needs a recall path.** Use cuts only to remove waits, and never fabricate a result.
 
 Use [`youtube-description.md`](youtube-description.md) for upload copy and signed-out QA.
 
