@@ -17,9 +17,9 @@ This is the final English record of the submitted Devpost copy. Public evidence 
 | Alibaba Cloud deployment proof code file (field 27543) | **https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts** — shows the official Qwen Cloud base URL and real API calls, as required by the organizer's Proof of Deployment 101 announcement |
 | Alibaba Cloud deployment infrastructure | **https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/deploy/ecs/docker-compose.prod.yml#L1-L25** |
 | Architecture diagram upload | **public/architecture.png** |
-| Alibaba Cloud deployment screenshot upload | **docs/assets/deployment/alibaba-cloud-runtime-current.png**; use **docs/assets/deployment/alibaba-cloud-resource.jpg** as supporting evidence |
+| Alibaba Cloud deployment screenshot upload | **docs/assets/deployment/alibaba-cloud-runtime-current.jpg**; use **docs/assets/deployment/alibaba-cloud-resource.jpg** as supporting evidence |
 | Blog post | Leave blank unless a public build story is published |
-| AI tools used | **Qwen Cloud integration for structured extraction and read-only planning (configured on the deployment; successful calls currently blocked by Alibaba account KYC HTTP 403); OpenAI Codex for development assistance.** |
+| AI tools used | **Qwen Cloud integration for structured extraction and read-only planning (configured on the deployment; inference currently returns HTTP 403 `AccessDenied.Unpurchased` while account KYC/entitlement activation is pending); OpenAI Codex for development assistance.** |
 | Learning level | **Completed directly by the entrant in Devpost** |
 | Age confirmation | **Completed directly by the entrant in Devpost** |
 | Eligible-country confirmation | **Completed directly by the entrant in Devpost** |
@@ -67,7 +67,7 @@ ReleaseProof turns an ambiguous external data-sharing request into a minimized, 
 
 ## Testing instructions
 
-Open the public app and health endpoint first. The application is deployed on Alibaba Cloud and the provider badge truthfully shows Qwen Cloud configured with `qwen3.7-plus`, awaiting a successful release run. The health response reports `live-qwen`; this is configuration evidence, not inference evidence. New model-dependent workflows currently fail closed because Alibaba account KYC returns HTTP 403.
+Open the public app and health endpoint first. The application is deployed on Alibaba Cloud and the provider badge truthfully shows Qwen Cloud configured with `qwen3.7-plus`, awaiting a successful release run. The health response reports `live-qwen`; this is configuration evidence, not inference evidence. New model-dependent workflows currently fail closed with HTTP 403 `AccessDenied.Unpurchased` while account KYC/entitlement activation is pending.
 
 For a reproducible end-to-end workflow, check out the submitted revision locally without `DASHSCOPE_API_KEY`, run `pnpm dev`, and use the clearly labeled Recorded Demo mode. Select **Campaign analysis, minimized**, inspect the recipient/dataset/agreement receipts and Requested → Owner-approved effective → Observed proof, approve as the data owner, wait for exact observed-state verification, and use **Recall now** to verify revocation. Then run **Restricted health data blocked** to see a fail-closed path with no approval or release action. All displayed vendors, datasets, agreements, and share records are synthetic; fixture output is not represented as a successful Qwen call.
 
@@ -156,7 +156,7 @@ https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b
 
 At submission time, the Alibaba-hosted runtime is configured for Qwen 3.7 Plus and discloses that configuration through its provider badge and health endpoint. However, an account-level Qwen Cloud KYC/entitlement activation gate currently prevents a successful live inference.
 
-We therefore do not present the configured health response as proof of a model call. The public 2:43 video is clearly labeled Recorded Demo. It substitutes deterministic fixtures only for Qwen extraction and read-plan generation; policy, owner approval, synthetic share creation, observed-state verification, recall, metrics, and audit continue through the same application paths.
+We therefore do not present the configured health response as proof of a model call. The public 2:42 video is clearly labeled Recorded Demo. It substitutes deterministic fixtures only for Qwen extraction and read-plan generation; policy, owner approval, synthetic share creation, observed-state verification, recall, metrics, and audit continue through the same application paths.
 
 ## Challenges we ran into
 
@@ -258,9 +258,9 @@ The submitted Devpost project:
 - links the public repository, MIT license, and immutable candidate;
 - includes the candidate-pinned Qwen Cloud API source permalink (`server/qwen.ts`) for submission field 27543, matching the organizer's Proof of Deployment 101 guidance;
 - keeps the candidate-pinned Docker Compose deployment link separately available in the Story and deployment documentation;
-- does not claim successful live-Qwen inference while the KYC 403 remains unresolved;
+- does not claim successful live-Qwen inference while HTTP 403 `AccessDenied.Unpurchased` remains unresolved;
 - includes the required Alibaba Cloud runtime screenshot;
 - keeps all demo data synthetic;
-- links a public 2:43 video, under the 3:00 limit;
+- links a public 2:42 video, under the 3:00 limit;
 - was checked with public app/repository/video/evidence links; and
 - must remain frozen with its repository revision, video, and linked evidence after the deadline.

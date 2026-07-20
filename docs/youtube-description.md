@@ -34,7 +34,7 @@ Qwen performs structured release-intent extraction and read-only evidence planni
 
 This demo uses synthetic recipients, datasets, agreements, and share state. It does not move real customer data and is not a production DLP, privacy, consent, legal-review, or clean-room service. Recalling a share revokes synthetic access; it does not imply retroactive deletion of copied data.
 
-The Alibaba Cloud runtime is configured as `live-qwen` with Qwen Cloud and `qwen3.7-plus`, but successful inference is not claimed: Alibaba account KYC currently rejects model requests with HTTP 403. The health response proves configuration only. The visible provider badge identifies the mode, and any deterministic recorded-demo fixtures remain explicitly labeled.
+The Alibaba Cloud runtime is configured as `live-qwen` with Qwen Cloud and `qwen3.7-plus`, but successful inference is not claimed: model requests return HTTP 403 `AccessDenied.Unpurchased` while Alibaba account KYC/entitlement activation remains pending. The health response proves configuration only. The visible provider badge identifies the mode, and any deterministic recorded-demo fixtures remain explicitly labeled.
 
 Candidate validation: 69/69 automated tests and 16/16 deterministic release-policy cases passed. These results measure software and policy behavior, not live-model quality.
 

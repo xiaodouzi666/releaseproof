@@ -60,7 +60,7 @@ The deployment fails closed if the key is missing, duplicated, placeholder-shape
 - model mode/provider are `live-qwen` / `Qwen Cloud`; and
 - the persistent file store is healthy.
 
-Health proves runtime configuration, not a successful inference. Once the Qwen account is entitled to inference, the next smoke test proves real Qwen calls; an entitlement or KYC 403 fails the test closed.
+Health proves runtime configuration, not a successful inference. Once the Qwen account is entitled to inference, the next smoke test proves real Qwen calls; HTTP 403 `AccessDenied.Unpurchased` or any other entitlement/KYC failure stops the test closed.
 
 ## 4. Add the public HTTP entry point
 

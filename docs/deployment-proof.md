@@ -17,7 +17,7 @@ The application and health endpoint are currently served over HTTP; TLS is not c
 
 The public runtime has a server-side Qwen Cloud client configured as `live-qwen` with `qwen3.7-plus`. The source implements structured extraction and read-only function planning against the Qwen OpenAI-compatible endpoint.
 
-Successful model inference has **not** been established. Calls from the deployment currently fail closed because Alibaba account KYC/entitlement activation remains pending and returns HTTP 403. The health response proves that the client, provider mode, model, service, store, and deployment target are configured; it does not prove that a model response completed. No screenshot, workflow receipt, evaluation number, or submission text should be described as successful live-Qwen evidence.
+Successful model inference has **not** been established. Calls from the deployment currently fail closed with HTTP 403 `AccessDenied.Unpurchased` while Alibaba account KYC/entitlement activation remains pending. The health response proves that the client, provider mode, model, service, store, and deployment target are configured; it does not prove that a model response completed. No screenshot, workflow receipt, evaluation number, or submission text should be described as successful live-Qwen evidence.
 
 The deterministic recorded-demo path remains the reproducible end-to-end demonstration of policy, owner approval, synthetic share creation, exact-state verification, recall, metrics, and audit. Its output is not represented as Qwen output.
 
@@ -29,16 +29,16 @@ The deterministic recorded-demo path remains the reproducible end-to-end demonst
 | OSI license | [Candidate-pinned MIT license](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/LICENSE) | Verified |
 | Immutable application revision | [Candidate commit](https://github.com/xiaodouzi666/releaseproof/commit/7a6e503eb03849d19d663597e2993b093c201738) | Verified public |
 | Qwen client and base URL | [Candidate-pinned `server/qwen.ts`](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts) | Implementation verified; successful call not claimed |
-| Structured extraction schema/request | [`server/qwen.ts` schema](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L12-L23) and [request](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L287-L330) | Source verified |
-| Read-only planning and sanitization | [Planning request](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L345-L417), [validation/rebinding](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L420-L457), and [dispatch](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/workflow-service.ts#L482-L528) | Source verified |
+| Structured extraction schema/request | [`server/qwen.ts` schema](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L12-L23) and [request](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L296-L339) | Source verified |
+| Read-only planning and sanitization | [Planning request](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L342-L427), [validation/rebinding](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L429-L466), and [dispatch](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/workflow-service.ts#L482-L528) | Source verified |
 | Deterministic release policy | [Candidate-pinned `server/policy.ts`](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/policy.ts) | 16/16 local cases |
 | Exact manifest owner checkpoint | [Candidate-pinned workflow service](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/workflow-service.ts) | Source and tests verified |
 | Idempotent share, verification, and recall | [Candidate-pinned tools](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/tools.ts) and [workflow service](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/workflow-service.ts) | Source and tests verified |
 | Alibaba Cloud resource | [Resource capture](assets/deployment/alibaba-cloud-resource.jpg) | Captured |
-| Running candidate container | [Current runtime capture](assets/deployment/alibaba-cloud-runtime-current.png) | Captured; candidate SHA, deployed documentation head, and healthy service visible |
+| Running candidate container | [Current runtime capture](assets/deployment/alibaba-cloud-runtime-current.jpg) | Captured; candidate SHA, deployed repository head, and healthy service visible |
 | Public application | [Live app](http://8.219.184.228) and [public-app capture](assets/deployment/public-app.jpg) | Verified over HTTP |
 | Public health | [Health endpoint](http://8.219.184.228/api/health) | Verified HTTP 200 |
-| Successful live-Qwen receipt | None | Not achieved; Alibaba account KYC HTTP 403 |
+| Successful live-Qwen receipt | None | Not achieved; HTTP 403 `AccessDenied.Unpurchased` while KYC/entitlement activation is pending |
 | Test/evaluation output | [Validation record](evaluation.md#validated-releaseproof-candidate-snapshot) and [candidate evaluation source](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/evaluation.ts) | 69/69 tests; 16/16 cases |
 | Demo video | [Public YouTube video](https://youtu.be/s64eo9D5PYc) | Public link verified |
 | Architecture and thumbnail | [Candidate architecture](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/public/architecture.png) and [candidate 3:2 thumbnail](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/public/devpost-thumbnail-3x2.png) | Candidate-pinned assets |
@@ -61,10 +61,10 @@ The plan is untrusted. The server allow-lists names, parses strict arguments, re
 
 Candidate-pinned source:
 
-- [Client, endpoint, model, and provider disclosure](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L252-L284)
-- [Structured extraction](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L287-L330)
-- [Read-plan request](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L345-L417)
-- [Plan validation, argument rebinding, and mandatory reads](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L420-L457)
+- [Client, endpoint, model, and provider disclosure](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L254-L293)
+- [Structured extraction](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L296-L339)
+- [Read-plan request](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L342-L427)
+- [Plan validation, argument rebinding, and mandatory reads](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L429-L466)
 - [Tool dispatch](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/workflow-service.ts#L482-L528)
 - [Deterministic policy](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/policy.ts)
 - [Share, verification, and recall adapter](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/tools.ts)
@@ -104,7 +104,7 @@ The verified response reports these stable fields:
 }
 ~~~
 
-Again, this response establishes configuration and service identity only. The missing successful workflow receipt, combined with the observed KYC 403, means no successful inference claim is made.
+Again, this response establishes configuration and service identity only. The missing successful workflow receipt, combined with the observed 403 `AccessDenied.Unpurchased`, means no successful inference claim is made.
 
 ## Captured Alibaba Cloud evidence
 
@@ -116,7 +116,7 @@ The capture shows the Alibaba Cloud Simple Application Server product, Singapore
 
 ### Candidate runtime
 
-[![ReleaseProof candidate running on Alibaba Cloud](assets/deployment/alibaba-cloud-runtime-current.png)](assets/deployment/alibaba-cloud-runtime-current.png)
+[![ReleaseProof candidate running on Alibaba Cloud](assets/deployment/alibaba-cloud-runtime-current.jpg)](assets/deployment/alibaba-cloud-runtime-current.jpg)
 
 The capture shows executable candidate `7a6e503eb03849d19d663597e2993b093c201738`, deployed repository head `5897546c0f4e333932350696ebd0b5a9a628b351`, the public URL, and a healthy container. It also shows the non-secret health result, including `alibaba-sas`, `live-qwen`, Qwen Cloud, `qwen3.7-plus`, and healthy file persistence.
 
@@ -126,7 +126,7 @@ The capture shows executable candidate `7a6e503eb03849d19d663597e2993b093c201738
 
 The capture shows ReleaseProof served from the public IP. Its provider badge says Qwen is configured and is awaiting a successful release run; it is not a completed live workflow capture.
 
-No successful Qwen monitoring capture or completed live-Qwen workflow receipt is included because the KYC 403 prevents one. No verified-recall cloud screenshot is claimed. The public video and local deterministic path demonstrate the product flow without relabeling fixtures as live model output.
+No successful Qwen monitoring capture or completed live-Qwen workflow receipt is included because the 403 `AccessDenied.Unpurchased` response prevents one while KYC/entitlement activation is pending. No verified-recall cloud screenshot is claimed. The public video and local deterministic path demonstrate the product flow without relabeling fixtures as live model output.
 
 ## Reproduce candidate validation
 

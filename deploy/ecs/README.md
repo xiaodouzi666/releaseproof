@@ -11,9 +11,9 @@ The public build must use only synthetic recipients, datasets, agreements, and s
 - Candidate revision: [`7a6e503eb03849d19d663597e2993b093c201738`](https://github.com/xiaodouzi666/releaseproof/commit/7a6e503eb03849d19d663597e2993b093c201738)
 - Public application: [http://8.219.184.228](http://8.219.184.228)
 - Public health check: [http://8.219.184.228/api/health](http://8.219.184.228/api/health)
-- Runtime evidence: [Alibaba Cloud resource](../../docs/assets/deployment/alibaba-cloud-resource.jpg) and [current container/runtime](../../docs/assets/deployment/alibaba-cloud-runtime-current.png)
+- Runtime evidence: [Alibaba Cloud resource](../../docs/assets/deployment/alibaba-cloud-resource.jpg) and [current container/runtime](../../docs/assets/deployment/alibaba-cloud-runtime-current.jpg)
 
-The submitted endpoint currently uses HTTP; TLS is not claimed. The runtime reports `deploymentTarget: alibaba-sas` and a configured `live-qwen` Qwen Cloud client using `qwen3.7-plus`. Successful inference is not claimed: Alibaba account KYC currently rejects model requests with HTTP 403, so health proves configuration only.
+The submitted endpoint currently uses HTTP; TLS is not claimed. The runtime reports `deploymentTarget: alibaba-sas` and a configured `live-qwen` Qwen Cloud client using `qwen3.7-plus`. Successful inference is not claimed: model requests return HTTP 403 `AccessDenied.Unpurchased` while Alibaba account KYC/entitlement activation remains pending, so health proves configuration only.
 
 ## 1. Provision safely
 
@@ -153,7 +153,7 @@ curl --fail --silent http://127.0.0.1:8787/api/health
 curl --fail --silent http://8.219.184.228/api/health
 ~~~
 
-The current public deployment can verify service health and the configured provider identity. It cannot complete new Qwen-dependent workflows while Alibaba account KYC returns HTTP 403. Use the clearly labeled deterministic recorded-demo mode locally for the reproducible end-to-end checks below, and do not describe those fixtures as successful live-Qwen calls:
+The current public deployment can verify service health and the configured provider identity. It cannot complete new Qwen-dependent workflows while the Qwen API returns HTTP 403 `AccessDenied.Unpurchased` and account KYC/entitlement activation is pending. Use the clearly labeled deterministic recorded-demo mode locally for the reproducible end-to-end checks below, and do not describe those fixtures as successful live-Qwen calls:
 
 - a verified recipient request reaches owner review with a minimized field/action set and finite expiry;
 - approval creates one synthetic share and completion appears only after exact read-back;
