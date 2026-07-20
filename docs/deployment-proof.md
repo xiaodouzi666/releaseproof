@@ -4,6 +4,9 @@ This is an **evidence workbench**, not a completion claim. Replace every PENDING
 
 Current status at authoring time:
 
+- Expected public repository: [https://github.com/xiaodouzi666/releaseproof](https://github.com/xiaodouzi666/releaseproof) — **PENDING public reachability verification**.
+- Validated candidate revision: [`f46d4eb61cebe4d2830aae162225b645c84eb734`](https://github.com/xiaodouzi666/releaseproof/commit/f46d4eb61cebe4d2830aae162225b645c84eb734) — source-pinned locally; **PENDING public reachability verification**.
+
 - Alibaba Cloud runtime: **PENDING — not verified here**
 - Public live URL: **PENDING — not verified here**
 - Successful live Qwen workflow: **PENDING — not verified here**
@@ -20,26 +23,26 @@ Fill this table last and open every URL in a signed-out/incognito browser.
 
 | Requirement | Evidence | Status |
 | --- | --- | --- |
-| Public source code | [PENDING: GitHub repository URL] | PENDING |
+| Public source code | [Expected repository URL](https://github.com/xiaodouzi666/releaseproof) | PENDING — public reachability not verified |
 | OSI license | [LICENSE](../LICENSE) plus public link | Local file present; public detection pending |
-| Immutable submitted revision | [PENDING: commit permalink] | PENDING |
-| Qwen client/base URL | [PENDING: commit-pinned adapter lines] | PENDING |
+| Immutable submitted revision | [Candidate revision](https://github.com/xiaodouzi666/releaseproof/commit/f46d4eb61cebe4d2830aae162225b645c84eb734) | Candidate pinned; publication PENDING |
+| Qwen client/base URL | [Candidate-pinned `server/qwen.ts`](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/qwen.ts) | Source identified; live call PENDING |
 | Structured extraction request/schema | [PENDING: model, response format, validation lines] | PENDING |
 | Read-only function-planning request | [PENDING: recipient/dataset/current-share/agreement definitions] | PENDING |
 | Tool validation and dispatch | [PENDING: allow-list, rebinding, mandatory completion, dispatch] | PENDING |
-| Deterministic release policy | [PENDING: policy source permalink] | PENDING |
-| Exact manifest owner checkpoint | [PENDING: decision transition permalink] | PENDING |
-| Idempotent share and verification | [PENDING: sandbox adapter/verifier permalink] | PENDING |
-| Recall and read-after-recall | [PENDING: recall/verifier permalink] | PENDING |
+| Deterministic release policy | [Candidate-pinned `server/policy.ts`](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/policy.ts) | Source identified; 16/16 local cases |
+| Exact manifest owner checkpoint | [Candidate-pinned workflow orchestrator (`server/workflow-service.ts`)](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/workflow-service.ts) | Source identified; locally tested |
+| Idempotent share and verification | [Candidate-pinned `server/tools.ts`](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/tools.ts) | Source identified; locally tested |
+| Recall and read-after-recall | [Candidate-pinned workflow orchestrator](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/workflow-service.ts) | Source identified; locally tested |
 | Alibaba Cloud live backend | [PENDING: public HTTPS URL] | PENDING |
 | Health endpoint | [PENDING: public /api/health URL] | PENDING |
 | Required Devpost Alibaba Cloud screenshot | [PENDING: PNG/JPG/JPEG upload under form limit] | PENDING |
 | Cloud resource/runtime capture | [PENDING: repository-hosted artifact] | PENDING |
 | Live ReleaseProof workflow capture | [PENDING] | PENDING |
 | Live-Qwen receipt | [PENDING: provider badge and non-zero completed calls] | PENDING |
-| Final evaluation/test output | [PENDING: final commit plus command output/CI] | PENDING |
+| Final evaluation/test output | [Candidate-pinned evaluation source](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/evaluation.ts) and [local verification record](evaluation.md#validated-releaseproof-candidate-snapshot) | 62/62 tests, 16/16 cases, typecheck/build/audit passed locally; CI PENDING |
 | Public demo video | [PENDING: URL, strictly under 3:00] | PENDING |
-| Updated architecture/thumbnail | [architecture PNG](../public/architecture.png) and [3:2 thumbnail](../public/devpost-thumbnail-3x2.png) | Local assets ready; public permalinks PENDING |
+| Updated architecture/thumbnail | [Candidate-pinned architecture PNG](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/public/architecture.png) and [3:2 thumbnail](https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/public/devpost-thumbnail-3x2.png) | Local assets ready; public reachability PENDING |
 
 ## What proves Qwen Cloud use
 
@@ -120,19 +123,21 @@ Official references:
 
 ### Required source permalinks
 
-Create permanent links pinned to the final commit:
+Candidate-pinned source locations (publication and public reachability remain PENDING):
 
 ~~~text
-Client and base URL:       [PENDING]
-Structured extraction:     [PENDING]
-Extraction schema:         [PENDING]
-Read-plan request:         [PENDING]
-Plan validation/rebinding: [PENDING]
-Mandatory-read completion: [PENDING]
-Actual tool dispatch:      [PENDING]
-Provider disclosure:       [PENDING]
-Release policy:            [PENDING]
-Share/verify/recall:       [PENDING]
+Client and base URL:       https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/qwen.ts
+Structured extraction:     https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/qwen.ts#L295-L330
+Extraction schema:         https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/qwen.ts#L12-L23
+Read-plan request:         https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/qwen.ts#L345-L417
+Plan validation/rebinding: https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/qwen.ts#L420-L449
+Mandatory-read completion: https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/qwen.ts#L452-L457
+Actual tool dispatch:      https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/workflow-service.ts#L482-L528
+Provider disclosure:       https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/qwen.ts#L269-L284
+Release policy:            https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/policy.ts
+Share/verify/recall:       https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/tools.ts
+Workflow orchestration:    https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/server/workflow-service.ts
+Architecture artifact:     https://github.com/xiaodouzi666/releaseproof/blob/f46d4eb61cebe4d2830aae162225b645c84eb734/public/architecture.png
 ~~~
 
 Together they should visibly establish that Qwen performs structured extraction and tool planning, while the server owns catalog reads, deterministic policy, exact-manifest approval, share creation, verification, and recall.
