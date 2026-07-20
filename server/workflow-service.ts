@@ -215,6 +215,7 @@ export class WorkflowService {
     }
     const now = new Date().toISOString();
     const id = `wf_${randomUUID().replaceAll("-", "").slice(0, 18)}`;
+    const workflowQwen = this.qwenForWorkflow(input.scenarioId);
     const workflow: Workflow = {
       id,
       requestText: input.requestText,
@@ -226,7 +227,7 @@ export class WorkflowService {
       currentAccess: [],
       toolTraces: [],
       events: [],
-      model: this.qwen.metadata(),
+      model: workflowQwen.metadata(),
     };
     workflow.events.push(
       makeAuditEvent(workflow, {
@@ -425,7 +426,8 @@ export class WorkflowService {
     });
     await this.pause();
 
-    const extraction = await this.qwen.extract({
+    const workflowQwen = this.qwenForWorkflow(workflow.scenarioId);
+    const extraction = await workflowQwen.extract({
       requestText: workflow.requestText,
       scenarioId: workflow.scenarioId,
       imageDataUrl,
@@ -453,7 +455,7 @@ export class WorkflowService {
     await this.pause();
 
     const extracted = workflow.extractedRequest!;
-    const proposedContextPlan = await this.qwen.planContextTools(extracted);
+    const proposedContextPlan = await workflowQwen.planContextTools(extracted);
     const contextPlan = completeTrustedContextPlan(proposedContextPlan.calls, extracted);
     workflow = await this.commit(id, {
       type: "context.plan_selected",
@@ -1130,5 +1132,12 @@ export class WorkflowService {
   private async pause(): Promise<void> {
     if (!this.stepDelayMs) return;
     await new Promise<void>((resolve) => setTimeout(resolve, this.stepDelayMs));
+  }
+
+  private qwenForWorkflow(scenarioId?: string): QwenClient {
+    // Presets are reproducible recorded demonstrations even when the service is
+    // configured for live Qwen. Custom requests always retain the configured
+    // client, whose primary/fallback failures fail the workflow closed.
+    return scenarioId ? new QwenClient("") : this.qwen;
   }
 }

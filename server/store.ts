@@ -92,16 +92,19 @@ export class WorkflowStore {
   }
 
   async findByIdempotencyKey(key: string): Promise<Workflow | undefined> {
+    await this.waitForSettledWrites();
     const id = this.state.idempotency[key];
     return id && this.state.workflows[id] ? clone(this.state.workflows[id]) : undefined;
   }
 
   async getWorkflow(id: string): Promise<Workflow | undefined> {
+    await this.waitForSettledWrites();
     const workflow = this.state.workflows[id];
     return workflow ? clone(workflow) : undefined;
   }
 
   async listWorkflows(): Promise<Workflow[]> {
+    await this.waitForSettledWrites();
     return Object.values(this.state.workflows)
       .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
       .map(clone);
@@ -149,6 +152,15 @@ export class WorkflowStore {
       () => undefined,
     );
     return run;
+  }
+
+  private async waitForSettledWrites(): Promise<void> {
+    // A serialized mutation updates the private in-memory draft before its
+    // durable write completes. Reads that began after that mutation was
+    // queued must wait for the captured write chain so they see either the
+    // persisted state or the snapshot restored after a persistence failure.
+    const writesBeforeRead = this.writeChain;
+    await writesBeforeRead;
   }
 
   private async persist(): Promise<void> {

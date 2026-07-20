@@ -3,11 +3,19 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import request from "supertest";
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
 import type { AuditEvent, Workflow, WorkflowStatus } from "../shared/contracts.js";
 import { createApp } from "../server/app.js";
 import { getCurrentShares } from "../server/tools.js";
 import { WorkflowService } from "../server/workflow-service.js";
+
+const openAiMock = vi.hoisted(() => ({ create: vi.fn() }));
+
+vi.mock("openai", () => ({
+  default: class {
+    chat = { completions: { create: openAiMock.create } };
+  },
+}));
 
 process.env.AUDIT_STORE = "memory";
 process.env.DEMO_STEP_DELAY_MS = "0";
@@ -78,6 +86,48 @@ describe("ReleaseProof HTTP workflow integration", () => {
       "inactive-recipient",
       "unverified-vendor",
     ]);
+  });
+
+  it("keeps presets recorded when service health is configured for live Qwen", async () => {
+    const previousKey = process.env.DASHSCOPE_API_KEY;
+    process.env.DASHSCOPE_API_KEY = "sk-integration-no-network";
+    openAiMock.create.mockClear();
+    try {
+      const liveConfiguredService = await WorkflowService.create();
+      const liveConfiguredApp = await createApp(liveConfiguredService);
+      const health = await request(liveConfiguredApp).get("/api/health").expect(200);
+      expect(health.body.model).toMatchObject({ mode: "live-qwen", provider: "Qwen Cloud" });
+
+      const created = await request(liveConfiguredApp)
+        .post("/api/workflows")
+        .send({ scenarioId: "restricted-health-denied" })
+        .expect(202);
+      expect(created.body.model).toMatchObject({
+        mode: "recorded-demo",
+        provider: "deterministic fixture",
+        calls: 0,
+      });
+
+      const denied = await waitForStatus(liveConfiguredApp, String(created.body.id), ["denied"]);
+      expect(denied.model).toMatchObject({
+        mode: "recorded-demo",
+        provider: "deterministic fixture",
+        calls: 0,
+      });
+      expect(denied.decision?.findings.map((finding) => finding.id)).toContain(
+        "dataset.restricted_external_release",
+      );
+      expect(denied.events).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ type: "extraction.completed", actor: "system" }),
+          expect.objectContaining({ type: "context.plan_selected", actor: "system" }),
+        ]),
+      );
+      expect(openAiMock.create).not.toHaveBeenCalled();
+    } finally {
+      if (previousKey === undefined) delete process.env.DASHSCOPE_API_KEY;
+      else process.env.DASHSCOPE_API_KEY = previousKey;
+    }
   });
 
   it("runs minimized release, approval, verification, and recall idempotently", async () => {
