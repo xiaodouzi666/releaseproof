@@ -62,7 +62,7 @@ Qwen never receives a share-create, recall, approval, or policy-override tool. A
 
 Source evidence: [candidate-pinned Qwen adapter](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts)
 
-Deployment and Qwen evidence: [verified evidence record](deployment-proof.md). The Alibaba Cloud runtime is configured as `live-qwen` with `qwen3.7-plus`, but inference returns HTTP 403 `AccessDenied.Unpurchased` while Alibaba account KYC/entitlement activation remains pending. Configuration is verified; a successful live-Qwen workflow is not claimed.
+Deployment and Qwen evidence: [verified evidence record](deployment-proof.md). The Alibaba Cloud runtime completed a public custom `live-qwen` workflow with two `qwen3.7-plus` calls, no fallback, token/latency telemetry, exact release verification, and verified recall.
 
 ## A release is a manifest, not a paragraph
 
@@ -196,7 +196,7 @@ Implemented application paths include structured extraction/planning, schema/too
 
 The vendor, dataset, agreement, and share providers are fixtures. No real customer data is moved. Destination region, residency enforcement, and semantic agreement-purpose matching are not implemented. Owner labels are not authenticated identities. File storage is single-instance. Expiry needs durable scheduling. The hash chain is tamper-evident but not externally anchored.
 
-The public Alibaba Cloud deployment is real. Its Qwen client is configured, but successful model inference is not established because the API returns HTTP 403 `AccessDenied.Unpurchased` while account KYC/entitlement activation remains pending. Those limits are not footnotes. They define the line between a useful architecture demonstration and an unsafe data product.
+The public Alibaba Cloud deployment is real, and its [public workflow receipt](http://8.219.184.228/api/workflows/wf_5b606ad019564ce9ae) establishes successful live Qwen inference through verified recall. That result does not erase the remaining boundary: vendor, dataset, agreement, and share providers are synthetic, and one successful receipt is not a statistical quality or production-reliability evaluation.
 
 ## What we would build next
 

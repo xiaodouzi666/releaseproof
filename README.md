@@ -10,7 +10,7 @@ Built for **Qwen Cloud Hackathon — Track 4: Autopilot Agent**.
 
 The submitted candidate is [`7a6e503eb03849d19d663597e2993b093c201738`](https://github.com/xiaodouzi666/releaseproof/commit/7a6e503eb03849d19d663597e2993b093c201738). It is deployed on Alibaba Cloud Simple Application Server at [http://8.219.184.228](http://8.219.184.228), with a public [health endpoint](http://8.219.184.228/api/health), [deployment evidence](docs/deployment-proof.md), and [dynamic demo video](https://youtu.be/QkooIqjEFiY). The candidate passed **69/69 automated tests** and **16/16 deterministic policy cases**.
 
-The public runtime is configured as `live-qwen` with Qwen Cloud (`qwen3.7-plus`), but inference currently returns HTTP 403 `AccessDenied.Unpurchased` while Alibaba account KYC/entitlement activation remains pending. The health response proves runtime configuration, not a successful model call; ReleaseProof therefore does **not** claim a successful live-Qwen inference or workflow. The included release adapter uses synthetic data and simulated vendors. ReleaseProof is not a production DLP, data clean room, consent platform, or legal-compliance system.
+The public runtime has now completed a full custom `live-qwen` workflow with Qwen Cloud (`qwen3.7-plus`). The [public workflow receipt](http://8.219.184.228/api/workflows/wf_5b606ad019564ce9ae) records two successful model calls, 940 prompt tokens, 263 completion tokens, deterministic `requires_approval` policy, exact post-release verification, and verified recall. The included release adapter still uses synthetic data and simulated vendors. ReleaseProof is not a production DLP, data clean room, consent platform, or legal-compliance system.
 
 Public evidence:
 
@@ -18,6 +18,7 @@ Public evidence:
 - [Public repository](https://github.com/xiaodouzi666/releaseproof) and [immutable candidate](https://github.com/xiaodouzi666/releaseproof/commit/7a6e503eb03849d19d663597e2993b093c201738)
 - [Current Alibaba Cloud runtime](docs/assets/deployment/alibaba-cloud-runtime-current.jpg) and [public app](docs/assets/deployment/public-app.jpg) captures
 - [Public dynamic demo video](https://youtu.be/QkooIqjEFiY)
+- [Completed live-Qwen workflow and verified-recall receipt](http://8.219.184.228/api/workflows/wf_5b606ad019564ce9ae)
 
 ## Why ReleaseProof
 
@@ -96,7 +97,7 @@ The returned plan is untrusted. The server rejects unknown or malformed calls, r
 
 The primary and fallback model are configurable. Provider mode, selected model, fallback use, call count, latency, and token metadata are recorded per workflow without exposing credentials.
 
-On the submitted Alibaba Cloud deployment, the key, endpoint, and primary model are configured and the runtime truthfully reports `live-qwen`. Attempts to perform the model-dependent steps currently fail closed at the Qwen boundary with HTTP 403 `AccessDenied.Unpurchased` while account KYC/entitlement activation remains pending. No successful live call is represented in this repository or submission evidence.
+On the submitted Alibaba Cloud deployment, the key, endpoint, and primary model are configured and the runtime truthfully reports `live-qwen`. A public custom-request receipt now proves a complete primary-model run: `qwen3.7-plus`, two calls, no fallback, 940 prompt tokens, 263 completion tokens, and 4,769 ms aggregate model latency. The same receipt carries the downstream deterministic policy, named approval, verified synthetic share, verified recall, 11 tool traces, and 34 prior-hash-linked audit events ending in `recall.completed`.
 
 Official references:
 
@@ -136,7 +137,7 @@ The browser and API ship as one Node.js container. Express serves the built Vite
 
 ReleaseProof remains explorable without a paid key. Preset scenarios always use clearly labeled deterministic extraction and read-plan fixtures, including on a server configured for live Qwen; custom requests use the configured live client and fail closed if both models fail. If **DASHSCOPE_API_KEY** is absent, every workflow uses recorded-demo mode. The same sanitizer, context tools, policy, approval transition, sandbox release, verification, recall, metrics, and audit paths still run.
 
-Recorded-demo output is never represented as a live Qwen result. The UI and health response disclose the active provider mode. The submitted cloud runtime is configured for live Qwen, but its current 403 `AccessDenied.Unpurchased` response means the deterministic recorded-demo path remains the reproducible end-to-end workflow evidence.
+Recorded-demo output is never represented as a live Qwen result. The UI and health response disclose the active provider mode. Preset scenarios and the public video remain explicitly Recorded Demo for reproducibility; the separate [public custom-workflow receipt](http://8.219.184.228/api/workflows/wf_5b606ad019564ce9ae) is the live-Qwen evidence.
 
 ## Quick start
 
@@ -245,7 +246,7 @@ Deployment guide: [deploy/README.md](deploy/README.md). Evidence checklist: [doc
 - Data-owner labels are not authenticated identities in the public demo.
 - The audit chain is tamper-evident, not independently signed or immutable.
 - Recorded-demo mode proves the workflow controls, not Qwen extraction quality.
-- The submitted runtime's Qwen inference currently returns HTTP 403 `AccessDenied.Unpurchased` while account KYC/entitlement activation is pending; configuration is verified, successful live-model behavior is not.
+- One public live-Qwen workflow proves functional integration, not corpus-wide extraction quality, production reliability, or provider-native data release.
 - Real deployment requires SSO, owner authorization, CSRF/replay protection, transactional state, KMS-managed secrets, provider-scoped credentials, privacy review, and external security testing.
 
 ## Judging alignment

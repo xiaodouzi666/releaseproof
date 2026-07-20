@@ -16,7 +16,7 @@ Use [`youtube-description.md`](youtube-description.md) for upload copy and signe
 
 ### Provider integrity rule
 
-For a live run, keep the Qwen/model receipt visible. The submitted runtime is configured for `live-qwen`, but inference currently returns HTTP 403 `AccessDenied.Unpurchased` while account KYC/entitlement activation remains pending, so it has no successful model receipt. Keep the `recorded-demo` badge visible for deterministic footage and use this narration instead:
+For a live run, keep the Qwen/model receipt visible. The submitted runtime now has a successful public `live-qwen` receipt. The existing video was recorded before activation, so keep the `recorded-demo` badge visible in that footage and use this narration instead:
 
 > This run uses clearly labeled deterministic extraction and planning fixtures. The same server still performs the read-only evidence calls, deterministic policy, exact owner approval, sandbox creation, verification, recall, and hash audit. Qwen integration is implemented, but this footage is not a live-model claim.
 
@@ -74,7 +74,7 @@ For a live run, keep the Qwen/model receipt visible. The submitted runtime is co
 
 **Submitted-deployment version:**
 
-> This ReleaseProof container is running on Alibaba Cloud. Qwen Cloud is configured, while inference still returns 403 AccessDenied.Unpurchased and account activation is pending, so this demo does not claim a live model result. The source, evaluation, deployment proof, and demo are linked with the submission. Every dataset release needs a recall path.
+> This ReleaseProof container is running on Alibaba Cloud. This footage is an explicitly labeled Recorded Demo made before account activation. A separate public receipt now proves two successful live Qwen calls followed by policy, approval, exact release verification, and verified recall. Every dataset release needs a recall path.
 
 Re-time the chosen provider and closing variants. Aim for 2:38–2:45, never 3:00.
 

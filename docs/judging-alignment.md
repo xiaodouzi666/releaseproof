@@ -31,13 +31,14 @@ The live Devpost page currently pairs the first two criterion headings with desc
 | Clear what / who / how description | Final Devpost story identifies enterprise data owners, the release-risk problem, the proof path, and the system architecture. | Submitted |
 | Qwen Cloud named in description and Built With | Qwen Cloud, Qwen 3.7 Plus, and Qwen 3.6 Flash | Submitted |
 | Public working deployment | [http://8.219.184.228](http://8.219.184.228) and [health](http://8.219.184.228/api/health) | Submitted; HTTP only |
+| Public live-Qwen workflow | [Completed workflow receipt](http://8.219.184.228/api/workflows/wf_5b606ad019564ce9ae) | Verified: 2 model calls through verified recall |
 | Eligible entrant assertions | Submitter type, residence country, learning level, and sponsor/affiliate/government-employment declaration | Completed by the entrant in the submitted Devpost form |
 
 ## Evidence boundary
 
-The Alibaba deployment proves that the submitted container is publicly running with Qwen Cloud configured. At the time of this review, model inference returns HTTP 403 `AccessDenied.Unpurchased` while account KYC/entitlement activation remains pending. ReleaseProof does not represent the configured health response or Recorded Demo fixtures as a successful Qwen call. The code path, base URL, model boundary, schemas, and telemetry are implemented and public; successful live inference requires completion of the account verification gate.
+The Alibaba deployment now proves both configuration and successful live inference. The public custom-workflow receipt records `live-qwen`, `qwen3.7-plus`, two calls, no fallback, token and latency telemetry, deterministic `requires_approval` policy, exact release verification, and verified recall. Its 11 tool traces and 34 audit events end in `recall.completed`.
 
-The public video is therefore labeled **Recorded Demo**. It replaces only Qwen extraction and read-plan generation with deterministic fixtures. Policy, owner approval, synthetic share creation, observed-state verification, recall, metrics, and audit use the same application paths.
+The public video remains labeled **Recorded Demo** because it was produced before account activation. It replaces only Qwen extraction and read-plan generation with deterministic fixtures. The later public JSON receipt is the live-Qwen evidence; neither artifact is mislabeled.
 
 ## Freeze policy
 

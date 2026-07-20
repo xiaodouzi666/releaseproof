@@ -12,7 +12,7 @@ The repository contains a deterministic 16-case policy suite. It measures the re
 - Deterministic policy: [candidate-pinned `server/policy.ts`](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/policy.ts)
 - Public deployment: [application](http://8.219.184.228) and [health](http://8.219.184.228/api/health) on Alibaba Cloud Simple Application Server
 
-The repository, immutable candidate, and Alibaba Cloud runtime are verified. The deployment reports a configured `live-qwen` client using Qwen Cloud and `qwen3.7-plus`, but successful inference is not established: calls currently fail with HTTP 403 `AccessDenied.Unpurchased` while account KYC/entitlement activation remains pending. Health is configuration evidence only.
+The repository, immutable candidate, and Alibaba Cloud runtime are verified. Health establishes a configured `live-qwen` client using Qwen Cloud and `qwen3.7-plus`; the separate [public workflow receipt](http://8.219.184.228/api/workflows/wf_5b606ad019564ce9ae) establishes two successful primary-model calls followed by verified release and recall.
 
 ## Questions under test
 
@@ -102,7 +102,7 @@ The commands were freshly run locally against candidate `7a6e503eb03849d19d66359
 | Production build | `pnpm build` passed |
 | Production dependency audit | `pnpm audit --prod` — no known vulnerabilities |
 
-These results establish deterministic policy and software behavior for the candidate. They do not establish CI execution or live-Qwen extraction quality. Alibaba Cloud hosting is separately established by [runtime evidence](deployment-proof.md), while successful Qwen inference remains blocked by HTTP 403 `AccessDenied.Unpurchased`.
+These results establish deterministic policy and software behavior for the candidate. They do not establish CI execution or corpus-wide live-Qwen extraction quality. Alibaba Cloud hosting and a successful live workflow are separately established by [runtime evidence](deployment-proof.md).
 
 ## Final production HTTP validation
 
@@ -128,7 +128,7 @@ A responsible Qwen evaluation needs a frozen, consented corpus with paraphrases,
 - primary/fallback rate, latency, and token usage; and
 - policy invariance across equivalent paraphrases.
 
-That evaluation was not run because the submitted account cannot complete inference while the API returns HTTP 403 `AccessDenied.Unpurchased`. Deterministic fixture outputs are never mixed into a live-model accuracy number.
+That corpus evaluation was not run within the submission window. The public workflow receipt is a functional end-to-end proof, not a statistical accuracy result. Deterministic fixture outputs are never mixed into a live-model accuracy number.
 
 ## Limitations
 

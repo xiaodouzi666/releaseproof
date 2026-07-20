@@ -19,7 +19,7 @@ This is the final English record of the submitted Devpost copy. Public evidence 
 | Architecture diagram upload | **public/architecture.png** |
 | Alibaba Cloud deployment screenshot upload | **docs/assets/deployment/alibaba-cloud-runtime-current.jpg** |
 | Blog post | Leave blank unless a public build story is published |
-| AI tools used | **Qwen Cloud integration for structured extraction and read-only planning (configured on the deployment; inference currently returns HTTP 403 `AccessDenied.Unpurchased` while account KYC/entitlement activation is pending); OpenAI Codex for development assistance.** |
+| AI tools used | **Qwen Cloud integration for structured extraction and read-only planning (public live workflow verified with Qwen 3.7 Plus); OpenAI Codex for development assistance.** |
 | Learning level | **Completed directly by the entrant in Devpost** |
 | Age confirmation | **Completed directly by the entrant in Devpost** |
 | Eligible-country confirmation | **Completed directly by the entrant in Devpost** |
@@ -64,10 +64,11 @@ ReleaseProof turns an ambiguous external data-sharing request into a minimized, 
 - Alibaba Cloud deployment code: https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/deploy/ecs/docker-compose.prod.yml#L1-L25
 - Alibaba Cloud deployment evidence: https://github.com/xiaodouzi666/releaseproof/blob/main/docs/deployment-proof.md
 - Health endpoint: http://8.219.184.228/api/health
+- Live-Qwen workflow receipt: http://8.219.184.228/api/workflows/wf_5b606ad019564ce9ae
 
 ## Testing instructions
 
-Open the public app and health endpoint first. The application is deployed on Alibaba Cloud and the provider badge truthfully shows Qwen Cloud configured with `qwen3.7-plus`, awaiting a successful release run. The health response reports `live-qwen`; this is configuration evidence, not inference evidence. New model-dependent workflows currently fail closed with HTTP 403 `AccessDenied.Unpurchased` while account KYC/entitlement activation is pending.
+Open the public app, health endpoint, and live-workflow receipt first. The application is deployed on Alibaba Cloud. Health reports `live-qwen`; the custom-workflow receipt separately proves two successful `qwen3.7-plus` calls, deterministic `requires_approval` policy, exact post-release verification, and verified recall.
 
 For a reproducible end-to-end workflow, check out the submitted revision locally without `DASHSCOPE_API_KEY`, run `pnpm dev`, and use the clearly labeled Recorded Demo mode. Select **Campaign analysis, minimized**, inspect the recipient/dataset/agreement receipts and Requested → Owner-approved effective → Observed proof, approve as the data owner, wait for exact observed-state verification, and use **Recall now** to verify revocation. Then run **Restricted health data blocked** to see a fail-closed path with no approval or release action. All displayed vendors, datasets, agreements, and share records are synthetic; fixture output is not represented as a successful Qwen call.
 
@@ -154,9 +155,9 @@ Qwen implementation:
 
 https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts
 
-At submission time, the Alibaba-hosted runtime is configured for Qwen 3.7 Plus and discloses that configuration through its provider badge and health endpoint. However, inference returns HTTP 403 `AccessDenied.Unpurchased` while account KYC/entitlement activation remains pending.
+The Alibaba-hosted runtime is configured for Qwen 3.7 Plus and now has a public completed custom-workflow receipt. It records two primary-model calls, no fallback, token and latency telemetry, policy, owner approval, exact release verification, and verified recall.
 
-We therefore do not present the configured health response as proof of a model call. The public under-three-minute video is clearly labeled Recorded Demo. It substitutes deterministic fixtures only for Qwen extraction and read-plan generation; policy, owner approval, synthetic share creation, observed-state verification, recall, metrics, and audit continue through the same application paths.
+The public under-three-minute video remains clearly labeled Recorded Demo because it was produced before account activation. It substitutes deterministic fixtures only for Qwen extraction and read-plan generation; the separate public JSON receipt is the later live-Qwen evidence.
 
 ## Challenges we ran into
 
@@ -174,7 +175,7 @@ Many demos stop at publication. We had to carry exact share identity, baseline s
 
 ### Preserving honest evidence under an external account blocker
 
-The Qwen KYC/entitlement gate remained unresolved while preparing the submission. Rather than disguising a fixture as a successful call, we exposed provider state, retained a clearly labeled Recorded Demo path, and documented the limitation.
+The Qwen KYC/entitlement gate blocked calls while preparing the submission. Rather than disguising a fixture as a successful call, we exposed provider state and retained a clearly labeled Recorded Demo path. After activation, we ran and published a separate complete live-Qwen receipt through verified recall.
 
 ## Accomplishments that we are proud of
 
@@ -189,6 +190,7 @@ The Qwen KYC/entitlement gate remained unresolved while preparing the submission
 - Read-after-release and read-after-recall verification.
 - A prior-hash-linked audit trail.
 - Explicit live-Qwen versus Recorded Demo disclosure.
+- A public live-Qwen custom-workflow receipt with two model calls and verified recall.
 - A public Alibaba Cloud deployment of the submitted revision.
 - 69/69 automated tests and 16/16 deterministic policy evaluation cases passing on the submitted revision.
 
@@ -215,7 +217,7 @@ And model transparency is stronger when the application shows exactly where the 
 The next milestone is a read-only enterprise pilot:
 
 1. connect authoritative vendor, contract, dataset, lineage, consent, and residency sources;
-2. complete Qwen account activation and evaluate extraction on a consented multilingual text/image corpus;
+2. evaluate Qwen extraction on a consented multilingual text/image corpus;
 3. bind authenticated owner approval to a signed canonical manifest;
 4. integrate a provider-native clean room without enabling raw egress;
 5. add transactional state and durable expiry/recall scheduling;
@@ -231,6 +233,7 @@ The next milestone is a read-only enterprise pilot:
 - Alibaba deployment code: https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/deploy/ecs/docker-compose.prod.yml
 - Architecture: https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/public/architecture.png
 - Demo video: https://youtu.be/QkooIqjEFiY
+- Live-Qwen receipt: http://8.219.184.228/api/workflows/wf_5b606ad019564ce9ae
 - License: MIT
 
 ## Built with
@@ -258,7 +261,7 @@ The submitted Devpost project:
 - links the public repository, MIT license, and immutable candidate;
 - includes the candidate-pinned Qwen Cloud API source permalink (`server/qwen.ts`) for submission field 27543, matching the organizer's Proof of Deployment 101 guidance;
 - keeps the candidate-pinned Docker Compose deployment link separately available in the Story and deployment documentation;
-- does not claim successful live-Qwen inference while HTTP 403 `AccessDenied.Unpurchased` remains unresolved;
+- links a public successful live-Qwen receipt while keeping the earlier Recorded Demo video explicitly labeled;
 - includes the required Alibaba Cloud runtime screenshot;
 - keeps all demo data synthetic;
 - links a public video under the 3:00 limit;

@@ -12,7 +12,7 @@ Every dataset release needs a recall path.
 
 ReleaseProof is a proof-carrying data release autopilot. This real dynamic app recording shows scenario selection, the owner approval gate, a Requested-to-Effective minimization receipt, observed-state release verification, a hard-deny path, verified recall, and the architecture view.
 
-Demo disclosure: recipients, datasets, agreements, and share state are synthetic sandbox data. Qwen intent extraction and read-plan generation use explicitly labeled Recorded Demo fixtures because the account entitlement still returns HTTP 403 AccessDenied.Unpurchased. Policy, approval, idempotent share creation, read-after-release, recall, audit chaining, API, and UI execute through the real application paths. No successful live-Qwen invocation is claimed.
+Demo disclosure: recipients, datasets, agreements, and share state are synthetic sandbox data. This video was produced before account activation, so its Qwen intent extraction and read-plan generation use explicitly labeled Recorded Demo fixtures. Policy, approval, idempotent share creation, read-after-release, recall, audit chaining, API, and UI execute through the real application paths. A later public custom workflow successfully completed two live `qwen3.7-plus` calls and verified release plus recall: http://8.219.184.228/api/workflows/wf_5b606ad019564ce9ae. The footage itself is not relabeled as live Qwen.
 
 Global AI Hackathon Series with Qwen Cloud - Track 4: Autopilot Agent.
 

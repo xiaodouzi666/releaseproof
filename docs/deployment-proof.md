@@ -17,9 +17,9 @@ The application and health endpoint are currently served over HTTP; TLS is not c
 
 The public runtime has a server-side Qwen Cloud client configured as `live-qwen` with `qwen3.7-plus`. The source implements structured extraction and read-only function planning against the Qwen OpenAI-compatible endpoint.
 
-Successful model inference has **not** been established. Calls from the deployment currently fail closed with HTTP 403 `AccessDenied.Unpurchased` while Alibaba account KYC/entitlement activation remains pending. The health response proves that the client, provider mode, model, service, store, and deployment target are configured; it does not prove that a model response completed. No screenshot, workflow receipt, evaluation number, or submission text should be described as successful live-Qwen evidence.
+Successful model inference is established by the public [custom live-Qwen workflow receipt](http://8.219.184.228/api/workflows/wf_5b606ad019564ce9ae). It records `scenarioId: null`, `mode: live-qwen`, primary model `qwen3.7-plus`, two completed calls, no fallback, 940 prompt tokens, 263 completion tokens, and 4,769 ms aggregate model latency. The workflow then passed deterministic policy, named owner approval, exact post-release verification, and exact post-recall verification.
 
-The deterministic recorded-demo path remains the reproducible end-to-end demonstration of policy, owner approval, synthetic share creation, exact-state verification, recall, metrics, and audit. Its output is not represented as Qwen output.
+The deterministic recorded-demo path remains available for reproducible preset demonstrations. The public video was made before account activation and remains truthfully labeled Recorded Demo; it is not relabeled as live Qwen. Recipients, datasets, agreements, and share state are still synthetic sandbox data in both modes.
 
 ## Judge evidence index
 
@@ -28,7 +28,7 @@ The deterministic recorded-demo path remains the reproducible end-to-end demonst
 | Public source code | [Repository](https://github.com/xiaodouzi666/releaseproof) | Verified public |
 | OSI license | [Candidate-pinned MIT license](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/LICENSE) | Verified |
 | Immutable application revision | [Candidate commit](https://github.com/xiaodouzi666/releaseproof/commit/7a6e503eb03849d19d663597e2993b093c201738) | Verified public |
-| Qwen client and base URL | [Candidate-pinned `server/qwen.ts`](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts) | Implementation verified; successful call not claimed |
+| Qwen client and base URL | [Candidate-pinned `server/qwen.ts`](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts) | Implementation and public live call verified |
 | Structured extraction schema/request | [`server/qwen.ts` schema](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L12-L23) and [request](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L296-L339) | Source verified |
 | Read-only planning and sanitization | [Planning request](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L342-L427), [validation/rebinding](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/qwen.ts#L429-L466), and [dispatch](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/workflow-service.ts#L482-L528) | Source verified |
 | Deterministic release policy | [Candidate-pinned `server/policy.ts`](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/policy.ts) | 16/16 local cases |
@@ -37,7 +37,7 @@ The deterministic recorded-demo path remains the reproducible end-to-end demonst
 | Running candidate container | [Current runtime capture](assets/deployment/alibaba-cloud-runtime-current.jpg) | Captured; candidate SHA, deployed repository head, and healthy service visible |
 | Public application | [Live app](http://8.219.184.228) and [public-app capture](assets/deployment/public-app.jpg) | Verified over HTTP |
 | Public health | [Health endpoint](http://8.219.184.228/api/health) | Verified HTTP 200 |
-| Successful live-Qwen receipt | None | Not achieved; HTTP 403 `AccessDenied.Unpurchased` while KYC/entitlement activation is pending |
+| Successful live-Qwen receipt | [Public completed workflow](http://8.219.184.228/api/workflows/wf_5b606ad019564ce9ae) | Verified: 2 primary-model calls, approval, release verification, and verified recall |
 | Test/evaluation output | [Validation record](evaluation.md#validated-releaseproof-candidate-snapshot) and [candidate evaluation source](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/server/evaluation.ts) | 69/69 tests; 16/16 cases |
 | Demo video | [Public dynamic YouTube video](https://youtu.be/QkooIqjEFiY) | Public link verified |
 | Architecture and thumbnail | [Candidate architecture](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/public/architecture.png) and [candidate 3:2 thumbnail](https://github.com/xiaodouzi666/releaseproof/blob/7a6e503eb03849d19d663597e2993b093c201738/public/devpost-thumbnail-3x2.png) | Candidate-pinned assets |
@@ -103,7 +103,22 @@ The verified response reports these stable fields:
 }
 ~~~
 
-Again, this response establishes configuration and service identity only. The missing successful workflow receipt, combined with the observed 403 `AccessDenied.Unpurchased`, means no successful inference claim is made.
+This response establishes configuration and service identity. Successful inference is established separately by the public workflow receipt below.
+
+## Public live-Qwen workflow receipt
+
+[Workflow `wf_5b606ad019564ce9ae`](http://8.219.184.228/api/workflows/wf_5b606ad019564ce9ae) is a custom request (`scenarioId: null`), not a preset fixture.
+
+| Receipt field | Verified value |
+| --- | --- |
+| Model path | `live-qwen`; `qwen3.7-plus`; `fallbackUsed: false` |
+| Model work | 2 calls; 940 prompt + 263 completion tokens; 4,769 ms latency |
+| Policy and approval | `requires_approval`; named approval recorded |
+| Release proof | `verification.verified: true` |
+| Recall proof | final status `rolled_back`; grant `revoked`; `rollbackVerification.verified: true`; zero current access |
+| Evidence trail | 11 tool traces; 34 audit events; final event `recall.completed` |
+
+The receipt proves the complete Qwen-to-policy-to-human-to-action-to-verification-to-recall application path. It does not convert the synthetic sandbox catalogs or adapter into real customer/provider data.
 
 ## Captured Alibaba Cloud evidence
 
@@ -117,9 +132,9 @@ The capture shows executable candidate `7a6e503eb03849d19d663597e2993b093c201738
 
 [![ReleaseProof public application](assets/deployment/public-app.jpg)](assets/deployment/public-app.jpg)
 
-The capture shows ReleaseProof served from the public IP. Its provider badge says Qwen is configured and is awaiting a successful release run; it is not a completed live workflow capture.
+The capture shows ReleaseProof served from the public IP. It predates the successful live workflow and is configuration evidence; the public JSON receipt is the current inference and lifecycle evidence.
 
-No successful Qwen monitoring capture or completed live-Qwen workflow receipt is included because the 403 `AccessDenied.Unpurchased` response prevents one while KYC/entitlement activation is pending. No verified-recall cloud screenshot is claimed. The public video and local deterministic path demonstrate the product flow without relabeling fixtures as live model output.
+No live-Qwen footage is claimed. The public video was recorded before activation and remains labeled Recorded Demo. The separate public workflow receipt proves the later successful live model path and verified recall without relabeling the video or its fixtures.
 
 ## Reproduce candidate validation
 
@@ -144,6 +159,6 @@ The July 20, 2026 candidate run passed typecheck, 8/8 test files and 69/69 tests
 - Health exposes no credential or environment-file content.
 - All product data shown is synthetic.
 - The Alibaba Cloud resource, runtime, and public application captures are present.
-- Qwen configuration is distinguished from successful inference.
+- Qwen configuration, successful inference, and Recorded Demo footage are distinguished from one another.
 - Recall means revoking the synthetic share; it does not guarantee downstream deletion.
 - The submitted Devpost project includes the accepted-format Alibaba Cloud screenshot; the entrant completed the legal/profile fields directly in Devpost.
